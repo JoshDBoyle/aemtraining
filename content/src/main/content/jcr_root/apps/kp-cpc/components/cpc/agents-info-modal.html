@@ -1,0 +1,22 @@
+<div data-sly-use.modalsuse="org.kp.cpc.wcmuse.ModalsUse" id="agents-info-modal" class="coral-Modal">
+  <div class="coral-Modal-header">
+    <i class="coral-Modal-typeIcon coral-Icon coral-Icon--sizeS"></i>
+    <h2 class="coral-Modal-title coral-Heading coral-Heading--2">All Available Agents</h2>
+    <button type="button"
+      class="coral-MinimalButton coral-Modal-closeButton" title="Close"
+      data-dismiss="modal">
+      <i
+        class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon "></i>
+    </button>
+  </div>
+  <div data-sly-list.agent="${modalsuse.allAgentConfigs}" class="agent-info-body coral-Modal-body">
+    <div class="agent-info-entry">
+      <sly data-sly-test="${agentList.first}">
+        <div class="agent-info-id heading">Id</div>
+        <div class="agent-info-title heading">Title</div>
+      </sly>
+      <div class="agent-info-id">${agent.getAgentId}</div>
+      <div class="agent-info-title">${agent.getName}</div>
+    </div>
+  </div>
+</div>

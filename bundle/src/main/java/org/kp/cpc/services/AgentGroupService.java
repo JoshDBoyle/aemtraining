@@ -1,9 +1,9 @@
 package org.kp.cpc.services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -11,9 +11,9 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.kp.cpc.pojos.AgentGroup;
+import org.kp.cpc.pojos.AgentMetadata;
 
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
@@ -36,6 +36,7 @@ public class AgentGroupService {
 	AgentManager agentMgr;
 
 	private Map<String, Agent> agents;
+	private List<AgentConfig> allAgentConfigs = new ArrayList<AgentConfig>();
 	
 	@Activate
 	protected void activate(Map<String, Object> properties) {
@@ -48,15 +49,36 @@ public class AgentGroupService {
 			this.agentGroupTitles[0] = "All";
 		}
 
+		// For each group title that was specified via Felix, build a List<AgentGroup> of all the specified (in Felix) agents per group
 		for(int i = 0; i < agentGroupTitles.length; i++) {
-			AgentGroup temp = new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]);
+			String[] agentIdsPerGroup = agentLists[i].split(",");
+			List<AgentMetadata> agentMetasPerGroup = new ArrayList<AgentMetadata>();
 			
-			if(agents.containsKey(temp.title))
-				agentGroups.add(temp);
+			// For each agentId per group, let's add them to a List<AgentMetadata> so we can build an official AgentGroup
+			// Basically we're just converting from String[] to List<AgentGroup> here
+			for(int j = 0; j < agentIdsPerGroup.length; j++) {
+				// If the Map of all agents we got from the AgentManager contains this id as it was specified via Felix
+				// Then let's get that Agent's AgentMetadata and add it to the List<AgentMetadata> for our AgentGroup
+				if(agents.containsKey(agentIdsPerGroup[j])) {
+					Agent agent = agents.get(agentIdsPerGroup[j]);
+					agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration()));
+				}
+			}
+
+			agentGroups.add(new AgentGroup(agentMetasPerGroup, agentGroupTitles[i]));
+		}
+		
+		Set<String> keys = agents.keySet();
+		for(String key : keys) {
+			allAgentConfigs.add(agents.get(key).getConfiguration());
 		}
 	}
 
 	public List<AgentGroup> getAgentGroups() {
-		return this.agentGroups;
+		return agentGroups;
+	}
+	
+	public List<AgentConfig> getAllAgentConfigs() {
+		return allAgentConfigs;
 	}
 }

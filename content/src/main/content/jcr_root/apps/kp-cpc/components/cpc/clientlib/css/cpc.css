@@ -5,9 +5,23 @@
     height: 225px;
 }
 
+.agent-header {
+	width: 100%;
+	min-height: 30px;
+}
+
 .agent-id {
+    overflow: hidden;
+    display: inline-block;
+    min-height: 30px;
+    margin-top: 10px;
+}
+
+.agent-toggle {
+	float: right;
 	display: inline-block;
-    width: 80%;
+    width: 85px;
+    min-height: 30px;
 }
 
 .agent-queue, .release-review {
@@ -20,4 +34,36 @@
 .agent-queue a, .release-review a {
 	display: block;
 	width: 100%;
+}
+
+.agent-disable-text {
+	margin-right: 15px;
+}
+
+.agent-command-bar {
+	width: 100%;
+	background: #BBB;
+}
+
+.agent-command-bar button {
+	margin-left: 10px;
+}
+
+.agent-info-body {
+	max-height: 300px;
+	width: 500px;
+}
+
+.agent-info-entry {
+	width: 100%;
+}
+
+.agent-info-id {
+	float: right;
+    width: 200px;
+}
+
+.agent-info-entry .heading {
+	font-size: 1.17em;
+	font-weight: bold;
 }

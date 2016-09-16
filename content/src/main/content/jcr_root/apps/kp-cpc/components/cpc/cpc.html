@@ -1,7 +1,14 @@
 <sly data-sly-use.clientLib="${'/libs/granite/sightly/templates/clientlib.html'}" />
-<sly data-sly-call="${clientLib.all @ categories='cpc'}" />
+<sly data-sly-call="${clientLib.css @ categories='cpc'}" />
+
+<sly data-sly-include="${'agents-info-modal.html'}"/>
 
 <div data-sly-use.cpcuse="org.kp.cpc.wcmuse.CPCUse">
+  <div class="agent-command-bar">
+    <button id="agents-info-button" class="coral-MinimalButton">
+      <i class="coral-Icon coral-Icon--book coral-MinimalButton-icon"></i>
+    </button>
+  </div>
   <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
     <nav data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-navigation">
       <a class="coral-TabPanel-tab ${itemList.first ? 'is-active' : ''}" data-toggle="tab">${item.title}</a>
@@ -9,22 +16,24 @@
     <div data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-content">
       <section class="coral-TabPanel-pane is-active">
 
-        <label class="coral-Switch">
-          <span>Disable All Agents for the <strong>${item.title}</strong> Data Center</span>
-          <input class="coral-Switch-input" type="checkbox">
+        <label class="agent-group-toggle coral-Switch">
+          <span class="agent-disable-text">Toggle all agents for the <strong>${item.title}</strong> data center</span>
+          <input class="coral-Switch-input" type="checkbox" checked="true">
           <span class="coral-Switch-offLabel">Off</span>
           <span class="coral-Switch-onLabel">On</span>
         </label>
       
         <!-- Listing of Replication Agents -->
-        <div data-sly-list.agent="${item.agentIds}">
+        <div data-sly-list.agent="${item.agentMetas}">
           <div class="agent coral-Well">
-            <div class="agent-id">${agent}</div>
-            <label class="agent-toggle coral-Switch">
-              <input class="coral-Switch-input" type="checkbox">
-              <span class="coral-Switch-offLabel">Off</span>
-              <span class="coral-Switch-onLabel">On</span>
-            </label>
+            <div class="agent-header">
+              <div class="agent-id">${agent.agentId}</div>
+              <label class="agent-toggle coral-Switch" data-id="${agent.agentId}">
+                <input class="coral-Switch-input" type="checkbox">
+                <span class="coral-Switch-offLabel">Off</span>
+                <span class="coral-Switch-onLabel">On</span>
+              </label>
+            </div>
             <div class="agent-status coral-Alert coral-Alert--success">
               <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
               <div class="coral-Alert-message">Queue operating normally</div>
@@ -82,3 +91,5 @@
     <button class="coral-Button">Release</button>
   </div>
 </div>
+
+<sly data-sly-call="${clientLib.js @ categories='cpc'}" />

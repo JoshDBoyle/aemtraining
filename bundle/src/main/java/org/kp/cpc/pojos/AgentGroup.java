@@ -1,11 +1,13 @@
 package org.kp.cpc.pojos;
 
+import java.util.List;
+
 public class AgentGroup {
 	public String title;
-	public String[] agentIds;
+	public List<AgentMetadata> agentMetas;
 
-	public AgentGroup(String[] agentIds, String title) {
+	public AgentGroup(List<AgentMetadata> agentMetas, String title) {
 		this.title = title;
-		this.agentIds = agentIds;
+		this.agentMetas = agentMetas;
 	}
 }
