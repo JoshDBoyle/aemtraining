@@ -1,0 +1,84 @@
+<sly data-sly-use.clientLib="${'/libs/granite/sightly/templates/clientlib.html'}" />
+<sly data-sly-call="${clientLib.all @ categories='cpc'}" />
+
+<div data-sly-use.cpcuse="org.kp.cpc.use.CPCUse">
+  <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
+    <nav data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-navigation">
+      <a class="coral-TabPanel-tab is-active" data-toggle="tab">${item.title}</a>
+    </nav>
+    <div data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-content">
+      <section class="coral-TabPanel-pane is-active">
+
+        <label class="coral-Switch">
+          <span>Disable All Agents for the <strong>${item.title}</strong> Data Center</span>
+          <input class="coral-Switch-input" type="checkbox">
+          <span class="coral-Switch-offLabel">Off</span>
+          <span class="coral-Switch-onLabel">On</span>
+        </label>
+      
+        <!-- Listing of Replication Agents -->
+        <div data-sly-list="${item.agents}">
+          <div class="agent coral-Well">
+            <div class="agent-id">${item}</div>
+            <label class="agent-toggle coral-Switch">
+              <input class="coral-Switch-input" type="checkbox">
+              <span class="coral-Switch-offLabel">Off</span>
+              <span class="coral-Switch-onLabel">On</span>
+            </label>
+            <div class="agent-status coral-Alert coral-Alert--success">
+              <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
+              <div class="coral-Alert-message">Queue operating normally</div>
+            </div>
+            <div class="agent-queue coral-Well">
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="coral-Well">
+    <!-- Release selection -->
+    <span class="coral-Select" data-init="select">
+      <button type="button" class="coral-Select-button coral-MinimalButton">
+        <span class="coral-Select-button-text">Please choose a release</span>
+      </button>
+      <select class="coral-Select-select" multiple="true">
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </span>
+  
+    <!-- Release content verification -->
+    <div class="release-review coral-Well">
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+      <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
+    </div>
+  
+    <!-- Release button -->
+    <button class="coral-Button">Release</button>
+  </div>
+</div>

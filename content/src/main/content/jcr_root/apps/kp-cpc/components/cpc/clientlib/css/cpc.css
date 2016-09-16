@@ -1,0 +1,23 @@
+.agent {
+	display: inline-block;
+    margin: 5px;
+    width: 45%;
+    height: 225px;
+}
+
+.agent-id {
+	display: inline-block;
+    width: 80%;
+}
+
+.agent-queue, .release-review {
+	overflow: scroll;
+	height: 100px;
+	background: #DFDFDF;
+	border: 1px solid black;
+}
+
+.agent-queue a, .release-review a {
+	display: block;
+	width: 100%;
+}
