@@ -4,7 +4,7 @@
 <div data-sly-use.cpcuse="org.kp.cpc.wcmuse.CPCUse">
   <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
     <nav data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-navigation">
-      <a class="coral-TabPanel-tab is-active" data-toggle="tab">${item.title}</a>
+      <a class="coral-TabPanel-tab ${itemList.first ? 'is-active' : ''}" data-toggle="tab">${item.title}</a>
     </nav>
     <div data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-content">
       <section class="coral-TabPanel-pane is-active">

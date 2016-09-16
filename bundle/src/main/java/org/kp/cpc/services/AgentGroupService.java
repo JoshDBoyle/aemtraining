@@ -1,6 +1,7 @@
 package org.kp.cpc.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,10 +9,14 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.kp.cpc.pojos.AgentGroup;
 
+import com.day.cq.replication.Agent;
+import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
 
 @Component(label = "A service for configuring Replication Agent groups", metatype = true, immediate = true)
@@ -27,8 +32,14 @@ public class AgentGroupService {
 
 	private List<AgentGroup> agentGroups = new ArrayList<AgentGroup>();
 	
+	@Reference
+	AgentManager agentMgr;
+
+	private Map<String, Agent> agents;
+	
 	@Activate
 	protected void activate(Map<String, Object> properties) {
+		this.agents = agentMgr.getAgents();
 		this.agentGroupTitles = PropertiesUtil.toStringArray(properties.get("agent.groups"));
 		this.agentLists = PropertiesUtil.toStringArray(properties.get("agent.lists"));
 		
@@ -38,7 +49,10 @@ public class AgentGroupService {
 		}
 
 		for(int i = 0; i < agentGroupTitles.length; i++) {
-			agentGroups.add(new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]));
+			AgentGroup temp = new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]);
+			
+			if(agents.containsKey(temp.title))
+				agentGroups.add(temp);
 		}
 	}
 

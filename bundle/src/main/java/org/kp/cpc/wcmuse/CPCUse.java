@@ -22,7 +22,6 @@ public class CPCUse extends WCMUsePojo {
     	if(null != ags) {
     		agentGroups = ags.getAgentGroups();
     	}
-    	log.info("Received AgentGroups from AgentGroupService");
     }
     
     public List<AgentGroup> getAgentGroups() {
