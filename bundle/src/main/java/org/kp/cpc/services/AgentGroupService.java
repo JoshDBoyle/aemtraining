@@ -11,7 +11,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
-import org.kp.cpc.models.AgentGroup;
+//import org.kp.cpc.models.AgentGroup;
 
 import com.day.cq.replication.AgentManager;
 
@@ -27,7 +27,7 @@ public class AgentGroupService {
 	private String[] agentLists;
 	
 	private AgentManager agentMgr;
-	private List<AgentGroup> agentGroups = new ArrayList<AgentGroup>();
+	//private List<AgentGroup> agentGroups = new ArrayList<AgentGroup>();
 	
 	@Activate
 	protected void activate(Map<String, Object> properties) {
@@ -41,11 +41,11 @@ public class AgentGroupService {
 
 		for(int i = 0; i < agentGroupTitles.length; i++) {
 			String[] temp = agentLists[i].split(",");
-			agentGroups.add(new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]));
+			//agentGroups.add(new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]));
 		}
 	}
-
+/*
 	public List<AgentGroup> getAgentGroups() {
 		return this.agentGroups;
-	}
+	}*/
 }
