@@ -1,7 +1,6 @@
 package org.kp.cpc.services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
-//import org.kp.cpc.models.AgentGroup;
+import org.kp.cpc.pojos.AgentGroup;
 
 import com.day.cq.replication.AgentManager;
 
@@ -25,9 +24,8 @@ public class AgentGroupService {
 	@Property(unbounded=PropertyUnbounded.ARRAY, label="Replication Agents per Group", cardinality=10, description="Each entry here corresponds to the same entry (by index) of the above Replication Groups.  Enter all agents you want in each group separated by commas.")
 	private static final String AGENT_LISTS = "agent.lists";
 	private String[] agentLists;
-	
-	private AgentManager agentMgr;
-	//private List<AgentGroup> agentGroups = new ArrayList<AgentGroup>();
+
+	private List<AgentGroup> agentGroups = new ArrayList<AgentGroup>();
 	
 	@Activate
 	protected void activate(Map<String, Object> properties) {
@@ -40,12 +38,11 @@ public class AgentGroupService {
 		}
 
 		for(int i = 0; i < agentGroupTitles.length; i++) {
-			String[] temp = agentLists[i].split(",");
-			//agentGroups.add(new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]));
+			agentGroups.add(new AgentGroup(agentLists[i].split(","), agentGroupTitles[i]));
 		}
 	}
-/*
+
 	public List<AgentGroup> getAgentGroups() {
 		return this.agentGroups;
-	}*/
+	}
 }

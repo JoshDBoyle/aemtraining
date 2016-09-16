@@ -1,4 +1,4 @@
-package org.kp.cpc.models;
+package org.kp.cpc.pojos;
 
 public class AgentGroup {
 	String title;
