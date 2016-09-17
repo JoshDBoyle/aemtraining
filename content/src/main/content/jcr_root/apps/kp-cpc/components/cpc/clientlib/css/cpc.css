@@ -40,18 +40,9 @@
 	margin-right: 15px;
 }
 
-.agent-command-bar {
-	width: 100%;
-	background: #BBB;
-}
-
-.agent-command-bar button {
-	margin-left: 10px;
-}
-
 .agent-info-body {
 	max-height: 300px;
-	width: 500px;
+	width: 750px;
 }
 
 .agent-info-entry {
@@ -66,4 +57,22 @@
 .agent-info-entry .heading {
 	font-size: 1.17em;
 	font-weight: bold;
+}
+
+.command-bar {
+	width: 100%;
+	background: #BBB;
+}
+
+.command-bar button {
+	margin-left: 10px;
+}
+
+.command-bar i {
+	margin-right: 5px;
+}
+
+.command-bar div {
+	float: right;
+    margin-top: 2px;
 }

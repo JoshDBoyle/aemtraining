@@ -4,7 +4,7 @@ $(document).ready(function() {
     visible : false
   });
 
-  $('#agents-info-button').on('click', function(event) {
+  $('#all-agents-list-button').on('click', function(event) {
 	  agentsInfoModal.show();
   });
   

@@ -4,9 +4,14 @@
 <sly data-sly-include="${'agents-info-modal.html'}"/>
 
 <div data-sly-use.cpcuse="org.kp.cpc.wcmuse.CPCUse">
-  <div class="agent-command-bar">
-    <button id="agents-info-button" class="coral-MinimalButton">
+  <div class="command-bar">
+    <button id="all-agents-list-button" class="coral-MinimalButton">
       <i class="coral-Icon coral-Icon--book coral-MinimalButton-icon"></i>
+      <div>All Agents List</div>
+    </button>
+    <button id="queries-button" class="coral-MinimalButton">
+      <i class="coral-Icon coral-Icon--question coral-MinimalButton-icon"></i>
+      <div>Queries</div>
     </button>
   </div>
   <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
