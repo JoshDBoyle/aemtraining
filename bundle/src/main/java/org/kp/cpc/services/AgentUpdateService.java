@@ -44,7 +44,10 @@ public class AgentUpdateService extends SlingAllMethodsServlet {
     	
     	if(null != agentRes) {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
-    		mvm.put("enabled", enabled);
+    		if(enabled.equals("true"))
+    			mvm.put("enabled", enabled);
+    		else
+    			mvm.remove("enabled");
     		
     		try {
     			session.save();

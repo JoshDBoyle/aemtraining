@@ -11,10 +11,15 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.kp.cpc.pojos.AgentGroup;
 import org.kp.cpc.pojos.AgentMetadata;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
@@ -30,16 +35,27 @@ public class AgentGroupService {
 	private static final String AGENT_LISTS = "agent.lists";
 	private String[] agentLists;
 
-	private List<AgentGroup> agentGroups = new ArrayList<AgentGroup>();
+	private List<AgentGroup> agentGroups;
 	
 	@Reference
 	AgentManager agentMgr;
+	
+	@Reference
+	ResourceResolverFactory factory;
 
 	private Map<String, Agent> agents;
-	private List<AgentConfig> allAgentConfigs = new ArrayList<AgentConfig>();
+	private List<AgentConfig> allAgentConfigs;
+	
+	private ResourceResolver resolver;
 	
 	@Activate
 	protected void activate(Map<String, Object> properties) {
+		try {
+			resolver = factory.getAdministrativeResourceResolver(null);
+		} catch (LoginException e) {
+			e.printStackTrace();
+		}
+
 		this.agents = agentMgr.getAgents();
 		this.agentGroupTitles = PropertiesUtil.toStringArray(properties.get("agent.groups"));
 		this.agentLists = PropertiesUtil.toStringArray(properties.get("agent.lists"));
@@ -48,6 +64,10 @@ public class AgentGroupService {
 			this.agentGroupTitles = new String[1];
 			this.agentGroupTitles[0] = "All";
 		}
+	}
+
+	public List<AgentGroup> getAgentGroups() {
+		agentGroups = new ArrayList<AgentGroup>();
 
 		// For each group title that was specified via Felix, build a List<AgentGroup> of all the specified (in Felix) agents per group
 		for(int i = 0; i < agentGroupTitles.length; i++) {
@@ -61,24 +81,29 @@ public class AgentGroupService {
 				// Then let's get that Agent's AgentMetadata and add it to the List<AgentMetadata> for our AgentGroup
 				if(agents.containsKey(agentIdsPerGroup[j])) {
 					Agent agent = agents.get(agentIdsPerGroup[j]);
-					agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration()));
+					ValueMap vm = resolver.resolve(agent.getConfiguration().getId() + "/" + JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class);
+					
+					if(null != vm && vm.containsKey("enabled"))
+						agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), true));
+					else
+						agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), false));
 				}
 			}
 
 			agentGroups.add(new AgentGroup(agentMetasPerGroup, agentGroupTitles[i]));
 		}
+
+		return agentGroups;
+	}
+	
+	public List<AgentConfig> getAllAgentConfigs() {
+		allAgentConfigs = new ArrayList<AgentConfig>();
 		
 		Set<String> keys = agents.keySet();
 		for(String key : keys) {
 			allAgentConfigs.add(agents.get(key).getConfiguration());
 		}
-	}
 
-	public List<AgentGroup> getAgentGroups() {
-		return agentGroups;
-	}
-	
-	public List<AgentConfig> getAllAgentConfigs() {
 		return allAgentConfigs;
 	}
 }
