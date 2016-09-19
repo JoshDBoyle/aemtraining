@@ -40,6 +40,11 @@
 	margin-right: 15px;
 }
 
+.agent-info-description {
+	margin-left: 15px;
+	margin-bottom: 0;
+}
+
 .agent-info-body {
 	max-height: 300px;
 	width: 750px;

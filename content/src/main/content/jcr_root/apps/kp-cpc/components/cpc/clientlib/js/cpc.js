@@ -13,7 +13,24 @@ $(document).ready(function() {
 	  var id = toggle.getAttribute('data-id');
 
 	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': toggle.getElementsByTagName('input')[0].checked }, function(data) {
-		  console.log("Agent updated");
+		  console.log("Agent " + id + " updated");
 	  });
+  });
+  
+  $('.group-toggle').on('click', function(event) {
+	  var groupToggle = event.currentTarget;
+	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
+	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
+	  var enabled = temp.indexOf('Enable') >= 0 ? true : false;
+
+	  for(var i = 0; i < individualToggles.length; i++) {
+		  var toggle = individualToggles[i];
+		  var parent = individualToggles[i].parentElement;
+
+		  toggle.checked = enabled;
+		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'enabled': enabled }, function(data) {
+			  console.log("Agent updated");
+		  });
+	  }
   });
 })

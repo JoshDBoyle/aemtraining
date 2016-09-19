@@ -20,14 +20,18 @@
     </nav>
     <div data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-content">
       <section class="coral-TabPanel-pane is-active">
-
-        <label class="agent-group-toggle coral-Switch">
-          <span class="agent-disable-text">Toggle all agents for the <strong>${item.title}</strong> data center</span>
-          <input class="coral-Switch-input" type="checkbox" checked>
-          <span class="coral-Switch-offLabel">Off</span>
-          <span class="coral-Switch-onLabel">On</span>
-        </label>
-      
+        <div class="agent-disable-wrapper">
+          <div class="coral-ButtonGroup ">
+            <button class="group-toggle coral-ButtonGroup-item coral-Button coral-Button--secondary">
+              <i class="coral-Icon coral-Icon--pauseCircle"></i>
+              Disable all ${item.title} agents
+            </button>
+            <button class="group-toggle coral-ButtonGroup-item coral-Button coral-Button--secondary">
+              <i class="coral-Icon coral-Icon--playCircle"></i>
+              Enable all ${item.title} agents
+            </button>
+          </div>
+        </div>
         <!-- Listing of Replication Agents -->
         <div data-sly-list.agent="${item.agentMetas}">
           <div class="agent coral-Well">
