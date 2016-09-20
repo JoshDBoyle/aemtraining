@@ -85,3 +85,35 @@
 	float: right;
     margin-top: 2px;
 }
+
+#query-by-date-results {
+	list-style-type: none;	
+}
+
+#query-by-date-results h4.path {
+	width: 350px;
+	display: inline-block;
+}
+
+#query-by-date-results h4.lastmodifiedby {
+	width: 150px;
+	display: inline-block;
+}
+
+#query-by-date-results h4.lastmodified {
+	display: inline-block;
+}
+
+#query-by-date-results span.path-result {
+	display: inline-block;
+	width: 350px;
+}
+
+#query-by-date-results span.last-modified-by-result {
+	display: inline-block;
+	width: 150px;
+}
+
+#query-by-date-results span.last-modified-result {
+	display: inline-block;
+}

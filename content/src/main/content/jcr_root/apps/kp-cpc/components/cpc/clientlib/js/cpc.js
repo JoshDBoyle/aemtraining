@@ -31,11 +31,17 @@ $(document).ready(function() {
 	  var end = $('#enddate').val();
 
 	  $.get("/bin/cpc/querybydate", { 'startdate': start, 'enddate': end }, function(data) {
-		  console.log("YOLO SWAGGINS");
-		  console.log(data);
+		  var results = $('#query-by-date-results');
+		  for(var i = 0; i < data.results.length; i++) {
+			  results.append(	"<li>" +
+			  					"	<span class='path-result'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></span>" +
+			  					"	<span class='last-modified-by-result'>" + data.results[i].lastModifiedBy + "</span>" +
+			  					"	<span class='last-modified-result'>" + data.results[i].lastModified + "</span>" +
+			  					"</li>");
+		  }
 	  });
   });
-  
+
   $('.group-toggle').on('click', function(event) {
 	  var groupToggle = event.currentTarget;
 	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
