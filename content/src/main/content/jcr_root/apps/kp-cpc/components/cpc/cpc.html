@@ -2,6 +2,7 @@
 <sly data-sly-call="${clientLib.css @ categories='cpc'}" />
 
 <sly data-sly-include="${'agents-info-modal.html'}"/>
+<sly data-sly-include="${'query-by-date-modal.html'}"/>
 
 <div data-sly-use.cpcuse="org.kp.cpc.wcmuse.CPCUse">
   <div class="command-bar">
@@ -9,9 +10,9 @@
       <i class="coral-Icon coral-Icon--book coral-MinimalButton-icon"></i>
       <div>All Agents List</div>
     </button>
-    <button id="queries-button" class="coral-MinimalButton">
+    <button id="query-by-date-button" class="coral-MinimalButton">
       <i class="coral-Icon coral-Icon--question coral-MinimalButton-icon"></i>
-      <div>Queries</div>
+      <div>Query By Date</div>
     </button>
   </div>
   <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">

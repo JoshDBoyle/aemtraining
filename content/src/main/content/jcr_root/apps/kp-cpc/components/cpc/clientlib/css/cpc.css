@@ -36,6 +36,10 @@
 	width: 100%;
 }
 
+.agent-disable-wrapper {
+	margin-bottom: 10px;
+}
+
 .agent-disable-text {
 	margin-right: 15px;
 }
@@ -45,7 +49,7 @@
 	margin-bottom: 0;
 }
 
-.agent-info-body {
+.agent-info-body, .query-by-date-body {
 	max-height: 300px;
 	width: 750px;
 }

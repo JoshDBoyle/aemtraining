@@ -3,9 +3,18 @@ $(document).ready(function() {
     element : '#agents-info-modal',
     visible : false
   });
+  
+  var queryByDateModal = new CUI.Modal({
+	 element : '#query-by-date-modal',
+	 visible : false
+  });
 
   $('#all-agents-list-button').on('click', function(event) {
 	  agentsInfoModal.show();
+  });
+
+  $('#query-by-date-button').on('click', function(event) {
+	  queryByDateModal.show();
   });
   
   $('.agent-toggle').on('click', function(event) {
@@ -14,6 +23,15 @@ $(document).ready(function() {
 
 	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': toggle.getElementsByTagName('input')[0].checked }, function(data) {
 		  console.log("Agent " + id + " updated");
+	  });
+  });
+
+  $('.query-by-date-button').on('click', function(event) {
+	  var start = $('#startdatetime').val();
+	  var end = $('#enddatetime').val();
+
+	  $.get("/bin/cpc/querybydate", { 'startdatetime': start, 'enddatetime': end }, function(data) {
+		  console.log("YOLO SWAGGINS");
 	  });
   });
   
