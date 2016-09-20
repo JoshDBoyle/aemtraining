@@ -27,11 +27,12 @@ $(document).ready(function() {
   });
 
   $('.query-by-date-button').on('click', function(event) {
-	  var start = $('#startdatetime').val();
-	  var end = $('#enddatetime').val();
+	  var start = $('#startdate').val();
+	  var end = $('#enddate').val();
 
-	  $.get("/bin/cpc/querybydate", { 'startdatetime': start, 'enddatetime': end }, function(data) {
+	  $.get("/bin/cpc/querybydate", { 'startdate': start, 'enddate': end }, function(data) {
 		  console.log("YOLO SWAGGINS");
+		  console.log(data);
 	  });
   });
   
