@@ -32,6 +32,8 @@ $(document).ready(function() {
 
 	  $.get("/bin/cpc/querybydate", { 'startdate': start, 'enddate': end }, function(data) {
 		  var results = $('#query-by-date-results');
+		  results.empty();
+		  results.append("<li><h4 class='path'>Path</h4><h4 class='lastmodifiedby'>Last Modified By</h4><h4 class='lastmodified'>Last Modified On</h4></li>");
 		  for(var i = 0; i < data.results.length; i++) {
 			  results.append(	"<li>" +
 			  					"	<span class='path-result'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></span>" +
