@@ -1,0 +1,53 @@
+<div data-sly-use.modalsuse="org.kp.cpc.wcmuse.ModalsUse" id="query-by-date-modal" class="coral-Modal">
+
+  <!-- Header section -->
+  <div class="coral-Modal-header">
+    <i class="coral-Modal-typeIcon coral-Icon coral-Icon--sizeS"></i>
+    <h2 class="coral-Modal-title coral-Heading coral-Heading--2">Query By Date</h2>
+    <button type="button"
+      class="coral-MinimalButton coral-Modal-closeButton" title="Close"
+      data-dismiss="modal">
+      <i
+        class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon "></i>
+    </button>
+  </div>
+
+  <div class="query-by-date-body coral-Modal-body">
+  
+    <!-- Query parameters section -->
+    <section class="param-wrapper">
+      <div class="coral-Datepicker coral-InputGroup" data-init="datepicker">
+        <input id="startdate" class="coral-InputGroup-input coral-Textfield" value="" type="date">
+        <span class="coral-InputGroup-button">
+          <button class="coral-Button coral-Button--secondary coral-Button--square" type="button" title="Datetime Picker">
+            <i class="coral-Icon coral-Icon--sizeS coral-Icon--calendar"></i>
+          </button>
+        </span>
+      </div>
+      <div class="coral-Datepicker coral-InputGroup" data-init="datepicker">
+        <input id="enddate" class="coral-InputGroup-input coral-Textfield" value="" type="date">
+        <span class="coral-InputGroup-button">
+          <button class="coral-Button coral-Button--secondary coral-Button--square" type="button" title="Datetime Picker">
+            <i class="coral-Icon coral-Icon--sizeS coral-Icon--calendar"></i>
+          </button>
+        </span>
+      </div>
+      
+      <button type="button" class="query-by-date-button coral-Button coral-Button--primary">Query</button>
+    </section>
+
+    <!-- Results section -->    
+    <section class="results-wrapper">
+      <div class="coral-well">
+        <ul id="query-by-date-results">
+          <li><h4 class="path">Path</h4><h4 class="lastmodifiedby">Last Modified By</h4><h4 class="lastmodified">Last Modified On</h4></li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- Export to CSV button -->  
+  <div class="coral-Modal-footer">
+    <button type="button" class="coral-Button coral-Button--primary">Export to CSV</button>
+  </div>
+</div>

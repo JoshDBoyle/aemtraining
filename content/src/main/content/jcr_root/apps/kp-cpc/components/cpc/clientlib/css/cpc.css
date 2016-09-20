@@ -36,22 +36,22 @@
 	width: 100%;
 }
 
+.agent-disable-wrapper {
+	margin-bottom: 10px;
+}
+
 .agent-disable-text {
 	margin-right: 15px;
 }
 
-.agent-command-bar {
-	width: 100%;
-	background: #BBB;
+.agent-info-description {
+	margin-left: 15px;
+	margin-bottom: 0;
 }
 
-.agent-command-bar button {
-	margin-left: 10px;
-}
-
-.agent-info-body {
+.agent-info-body, .query-by-date-body {
 	max-height: 300px;
-	width: 500px;
+	width: 750px;
 }
 
 .agent-info-entry {
@@ -66,4 +66,54 @@
 .agent-info-entry .heading {
 	font-size: 1.17em;
 	font-weight: bold;
+}
+
+.command-bar {
+	width: 100%;
+	background: #BBB;
+}
+
+.command-bar button {
+	margin-left: 10px;
+}
+
+.command-bar i {
+	margin-right: 5px;
+}
+
+.command-bar div {
+	float: right;
+    margin-top: 2px;
+}
+
+#query-by-date-results {
+	list-style-type: none;	
+}
+
+#query-by-date-results h4.path {
+	width: 350px;
+	display: inline-block;
+}
+
+#query-by-date-results h4.lastmodifiedby {
+	width: 150px;
+	display: inline-block;
+}
+
+#query-by-date-results h4.lastmodified {
+	display: inline-block;
+}
+
+#query-by-date-results span.path-result {
+	display: inline-block;
+	width: 350px;
+}
+
+#query-by-date-results span.last-modified-by-result {
+	display: inline-block;
+	width: 150px;
+}
+
+#query-by-date-results span.last-modified-result {
+	display: inline-block;
 }
