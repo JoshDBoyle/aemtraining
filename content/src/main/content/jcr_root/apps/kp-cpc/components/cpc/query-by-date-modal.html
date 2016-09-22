@@ -7,37 +7,42 @@
     <button type="button"
       class="coral-MinimalButton coral-Modal-closeButton" title="Close"
       data-dismiss="modal">
-      <i
-        class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon "></i>
+      <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon "></i>
     </button>
   </div>
 
+  <!-- Query parameters section -->
+  <div class="param-wrapper">
+    <div class="report-date coral-Datepicker coral-InputGroup" data-init="datepicker">
+      <input id="startdate" class="coral-InputGroup-input coral-Textfield" value="" type="date">
+      <span class="coral-InputGroup-button">
+        <button class="coral-Button coral-Button--secondary coral-Button--square" type="button" title="Datetime Picker">
+          <i class="coral-Icon coral-Icon--sizeS coral-Icon--calendar"></i>
+        </button>
+      </span>
+    </div>
+    <div class="report-date coral-Datepicker coral-InputGroup" data-init="datepicker">
+      <input id="enddate" class="coral-InputGroup-input coral-Textfield" value="" type="date">
+      <span class="coral-InputGroup-button">
+        <button class="coral-Button coral-Button--secondary coral-Button--square" type="button" title="Datetime Picker">
+          <i class="coral-Icon coral-Icon--sizeS coral-Icon--calendar"></i>
+        </button>
+      </span>
+    </div>
+    
+    <span class="coral-Select" data-init="select">
+      <button type="button" class="coral-Select-button coral-MinimalButton">
+        <span class="coral-Select-button-text">One</span>
+      </button>
+      <select id="report-type" class="coral-Select-select">
+        <option value="modified">Modified</option>
+        <option value="activated">Activated</option>
+      </select>
+    </span>
+    
+  </div>
+
   <div class="query-by-date-body coral-Modal-body">
-  
-    <!-- Query parameters section -->
-    <section class="param-wrapper">
-      <div class="coral-Datepicker coral-InputGroup" data-init="datepicker">
-        <input id="startdate" class="coral-InputGroup-input coral-Textfield" value="" type="date">
-        <span class="coral-InputGroup-button">
-          <button class="coral-Button coral-Button--secondary coral-Button--square" type="button" title="Datetime Picker">
-            <i class="coral-Icon coral-Icon--sizeS coral-Icon--calendar"></i>
-          </button>
-        </span>
-      </div>
-      <div class="coral-Datepicker coral-InputGroup" data-init="datepicker">
-        <input id="enddate" class="coral-InputGroup-input coral-Textfield" value="" type="date">
-        <span class="coral-InputGroup-button">
-          <button class="coral-Button coral-Button--secondary coral-Button--square" type="button" title="Datetime Picker">
-            <i class="coral-Icon coral-Icon--sizeS coral-Icon--calendar"></i>
-          </button>
-        </span>
-      </div>
-      
-      <button type="button" class="query-by-date-button coral-Button coral-Button--primary">Query</button>
-      <button type="button" class="coral-Button coral-Button--primary">Query and Export to CSV</button>
-
-    </section>
-
     <!-- Results section -->    
     <section class="results-wrapper">
       <div class="coral-well">
@@ -47,4 +52,8 @@
     </section>
   </div>
 
+  <div class="coral-Modal-footer">
+    <button type="button" class="query-by-date-button coral-Button coral-Button--primary">Query</button>
+    <button type="button" class="query-by-date-button-csv coral-Button coral-Button--primary">Query and Export to CSV</button>
+  </div>
 </div>

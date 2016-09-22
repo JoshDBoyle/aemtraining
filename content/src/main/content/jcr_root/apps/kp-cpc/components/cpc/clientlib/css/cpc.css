@@ -50,8 +50,9 @@
 }
 
 .agent-info-body, .query-by-date-body {
-	max-height: 300px;
-	width: 750px;
+	max-height: 250px;
+	height: 250px;
+	width: 700px;
 }
 
 .agent-info-entry {
@@ -71,6 +72,7 @@
 .command-bar {
 	width: 100%;
 	background: #BBB;
+	height: 25px;
 }
 
 .command-bar button {
@@ -86,37 +88,44 @@
     margin-top: 2px;
 }
 
+.param-wrapper {
+	margin: 10px;
+}
+
 #query-by-date-results {
-	list-style-type: none;	
+	list-style-type: none;
+	margin-top: 0;
+	padding-left: 0;
+	padding-right: 0;
 }
 
-#query-by-date-results h4.path {
-	width: 350px;
-	display: inline-block;
+#query-by-date-results h4 {
+	margin-top: 0;
 }
 
-#query-by-date-results h4.lastmodifiedby {
-	width: 100px;
+#query-by-date-results .path {
 	display: inline-block;
-}
-
-#query-by-date-results h4.lastmodified {
-	display: inline-block;
-}
-
-#query-by-date-results span.path-result {
-	display: inline-block;
-	width: 350px;
+	width: 375px;
 	overflow: hidden;
+	height: 20px;
+	white-space: nowrap;
 }
 
-#query-by-date-results span.last-modified-by-result {
+#query-by-date-results .last-modified-by {
 	display: inline-block;
-	width: 100px;
+	width: 125px;
 	overflow: hidden;
+	height: 20px;
+	white-space: nowrap;
 }
 
-#query-by-date-results span.last-modified-result {
+#query-by-date-results .last-modified {
 	display: inline-block;
 	overflow: hidden;
+	height: 20px;
+	white-space: nowrap;
+}
+
+.report-date {
+	width: 10.5rem;
 }

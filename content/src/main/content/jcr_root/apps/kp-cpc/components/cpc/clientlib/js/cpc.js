@@ -26,20 +26,34 @@ $(document).ready(function() {
 	  });
   });
 
-  $('.query-by-date-button').on('click', function(event) {
+  $('.query-by-date-button, .query-by-date-button-csv').on('click', function(event) {
 	  var start = $('#startdate').val();
 	  var end = $('#enddate').val();
+	  var csv = event.currentTarget.classList.contains('query-by-date-button-csv');
+	  var type = $('#report-type').val();
+	  
+	  debugger;
 
-	  $.get("/bin/cpc/querybydate", { 'startdate': start, 'enddate': end }, function(data) {
+	  $.get("/bin/cpc/querybydate", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
 		  var results = $('#query-by-date-results');
 		  results.empty();
-		  results.append("<li><h4 class='path'>Path</h4><h4 class='lastmodifiedby'>Last Modified By</h4><h4 class='lastmodified'>Last Modified On</h4></li>");
-		  for(var i = 0; i < data.results.length; i++) {
-			  results.append(	"<li>" +
-			  					"	<span class='path-result'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></span>" +
-			  					"	<span class='last-modified-by-result'>" + data.results[i].lastModifiedBy + "</span>" +
-			  					"	<span class='last-modified-result'>" + data.results[i].lastModified + "</span>" +
-			  					"</li>");
+		  if(null == data.results) {
+			  var a         = document.createElement('a');
+			  a.href        = 'data:attachment/csv,' +  encodeURIComponent(data);
+			  a.target      = '_blank';
+			  a.download    = 'report.csv';
+
+			  document.body.appendChild(a);
+			  a.click();
+		  } else {
+			  results.append("<li><h4 class='path'>Path</h4><h4 class='last-modified-by'>Last Modified By</h4><h4 class='last-modified'>Last Modified On</h4></li>");
+			  for(var i = 0; i < data.results.length; i++) {
+				  results.append(	"<li>" +
+				  					"	<div class='path'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></div>" +
+				  					"	<div class='last-modified-by'>" + data.results[i].lastModifiedBy + "</div>" +
+				  					"	<div class='last-modified'>" + data.results[i].lastModified + "</div>" +
+				  					"</li>");
+			  }
 		  }
 	  });
   });
