@@ -44,6 +44,7 @@ public class LastActivatedReport {
 		params.put("daterange.property", JcrConstants.JCR_CONTENT + "/@cq:lastReplicated");
 		params.put("property", "jcr:content/@cq:lastReplicationAction");
 		params.put("property.value", "Activate");
+		params.put("p.limit", "-1");
 		
 		// This is an example of a query for last replicated where the replication action was Activate
 		//	    			path=/content
@@ -121,13 +122,13 @@ public class LastActivatedReport {
         		GregorianCalendar gc = (GregorianCalendar)vm.get(SharedConstants.LAST_ACTIVATED_PROPERTY);
         		current.put(SharedConstants.LAST_ACTIVATED_KEY, gc.getTime().toString());
         	} else {
-        		current.put(SharedConstants.LAST_ACTIVATED_KEY, "Unknown date");
+        		current.put(SharedConstants.LAST_ACTIVATED_KEY, SharedConstants.UNKNOWN_ACTIVATION_DATE);
         	}
         	
         	if(vm.containsKey(SharedConstants.LAST_ACTIVATED_BY_PROPERTY)) {
         		current.put(SharedConstants.LAST_ACTIVATED_BY_KEY, vm.get(SharedConstants.LAST_ACTIVATED_BY_PROPERTY));
         	} else {
-        		current.put(SharedConstants.LAST_ACTIVATED_BY_KEY, "Unknown modifier");	
+        		current.put(SharedConstants.LAST_ACTIVATED_BY_KEY, SharedConstants.UNKNOWN_ACTIVATOR);	
         	}
         	
         	current.put("path", res.getPath());
@@ -141,6 +142,7 @@ public class LastActivatedReport {
         headers.put(SharedConstants.LAST_ACTIVATED_HEADER);
         
         json.put("totalResults", result.getTotalMatches());
+        json.put("headers", headers);
 
         response.setContentType("application/json");
         response.getWriter().write(json.toString(2));    	

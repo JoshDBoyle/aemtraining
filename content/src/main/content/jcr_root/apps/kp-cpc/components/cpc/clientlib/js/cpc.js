@@ -1,3 +1,19 @@
+function refreshQueues() {
+	var $agents = $('.agent');
+	for(var i = 0; i < $agents.length; i++) {
+		var agent = $agents.get(i);
+		$.getJSON('/etc/replication/agents.author/' + agent.getElementsByClassName('agent-id')[0].innerText + '/jcr:content.queue.json', function(data) {
+			if(data.queue.length > 0) {
+				$agent = $("[data-agent='" + data.metaData.queueStatus.agentId + "']");
+				$queue = $agent.find('.agent-queue').get(0);
+				for(var j = 0; j < data.queue.length; j++) {
+					$agent.find('.agent-queue').eq(0).append("<a href=\"" + data.queue[j].path + "\">" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
+				}
+			}
+		});
+	}
+}
+
 $(document).ready(function() {
   var agentsInfoModal = new CUI.Modal({
     element : '#agents-info-modal',
@@ -31,8 +47,6 @@ $(document).ready(function() {
 	  var end = $('#enddate').val();
 	  var csv = event.currentTarget.classList.contains('query-by-date-button-csv');
 	  var type = $('#report-type').val();
-	  
-	  debugger;
 
 	  $.get("/bin/cpc/querybydate", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
 		  var results = $('#query-by-date-results');
@@ -46,12 +60,19 @@ $(document).ready(function() {
 			  document.body.appendChild(a);
 			  a.click();
 		  } else {
-			  results.append("<li><h4 class='path'>Path</h4><h4 class='last-modified-by'>Last Modified By</h4><h4 class='last-modified'>Last Modified On</h4></li>");
+			  var header = "<li>";
+			  for(var i = 0; i < data.headers.length; i++) {
+				  header += "<h4>" + data.headers[i] + "</h4>";
+			  }
+
+			  header += "</li>";
+			  results.append(header);
+
 			  for(var i = 0; i < data.results.length; i++) {
 				  results.append(	"<li>" +
-				  					"	<div class='path'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></div>" +
-				  					"	<div class='last-modified-by'>" + data.results[i].lastModifiedBy + "</div>" +
-				  					"	<div class='last-modified'>" + data.results[i].lastModified + "</div>" +
+				  					"	<div><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></div>" +
+				  					"	<div>" + data.results[i].columnb + "</div>" +
+				  					"	<div>" + data.results[i].columnc + "</div>" +
 				  					"</li>");
 			  }
 		  }
@@ -74,4 +95,6 @@ $(document).ready(function() {
 		  });
 	  }
   });
+  
+  refreshQueues();
 })

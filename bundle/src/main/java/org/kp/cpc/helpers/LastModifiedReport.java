@@ -42,6 +42,7 @@ public class LastModifiedReport {
 		params.put("daterange.upperBound", end.trim().replace(" ", "T"));
 		params.put("daterange.upperOperation", "<=");
 		params.put("daterange.property", JcrConstants.JCR_CONTENT + "/@cq:lastModified");
+		params.put("p.limit", "-1");
 		
     	// This is an example of a query for last modified:
 		//	    			path=/content
@@ -137,6 +138,7 @@ public class LastModifiedReport {
         headers.put(SharedConstants.LAST_MODIFIED_HEADER);
         
         json.put("totalResults", result.getTotalMatches());
+        json.put("headers", headers);
 
         response.setContentType("application/json");
         response.getWriter().write(json.toString(2));    	

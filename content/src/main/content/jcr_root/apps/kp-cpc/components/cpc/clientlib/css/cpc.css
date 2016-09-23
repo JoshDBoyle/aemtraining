@@ -31,9 +31,16 @@
 	border: 1px solid black;
 }
 
-.agent-queue a, .release-review a {
-	display: block;
-	width: 100%;
+.agent-queue a {
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 80%;
+	margin-right: 10px
+}
+
+.agent-queue span {
+	display: inline-block;
 }
 
 .agent-disable-wrapper {
@@ -51,7 +58,6 @@
 
 .agent-info-body, .query-by-date-body {
 	max-height: 250px;
-	height: 250px;
 	width: 700px;
 }
 
@@ -103,7 +109,8 @@
 	margin-top: 0;
 }
 
-#query-by-date-results .path {
+#query-by-date-results h4:nth-child(1),
+#query-by-date-results div:nth-child(1) {
 	display: inline-block;
 	width: 375px;
 	overflow: hidden;
@@ -111,7 +118,8 @@
 	white-space: nowrap;
 }
 
-#query-by-date-results .last-modified-by {
+#query-by-date-results h4:nth-child(2),
+#query-by-date-results div:nth-child(2) {
 	display: inline-block;
 	width: 125px;
 	overflow: hidden;
@@ -119,7 +127,8 @@
 	white-space: nowrap;
 }
 
-#query-by-date-results .last-modified {
+#query-by-date-results h4:nth-child(3),
+#query-by-date-results div:nth-child(3) {
 	display: inline-block;
 	overflow: hidden;
 	height: 20px;

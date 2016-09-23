@@ -10,10 +10,10 @@ public class SharedConstants {
     public static final String LAST_MODIFIED_BY_PROPERTY = "cq:lastModifiedBy";
     public static final String LAST_ACTIVATED_PROPERTY = "cq:lastReplicated";
     public static final String LAST_ACTIVATED_BY_PROPERTY = "cq:lastReplicatedBy";
-    public static final String LAST_MODIFIED_KEY = "lastModified";
-    public static final String LAST_MODIFIED_BY_KEY = "lastModifiedBy";
-    public static final String LAST_ACTIVATED_KEY = "lastActivated";
-    public static final String LAST_ACTIVATED_BY_KEY = "lastActivatedBy";
+    public static final String LAST_MODIFIED_KEY = "columnc";
+    public static final String LAST_MODIFIED_BY_KEY = "columnb";
+    public static final String LAST_ACTIVATED_KEY = "columnc";
+    public static final String LAST_ACTIVATED_BY_KEY = "columnb";
     public static final String LAST_MODIFIED_HEADER = "Last Modified";
     public static final String LAST_ACTIVATED_HEADER = "Last Activated";
     public static final String LAST_MODIFIED_BY_HEADER = "Last Modified By";
