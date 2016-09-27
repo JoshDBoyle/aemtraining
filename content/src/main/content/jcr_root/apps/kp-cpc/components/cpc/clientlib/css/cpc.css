@@ -1,3 +1,7 @@
+.hidden {
+	display: none !important;
+}
+
 .agent {
 	display: inline-block;
     margin: 5px;
