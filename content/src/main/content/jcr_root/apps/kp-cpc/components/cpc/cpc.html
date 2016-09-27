@@ -8,11 +8,11 @@
   <div class="command-bar">
     <button id="all-agents-list-button" class="coral-MinimalButton">
       <i class="coral-Icon coral-Icon--book coral-MinimalButton-icon"></i>
-      <div>All Agents List</div>
+      <div>Agent Listing</div>
     </button>
     <button id="query-by-date-button" class="coral-MinimalButton">
       <i class="coral-Icon coral-Icon--question coral-MinimalButton-icon"></i>
-      <div>Query By Date</div>
+      <div>Reporting</div>
     </button>
   </div>
   <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
@@ -21,7 +21,7 @@
     </nav>
     <div data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-content">
       <section class="coral-TabPanel-pane is-active">
-        <div class="agent-disable-wrapper">
+        <div class="agent-disable-wrapper ${!cpcuse.canModify ? 'hidden' : ''}">
           <div class="coral-ButtonGroup ">
             <button class="group-toggle coral-ButtonGroup-item coral-Button coral-Button--secondary">
               <i class="coral-Icon coral-Icon--pauseCircle"></i>
@@ -35,15 +35,15 @@
         </div>
         <!-- Listing of Replication Agents -->
         <div data-sly-list.agent="${item.agentMetas}">
-          <div class="agent coral-Well">
+          <div class="agent coral-Well" data-agent="${agent.agentId}">
             <div class="agent-header">
               <div class="agent-id">${agent.agentId}</div>
               <label class="agent-toggle coral-Switch" data-id="${agent.agentId}">
                 <sly data-sly-test="${agent.enabled}">
-                  <input class="coral-Switch-input" type="checkbox" checked>
+                  <input class="coral-Switch-input" type="checkbox" checked disabled="${!cpcuse.canModify}">
                 </sly>
                 <sly data-sly-test="${!agent.enabled}">
-                  <input class="coral-Switch-input" type="checkbox">
+                  <input class="coral-Switch-input" type="checkbox" disabled="${!cpcuse.canModify}">
                 </sly>
                 <span class="coral-Switch-offLabel">Off</span>
                 <span class="coral-Switch-onLabel">On</span>
@@ -54,29 +54,13 @@
               <div class="coral-Alert-message">Queue operating normally</div>
             </div>
             <div class="agent-queue coral-Well">
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
-              <a href="/content/geometrixx/en/products.html">/content/geometrixx/en/products</a>
             </div>
           </div>
         </div>
       </section>
     </div>
   </div>
-  
-  <!-- Last activation section -->
-  <div class="coral-Well">
-    
-  </div>
+
 </div>
 
 <sly data-sly-call="${clientLib.js @ categories='cpc'}" />

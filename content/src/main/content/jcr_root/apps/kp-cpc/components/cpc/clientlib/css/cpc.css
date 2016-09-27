@@ -1,3 +1,7 @@
+.hidden {
+	display: none !important;
+}
+
 .agent {
 	display: inline-block;
     margin: 5px;
@@ -31,9 +35,16 @@
 	border: 1px solid black;
 }
 
-.agent-queue a, .release-review a {
-	display: block;
-	width: 100%;
+.agent-queue a {
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 80%;
+	margin-right: 10px
+}
+
+.agent-queue span {
+	display: inline-block;
 }
 
 .agent-disable-wrapper {
@@ -50,8 +61,8 @@
 }
 
 .agent-info-body, .query-by-date-body {
-	max-height: 300px;
-	width: 750px;
+	max-height: 250px;
+	width: 700px;
 }
 
 .agent-info-entry {
@@ -71,6 +82,7 @@
 .command-bar {
 	width: 100%;
 	background: #BBB;
+	height: 25px;
 }
 
 .command-bar button {
@@ -86,34 +98,47 @@
     margin-top: 2px;
 }
 
+.param-wrapper {
+	margin: 10px;
+}
+
 #query-by-date-results {
-	list-style-type: none;	
+	list-style-type: none;
+	margin-top: 0;
+	padding-left: 0;
+	padding-right: 0;
 }
 
-#query-by-date-results h4.path {
-	width: 350px;
-	display: inline-block;
+#query-by-date-results h4 {
+	margin-top: 0;
 }
 
-#query-by-date-results h4.lastmodifiedby {
-	width: 150px;
+#query-by-date-results h4:nth-child(1),
+#query-by-date-results div:nth-child(1) {
 	display: inline-block;
+	width: 375px;
+	overflow: hidden;
+	height: 20px;
+	white-space: nowrap;
 }
 
-#query-by-date-results h4.lastmodified {
+#query-by-date-results h4:nth-child(2),
+#query-by-date-results div:nth-child(2) {
 	display: inline-block;
+	width: 125px;
+	overflow: hidden;
+	height: 20px;
+	white-space: nowrap;
 }
 
-#query-by-date-results span.path-result {
+#query-by-date-results h4:nth-child(3),
+#query-by-date-results div:nth-child(3) {
 	display: inline-block;
-	width: 350px;
+	overflow: hidden;
+	height: 20px;
+	white-space: nowrap;
 }
 
-#query-by-date-results span.last-modified-by-result {
-	display: inline-block;
-	width: 150px;
-}
-
-#query-by-date-results span.last-modified-result {
-	display: inline-block;
+.report-date {
+	width: 10.5rem;
 }
