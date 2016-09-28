@@ -37,6 +37,9 @@
         <div data-sly-list.agent="${item.agentMetas}">
           <div class="agent coral-Well" data-agent="${agent.agentId}">
             <div class="agent-header">
+              <div class="led-box">
+                <div class="led-green"></div>
+              </div>
               <div class="agent-id">${agent.agentId}</div>
               <label class="agent-toggle coral-Switch" data-id="${agent.agentId}">
                 <sly data-sly-test="${agent.enabled}">
@@ -48,10 +51,6 @@
                 <span class="coral-Switch-offLabel">Off</span>
                 <span class="coral-Switch-onLabel">On</span>
               </label>
-            </div>
-            <div class="agent-status coral-Alert coral-Alert--success">
-              <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
-              <div class="coral-Alert-message">Queue operating normally</div>
             </div>
             <div class="agent-queue coral-Well">
             </div>

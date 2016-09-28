@@ -1,16 +1,35 @@
+function setQueueStatus($agent, data) {
+	var blocked = data ? data.metaData.queueStatus.isBlocked : false;
+	var enabled = $agent.find('input')[0].checked;
+	var $status = $agent.find('.led-box div');
+
+	$status.removeClass();
+	if(blocked && enabled) {
+		$status.addClass('led-red');
+	} else if(!blocked && enabled) {
+		$status.addClass('led-green');
+	} else if(!enabled) {
+		$status.addClass('led-yellow');
+	}
+}
+
+function refreshQueue($agent) {
+	$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.queue.json', function(data) {
+		var $agentTemp = $("[data-agent='" + data.metaData.queueStatus.agentId + "']");
+		setQueueStatus($agentTemp, data);
+
+		if(data.queue.length > 0) {
+			for(var j = 0; j < data.queue.length; j++) {
+				$agentTemp.find('.agent-queue').eq(0).append("<a href=\"" + data.queue[j].path + "\">" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
+			}
+		}
+	});
+}
+
 function refreshQueues() {
 	var $agents = $('.agent');
 	for(var i = 0; i < $agents.length; i++) {
-		var agent = $agents.get(i);
-		$.getJSON('/etc/replication/agents.author/' + agent.getElementsByClassName('agent-id')[0].innerText + '/jcr:content.queue.json', function(data) {
-			if(data.queue.length > 0) {
-				$agent = $("[data-agent='" + data.metaData.queueStatus.agentId + "']");
-				$queue = $agent.find('.agent-queue').get(0);
-				for(var j = 0; j < data.queue.length; j++) {
-					$agent.find('.agent-queue').eq(0).append("<a href=\"" + data.queue[j].path + "\">" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
-				}
-			}
-		});
+		refreshQueue($agents.eq(i));
 	}
 }
 
@@ -19,7 +38,7 @@ $(document).ready(function() {
     element : '#agents-info-modal',
     visible : false
   });
-  
+
   var queryByDateModal = new CUI.Modal({
 	 element : '#query-by-date-modal',
 	 visible : false
@@ -32,12 +51,17 @@ $(document).ready(function() {
   $('#query-by-date-button').on('click', function(event) {
 	  queryByDateModal.show();
   });
-  
+
   $('.agent-toggle').on('click', function(event) {
 	  var toggle = event.currentTarget;
 	  var id = toggle.getAttribute('data-id');
+	  var checked = toggle.getElementsByTagName('input')[0].checked;
+	  var $agent = $(toggle.parentElement.parentElement);
 
-	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': toggle.getElementsByTagName('input')[0].checked }, function(data) {
+	  setQueueStatus($agent, null);
+	  refreshQueue($agent);
+
+	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': checked }, function(data) {
 		  console.log("Agent " + id + " updated");
 	  });
   });
@@ -59,6 +83,7 @@ $(document).ready(function() {
 
 			  document.body.appendChild(a);
 			  a.click();
+			  $(a).remove();
 		  } else {
 			  var header = "<li>";
 			  for(var i = 0; i < data.headers.length; i++) {
@@ -88,8 +113,11 @@ $(document).ready(function() {
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
 		  var parent = individualToggles[i].parentElement;
+		  var $agent = $(parent.parentElement.parentElement);
 
 		  toggle.checked = enabled;
+		  setQueueStatus($agent, null);
+		  refreshQueue($agent);
 		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'enabled': enabled }, function(data) {
 			  console.log("Agent updated");
 		  });
