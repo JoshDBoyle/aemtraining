@@ -1,3 +1,4 @@
+// Sets the status light for an individual queue
 function setQueueStatus($agent, data) {
 	var blocked = data ? data.metaData.queueStatus.isBlocked : false;
 	var enabled = $agent.find('input')[0].checked;
@@ -6,6 +7,8 @@ function setQueueStatus($agent, data) {
 	$status.removeClass();
 	if(blocked && enabled) {
 		$status.addClass('led-red');
+	} else if(!blocked && enabled && data.queue.length > 0) {
+		$status.addClass('led-blue');
 	} else if(!blocked && enabled) {
 		$status.addClass('led-green');
 	} else if(!enabled) {
@@ -16,11 +19,14 @@ function setQueueStatus($agent, data) {
 function refreshQueue($agent) {
 	$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.queue.json', function(data) {
 		var $agentTemp = $("[data-agent='" + data.metaData.queueStatus.agentId + "']");
+		var $queue = $agentTemp.find('.agent-queue').eq(0);
+
 		setQueueStatus($agentTemp, data);
+		$queue.empty();
 
 		if(data.queue.length > 0) {
 			for(var j = 0; j < data.queue.length; j++) {
-				$agentTemp.find('.agent-queue').eq(0).append("<a href=\"" + data.queue[j].path + "\">" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
+				$queue.append("<a href=\"" + data.queue[j].path + "\">" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
 			}
 		}
 	});
@@ -34,6 +40,11 @@ function refreshQueues() {
 }
 
 $(document).ready(function() {
+  var legendModal = new CUI.Modal({
+	 element : '#legend-modal',
+	 visible : false
+  });
+  
   var agentsInfoModal = new CUI.Modal({
     element : '#agents-info-modal',
     visible : false
@@ -44,6 +55,10 @@ $(document).ready(function() {
 	 visible : false
   });
 
+  $('#legend-button').on('click', function(event) {
+	  legendModal.show();
+  });
+  
   $('#all-agents-list-button').on('click', function(event) {
 	  agentsInfoModal.show();
   });
@@ -52,20 +67,47 @@ $(document).ready(function() {
 	  queryByDateModal.show();
   });
 
+  /**
+   * INDIVIDUAL AGENT TOGGLING
+   */
   $('.agent-toggle').on('click', function(event) {
 	  var toggle = event.currentTarget;
 	  var id = toggle.getAttribute('data-id');
 	  var checked = toggle.getElementsByTagName('input')[0].checked;
 	  var $agent = $(toggle.parentElement.parentElement);
 
-	  setQueueStatus($agent, null);
-	  refreshQueue($agent);
-
 	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': checked }, function(data) {
-		  console.log("Agent " + id + " updated");
+		  refreshQueue($agent);
 	  });
   });
 
+  /**
+   * GROUP TOGGLING
+   */
+  $('.group-toggle').on('click', function(event) {
+	  var groupToggle = event.currentTarget;
+	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
+	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
+	  var enabled = temp.indexOf('Enable') >= 0 ? true : false;
+
+	  for(var i = 0; i < individualToggles.length; i++) {
+		  var toggle = individualToggles[i];
+		  var parent = individualToggles[i].parentElement;
+		  var $agent = $(parent.parentElement.parentElement);
+
+		  toggle.checked = enabled;
+		  
+		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'enabled': enabled }, function(data) {
+			  if(data.agentId && data.agentId !== '') {
+				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
+			  }
+		  });
+	  }
+  });
+  
+  /**
+   * REPORTING OPTIONS
+   */
   $('.query-by-date-button, .query-by-date-button-csv').on('click', function(event) {
 	  var start = $('#startdate').val();
 	  var end = $('#enddate').val();
@@ -102,26 +144,6 @@ $(document).ready(function() {
 			  }
 		  }
 	  });
-  });
-
-  $('.group-toggle').on('click', function(event) {
-	  var groupToggle = event.currentTarget;
-	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
-	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
-	  var enabled = temp.indexOf('Enable') >= 0 ? true : false;
-
-	  for(var i = 0; i < individualToggles.length; i++) {
-		  var toggle = individualToggles[i];
-		  var parent = individualToggles[i].parentElement;
-		  var $agent = $(parent.parentElement.parentElement);
-
-		  toggle.checked = enabled;
-		  setQueueStatus($agent, null);
-		  refreshQueue($agent);
-		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'enabled': enabled }, function(data) {
-			  console.log("Agent updated");
-		  });
-	  }
   });
   
   refreshQueues();

@@ -1,0 +1,57 @@
+<div data-sly-use.modalsuse="org.kp.cpc.wcmuse.ModalsUse" id="legend-modal" class="coral-Modal">
+  <div class="coral-Modal-header">
+    <i class="coral-Modal-typeIcon coral-Icon coral-Icon--sizeS"></i>
+    <h2 class="coral-Modal-title coral-Heading coral-Heading--2">Queue Status Legend</h2>
+    <button type="button"
+      class="coral-MinimalButton coral-Modal-closeButton" title="Close"
+      data-dismiss="modal">
+      <i
+        class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon "></i>
+    </button>
+  </div>
+
+  <div class="coral-Modal-body">
+    <table class="coral-Table">
+      <thead>
+        <tr class="coral-Table-row">
+          <th class="coral-Table-headerCell">Color</th>
+          <th class="coral-Table-headerCell">Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="coral-Table-row">
+          <td class="coral-Table-cell">
+            <div class="led-box">
+              <div class="led-green"></div>
+            </div>
+          </td>
+          <td class="coral-Table-cell">Agent is enabled, unblocked, and has no queue</td>
+        </tr>
+        <tr class="coral-Table-row">
+          <td class="coral-Table-cell">
+            <div class="led-box">
+              <div class="led-blue"></div>
+            </div>
+          </td>
+          <td class="coral-Table-cell">Agent is enabled and unblocked, and is actively replicating</td>
+        </tr>
+        <tr class="coral-Table-row">
+          <td class="coral-Table-cell">
+            <div class="led-box">
+              <div class="led-red"></div>
+            </div>
+          </td>
+          <td class="coral-Table-cell">Agent is enabled and actively replicating but is blocked</td>
+        </tr>
+        <tr class="coral-Table-row">
+          <td class="coral-Table-cell">
+            <div class="led-box">
+              <div class="led-yellow"></div>
+            </div>
+          </td>
+          <td class="coral-Table-cell">Agent is disabled</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

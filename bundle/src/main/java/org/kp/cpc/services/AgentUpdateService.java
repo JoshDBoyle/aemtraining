@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
@@ -14,6 +15,8 @@ import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.commons.json.JSONException;
+import org.apache.sling.commons.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,7 @@ public class AgentUpdateService extends SlingAllMethodsServlet {
     	AgentConfig config = agentMgr.getAgents().get(agentId).getConfiguration();
     	String agentPath = config.getId();
     	Resource agentRes = resolver.resolve(agentPath + "/" + JcrConstants.JCR_CONTENT);
+    	JSONObject jsonResponse = new JSONObject();
     	
     	if(null != agentRes) {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
@@ -51,9 +55,19 @@ public class AgentUpdateService extends SlingAllMethodsServlet {
     		
     		try {
     			session.save();
+    			jsonResponse.put("agentId", agentId);
+    			jsonResponse.put("enabled", enabled);
+    			response.setContentType("application/json");
+    	        response.getWriter().write(jsonResponse.toString(2)); 
     		} catch(RepositoryException rex) {
-    			log.error("Unable to save session in AgentUpdateService.doPost");
+    			log.error("Problem saving session in AgentUpdateService.doPost");
+    			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Problem saving session in AgentUpdateService.doPost.");
+    		} catch(JSONException jex) {
+    			log.error("Problem setting JSON response in AgentUpdateService.doPost");
+    			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Problem setting JSON response in AgentUpdateService.doPost.");
     		}
-    	}
+    	} 
     }
 }

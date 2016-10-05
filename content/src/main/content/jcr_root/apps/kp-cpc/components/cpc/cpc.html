@@ -1,6 +1,7 @@
 <sly data-sly-use.clientLib="${'/libs/granite/sightly/templates/clientlib.html'}" />
 <sly data-sly-call="${clientLib.css @ categories='cpc'}" />
 
+<sly data-sly-include="${'legend-modal.html'}"/>
 <sly data-sly-include="${'agents-info-modal.html'}"/>
 <sly data-sly-include="${'query-by-date-modal.html'}"/>
 
@@ -8,12 +9,16 @@
 
   <!-- Command Bar -->
   <div class="command-bar">
+    <button id="legend-button" class="coral-MinimalButton">
+      <i class="coral-Icon coral-Icon--infoCircle coral-MinimalButton-icon"></i>
+      <div>Legend</div>
+    </button>
     <button id="all-agents-list-button" class="coral-MinimalButton">
       <i class="coral-Icon coral-Icon--book coral-MinimalButton-icon"></i>
       <div>Agent Listing</div>
     </button>
     <button id="query-by-date-button" class="coral-MinimalButton">
-      <i class="coral-Icon coral-Icon--question coral-MinimalButton-icon"></i>
+      <i class="coral-Icon coral-Icon--report coral-MinimalButton-icon"></i>
       <div>Reporting</div>
     </button>
   </div>
