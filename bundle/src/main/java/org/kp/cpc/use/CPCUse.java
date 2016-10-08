@@ -1,7 +1,6 @@
-package org.kp.cpc.wcmuse;
+package org.kp.cpc.use;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,9 +11,7 @@ import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.jcr.base.util.AccessControlUtil;
 import org.kp.cpc.pojos.AgentGroup;
-import org.kp.cpc.services.AgentGroupService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kp.cpc.services.impl.AgentGroupServiceImpl;
 
 import com.adobe.cq.sightly.WCMUsePojo;
 import com.day.cq.replication.AgentConfig;
@@ -22,14 +19,12 @@ import com.day.cq.replication.AgentConfig;
 public class CPCUse extends WCMUsePojo {
 	private List<AgentGroup> agentGroups;
 	private List<AgentConfig> allAgentConfigs;
-	private List<String> groups = new ArrayList<String>();
-	private static final Logger log = LoggerFactory.getLogger(CPCUse.class);
 	private boolean canModify = false;
 	private static final String canModifyGroup = "pubadmin";
 	
     @Override
     public void activate() throws Exception {
-    	AgentGroupService ags = getSlingScriptHelper().getService(AgentGroupService.class);
+    	AgentGroupServiceImpl ags = getSlingScriptHelper().getService(AgentGroupServiceImpl.class);
     	if(null != ags) {
     		agentGroups = ags.getAgentGroups();
     		allAgentConfigs = ags.getAllAgentConfigs();

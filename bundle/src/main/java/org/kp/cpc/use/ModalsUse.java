@@ -1,9 +1,9 @@
-package org.kp.cpc.wcmuse;
+package org.kp.cpc.use;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kp.cpc.services.AgentGroupService;
+import org.kp.cpc.services.impl.AgentGroupServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class ModalsUse extends WCMUsePojo {
 
     @Override
     public void activate() throws Exception {
-    	AgentGroupService ags = getSlingScriptHelper().getService(AgentGroupService.class);
+    	AgentGroupServiceImpl ags = getSlingScriptHelper().getService(AgentGroupServiceImpl.class);
     	if(null != ags) {
     		allAgentConfigs = ags.getAllAgentConfigs();
     	}

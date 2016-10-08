@@ -63,6 +63,10 @@
 	margin-bottom: 0;
 }
 
+.agent-info {
+	margin-bottom: 15px;
+}
+
 .agent-info-body, .query-by-date-body {
 	max-height: 250px;
 	width: 700px;
@@ -268,4 +272,8 @@
   	background-color: #24E0FF;
   	border-radius: 50%;
   	box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px, #3F8CFF 0 2px 14px;
+}
+
+.no-agents {
+	margin: 15px;
 }

@@ -1,4 +1,4 @@
-package org.kp.cpc.services;
+package org.kp.cpc.servlets;
 
 import java.io.IOException;
 
@@ -24,13 +24,13 @@ import com.day.cq.search.QueryBuilder;
 	    methods = { "GET" }, 
 	    paths = {"/bin/cpc/querybydate" }, 
 	    name = "org.kp.cpc.services.QueryByDateService")
-public class QueryByDateService extends SlingAllMethodsServlet {
+public class QueryByDateServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
     
     @Reference
     QueryBuilder qb;
     
-    Logger log = LoggerFactory.getLogger(QueryByDateService.class);
+    Logger log = LoggerFactory.getLogger(QueryByDateServlet.class);
     
     @Override
 	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {

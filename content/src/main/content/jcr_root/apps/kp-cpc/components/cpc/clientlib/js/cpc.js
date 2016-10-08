@@ -1,4 +1,6 @@
-// Sets the status light for an individual queue
+/**
+ * Sets the status light for an individual agent
+ */
 function setQueueStatus($agent, data) {
 	var blocked = data ? data.metaData.queueStatus.isBlocked : false;
 	var enabled = $agent.find('input')[0].checked;
@@ -16,6 +18,9 @@ function setQueueStatus($agent, data) {
 	}
 }
 
+/**
+ * Refreshes the queue for an individual agent
+ */
 function refreshQueue($agent) {
 	$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.queue.json', function(data) {
 		var $agentTemp = $("[data-agent='" + data.metaData.queueStatus.agentId + "']");
@@ -32,6 +37,9 @@ function refreshQueue($agent) {
 	});
 }
 
+/**
+ * Wrapper that refreshes each for all agents
+ */
 function refreshQueues() {
 	var $agents = $('.agent');
 	for(var i = 0; i < $agents.length; i++) {

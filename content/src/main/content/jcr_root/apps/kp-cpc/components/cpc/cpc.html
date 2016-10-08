@@ -5,7 +5,7 @@
 <sly data-sly-include="${'agents-info-modal.html'}"/>
 <sly data-sly-include="${'query-by-date-modal.html'}"/>
 
-<div data-sly-use.cpcuse="org.kp.cpc.wcmuse.CPCUse">
+<div data-sly-use.cpcuse="org.kp.cpc.use.CPCUse">
 
   <!-- Command Bar -->
   <div class="command-bar">
@@ -24,6 +24,9 @@
   </div>
 
   <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
+    <div class="no-agents" data-sly-test="${cpcuse.agentGroups.size <= 0}">
+      No agent groups have been configured in the Felix console.
+    </div>
     <nav data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-navigation">
       <a class="coral-TabPanel-tab ${itemList.first ? 'is-active' : ''}" data-toggle="tab">${item.title}</a>
     </nav>

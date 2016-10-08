@@ -1,4 +1,4 @@
-package org.kp.cpc.services;
+package org.kp.cpc.servlets;
 
 import java.io.IOException;
 
@@ -28,13 +28,13 @@ import com.day.cq.replication.AgentManager;
 	    methods = { "POST" }, 
 	    paths = {"/bin/cpc/updateagent" }, 
 	    name = "org.kp.cpc.services.AgentUpdateService")
-public class AgentUpdateService extends SlingAllMethodsServlet {
+public class AgentUpdateServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
 
     @Reference
     AgentManager agentMgr;
     
-    Logger log = LoggerFactory.getLogger(AgentUpdateService.class);
+    Logger log = LoggerFactory.getLogger(AgentUpdateServlet.class);
     
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
     	ResourceResolver resolver = request.getResourceResolver();
