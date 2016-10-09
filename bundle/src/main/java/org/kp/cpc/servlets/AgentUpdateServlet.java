@@ -24,6 +24,11 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
 
+/**
+ * Path-based Sling Servlet that enables or disables a single Agent based on a RequestParameter
+ * 
+ * @author joshua.boyle
+ */
 @SlingServlet(
 	    methods = { "POST" }, 
 	    paths = {"/bin/cpc/updateagent" }, 
@@ -46,6 +51,13 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	Resource agentRes = resolver.resolve(agentPath + "/" + JcrConstants.JCR_CONTENT);
     	JSONObject jsonResponse = new JSONObject();
     	
+    	/**
+    	 * The enabeld state of an agent is determined by the "enabled" property both being present
+    	 * on the jcr:content node for the agent as well as this property having a value of "true".
+    	 * If this property either has a value of "false" or is completely absent, the agent is
+    	 * considered as disabled by AEM.  Since AEM prefers to completely remove this property
+    	 * when disabling an agent, we'll do the same for consistency.
+    	 */
     	if(null != agentRes) {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
     		if(enabled.equals("true"))
@@ -67,6 +79,9 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     			log.error("Problem setting JSON response in AgentUpdateService.doPost");
     			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("Problem setting JSON response in AgentUpdateService.doPost.");
+    		} finally {
+    			// Explicitly logout of our session to prevent memory leaks
+    			session.logout();
     		}
     	} 
     }

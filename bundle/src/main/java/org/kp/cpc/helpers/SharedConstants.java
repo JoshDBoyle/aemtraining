@@ -1,5 +1,10 @@
 package org.kp.cpc.helpers;
 
+/**
+ * Constants used throughout the Content Publication Console project
+ * 
+ * @author joshua.boyle
+ */
 public class SharedConstants {
 	public static final String ROOT_PATH = "/content";
     public static final String START = "start";

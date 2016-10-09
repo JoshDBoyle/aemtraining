@@ -20,6 +20,16 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.search.QueryBuilder;
 
+/**
+ * Path-based Sling Servlet that allows for querying based on a date range.
+ * Leverages helper classes for each report type to generate the appropriate
+ * json or CSV content.
+ * 
+ * If additional report types are requested in the future, this class can be
+ * expanded as the funnel through which all reporting requests initially flow
+ * 
+ * @author joshua.boyle
+ */
 @SlingServlet(
 	    methods = { "GET" }, 
 	    paths = {"/bin/cpc/querybydate" }, 

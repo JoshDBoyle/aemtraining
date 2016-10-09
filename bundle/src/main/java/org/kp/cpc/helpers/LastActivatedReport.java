@@ -24,6 +24,12 @@ import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.day.cq.wcm.api.NameConstants;
 
+/**
+ * Generates a json or csv report about content that has been activated.
+ * Called from QueryByDateServlet.
+ * 
+ * @author joshua.boyle
+ */
 public class LastActivatedReport {
 	public static void buildReport(
 			SlingHttpServletResponse response, 

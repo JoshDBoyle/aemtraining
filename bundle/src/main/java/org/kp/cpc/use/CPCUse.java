@@ -16,6 +16,11 @@ import org.kp.cpc.services.impl.AgentGroupServiceImpl;
 import com.adobe.cq.sightly.WCMUsePojo;
 import com.day.cq.replication.AgentConfig;
 
+/**
+ * WCMUse class for the Content Publication Console Sightly component.
+ * 
+ * @author joshua.boyle
+ */
 public class CPCUse extends WCMUsePojo {
 	private List<AgentGroup> agentGroups;
 	private List<AgentConfig> allAgentConfigs;
