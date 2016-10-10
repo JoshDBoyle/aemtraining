@@ -43,7 +43,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	private String[] agentGroupTitles;
 	
 	/**
-	 * String array of comman-separated agents where each entry corresponds to the same index from agent.groups above
+	 * String array of comma-separated agents where each entry corresponds to the same index from agent.groups above
 	 */
 	@Property(unbounded=PropertyUnbounded.ARRAY, label="Agents per Group", cardinality=10, description="Each entry here corresponds to the same entry (by index) of the above Agent Groups.  Enter all agents you want in each group separated by commas.")
 	private static final String AGENT_LISTS = "agent.lists";
