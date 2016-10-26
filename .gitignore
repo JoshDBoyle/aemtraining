@@ -1,0 +1,32 @@
+#IntelliJ
+*.iml
+.idea/
+out/
+.gradle/*
+*.ipr
+*.iws
+build/*
+ 
+# Eclipse project files
+*/target/*
+*/bin/*
+.settings/
+*/.settings
+*/.settings/*
+.project
+*/.project
+*/.project/*
+.metadata/
+*/.metadata
+*/.metadata/*
+.classpath
+.properties
+ 
+# Java class files
+*.class
+ 
+# OSX files
+.DS_Store
+ 
+# Brackets files
+*.brackets.json
