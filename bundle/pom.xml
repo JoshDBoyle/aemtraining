@@ -61,12 +61,10 @@
             <artifactId>org.apache.sling.jcr.api</artifactId>
         </dependency>
         <dependency>
-	         <groupId>com.adobe.aem</groupId>
-	         <artifactId>uber-jar</artifactId>
-	         <version>6.1.0</version>
-	         <scope>provided</scope>
-	         <classifier>obfuscated-apis</classifier>
-    	</dependency>
+            <groupId>com.adobe.aem</groupId>
+            <artifactId>uber-jar</artifactId>
+            <classifier>unobfuscated-apis</classifier>
+        </dependency>
     </dependencies>
 
     <!-- ====================================================================== -->
