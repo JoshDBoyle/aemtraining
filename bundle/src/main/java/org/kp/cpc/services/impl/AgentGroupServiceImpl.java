@@ -115,7 +115,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						Agent agent = agents.get(agentIdsPerGroup[j]);
 						ValueMap vm = resolver.resolve(agent.getConfiguration().getId() + "/" + JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class);
 						
-						if(null != vm && vm.containsKey("enabled"))
+						if(null != vm && vm.containsKey("enabled") && (vm.get("enabled", String.class).equals("true")))
 							agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), true));
 						else
 							agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), false));
