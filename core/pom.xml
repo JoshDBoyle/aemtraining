@@ -6,8 +6,8 @@
     <!-- P A R E N T P R O J E C T D E S C R I P T I O N -->
     <!-- ====================================================================== -->
     <parent>
-        <groupId>org-kp</groupId>
-        <artifactId>kp-cpc</artifactId>
+        <groupId>org.kp.web</groupId>
+        <artifactId>kporg-cpc</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -15,7 +15,7 @@
     <!-- P R O J E C T D E S C R I P T I O N -->
     <!-- ====================================================================== -->
 
-    <artifactId>kp-cpc-bundle</artifactId>
+    <artifactId>kp-cpc-core</artifactId>
     <packaging>bundle</packaging>
     <name>Content Publication Console Bundle</name>
 
