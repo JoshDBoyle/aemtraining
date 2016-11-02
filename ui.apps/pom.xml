@@ -7,7 +7,7 @@
     <!-- ====================================================================== -->
     <parent>
         <groupId>org.kp.web</groupId>
-        <artifactId>kporg-cpc</artifactId>
+        <artifactId>content-publication</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -15,14 +15,14 @@
     <!-- P R O J E C T D E S C R I P T I O N -->
     <!-- ====================================================================== -->
 
-    <artifactId>kp-cpc-ui.apps</artifactId>
+    <artifactId>content-publication-ui.apps</artifactId>
     <packaging>content-package</packaging>
     <name>Content Publication Console Package</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>kp-cpc-core</artifactId>
+            <artifactId>content-publication-core</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -57,8 +57,8 @@
                     <embeddeds>
                         <embedded>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>kp-cpc-bundle</artifactId>
-                            <target>/apps/kp-cpc/install</target>
+                            <artifactId>content-publication-core</artifactId>
+                            <target>/apps/content-publication/install</target>
                         </embedded>
                     </embeddeds>
                     <targetURL>http://${crx.host}:${crx.port}/crx/packmgr/service.jsp</targetURL>

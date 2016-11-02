@@ -7,7 +7,7 @@
     <!-- ====================================================================== -->
     <parent>
         <groupId>org.kp.web</groupId>
-        <artifactId>kporg-cpc</artifactId>
+        <artifactId>content-publication</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -15,7 +15,7 @@
     <!-- P R O J E C T D E S C R I P T I O N -->
     <!-- ====================================================================== -->
 
-    <artifactId>kp-cpc-core</artifactId>
+    <artifactId>content-publication-core</artifactId>
     <packaging>bundle</packaging>
     <name>Content Publication Console Bundle</name>
 
@@ -90,7 +90,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org-kp.kp-cpc-bundle</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.kp.web.content-publication-core</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>
@@ -98,7 +98,7 @@
                 <groupId>org.apache.sling</groupId>
                 <artifactId>maven-sling-plugin</artifactId>
                 <configuration>
-                    <slingUrl>http://${crx.host}:${crx.port}/apps/kp-cpc/install</slingUrl>
+                    <slingUrl>http://${crx.host}:${crx.port}/apps/content-publication/install</slingUrl>
                     <usePut>true</usePut>
                 </configuration>
             </plugin>

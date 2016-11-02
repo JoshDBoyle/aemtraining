@@ -6,7 +6,7 @@
     <!-- ====================================================================== -->
 
     <groupId>org.kp.web</groupId>
-    <artifactId>kporg-cpc</artifactId>
+    <artifactId>content-publication</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 

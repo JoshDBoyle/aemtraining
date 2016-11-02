@@ -8,6 +8,6 @@
 <entry key="packageFormatVersion">2</entry>
 <entry key="description">Content Publication Console Package</entry>
 <entry key="group">Kaiser Permanente</entry>
-<entry key="name">kp-cpc-content</entry>
-<entry key="path">/etc/packages/Kaiser Permanente/kp-cpc-content-1.0-SNAPSHOT.zip</entry>
+<entry key="name">content-publication-ui.apps</entry>
+<entry key="path">/etc/packages/Kaiser Permanente/content-publication-ui.apps-1.0-SNAPSHOT.zip</entry>
 </properties>

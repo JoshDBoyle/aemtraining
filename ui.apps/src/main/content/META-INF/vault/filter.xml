@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/apps/kp-cpc">
-        <exclude pattern="/apps/kp-cpc/install" />
+    <filter root="/apps/content-publication">
+        <exclude pattern="/apps/content-publication/install" />
     </filter>
     <filter root="/apps/cq" mode="update"/>
 </workspaceFilter>
