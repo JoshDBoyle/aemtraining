@@ -15,7 +15,7 @@
     <!-- P R O J E C T D E S C R I P T I O N -->
     <!-- ====================================================================== -->
 
-    <artifactId>content-publication-ui.apps</artifactId>
+    <artifactId>content-publication.ui.apps</artifactId>
     <packaging>content-package</packaging>
     <name>Content Publication Console Package</name>
 
