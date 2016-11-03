@@ -70,7 +70,7 @@
                                 <items jcr:primaryType="nt:unstructured">
                                     <cpc-content
                                         jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="kp-cpc/components/cpc"/>
+                                        sling:resourceType="content-publication/components/cpc"/>
                                 </items>
                         </cpc>
                     </items>
