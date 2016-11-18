@@ -26,6 +26,7 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
+import com.day.cq.replication.ReplicationQueue;
 
 /**
  * OSGi service that manages custom groupings of Agents for use by the Content Publication Console
@@ -113,12 +114,8 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 					// Then let's get that Agent's AgentMetadata and add it to the List<AgentMetadata> for our AgentGroup
 					if(agents.containsKey(agentIdsPerGroup[j])) {
 						Agent agent = agents.get(agentIdsPerGroup[j]);
-						ValueMap vm = resolver.resolve(agent.getConfiguration().getId() + "/" + JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class);
-						
-						if(null != vm && vm.containsKey("enabled") && (vm.get("enabled", String.class).equals("true")))
-							agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), true));
-						else
-							agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), false));
+						ReplicationQueue queue = agent.getQueue();
+						agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), queue.isPaused()));
 					}
 				}
 	

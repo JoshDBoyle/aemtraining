@@ -13,14 +13,14 @@ public class AgentMetadata {
 	public String id;
 	public String agentId;
 	public String agentUserId;
-	public boolean enabled;
+	public boolean paused;
 
-	public AgentMetadata(AgentConfig config, boolean enabled) {
+	public AgentMetadata(AgentConfig config, boolean paused) {
 		this.title = config.getName();
 		this.id = config.getId();
 		this.agentId = config.getAgentId();
 		this.agentUserId = config.getAgentUserId();
-		this.enabled = enabled;
+		this.paused = paused;
 	}
 	
 	public String getTitle() {
@@ -39,7 +39,7 @@ public class AgentMetadata {
 		return agentUserId;
 	}
 
-	public boolean getEnabled() {
-		return enabled;
+	public boolean getPaused() {
+		return paused;
 	}
 }

@@ -11,7 +11,6 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
@@ -21,8 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
+import com.day.cq.replication.ReplicationQueue;
 
 /**
  * Path-based Sling Servlet that enables or disables a single Agent based on a RequestParameter
@@ -45,30 +46,21 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	ResourceResolver resolver = request.getResourceResolver();
     	Session session = resolver.adaptTo(Session.class);
     	String agentId = request.getParameter("id");
-    	String enabled = request.getParameter("enabled");
+    	String pause = request.getParameter("pause");
     	AgentConfig config = agentMgr.getAgents().get(agentId).getConfiguration();
     	String agentPath = config.getId();
     	Resource agentRes = resolver.resolve(agentPath + "/" + JcrConstants.JCR_CONTENT);
     	JSONObject jsonResponse = new JSONObject();
-    	
-    	/**
-    	 * The enabeld state of an agent is determined by the "enabled" property both being present
-    	 * on the jcr:content node for the agent as well as this property having a value of "true".
-    	 * If this property either has a value of "false" or is completely absent, the agent is
-    	 * considered as disabled by AEM.  Since AEM prefers to completely remove this property
-    	 * when disabling an agent, we'll do the same for consistency.
-    	 */
+        Agent agent = agentId == null ? null : agentMgr.getAgents().get(agentId);
+        ReplicationQueue queue = agent.getQueue();
+
     	if(null != agentRes) {
-    		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
-    		if(enabled.equals("true"))
-    			mvm.put("enabled", enabled);
-    		else
-    			mvm.remove("enabled");
+    		queue.setPaused(pause.equals("true"));
     		
     		try {
     			session.save();
     			jsonResponse.put("agentId", agentId);
-    			jsonResponse.put("enabled", enabled);
+    			jsonResponse.put("paused", pause);
     			response.setContentType("application/json");
     	        response.getWriter().write(jsonResponse.toString(2)); 
     		} catch(RepositoryException rex) {

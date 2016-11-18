@@ -3,17 +3,17 @@
  */
 function setQueueStatus($agent, data) {
 	var blocked = data ? data.metaData.queueStatus.isBlocked : false;
-	var enabled = $agent.find('input')[0].checked;
+	var unpaused = $agent.find('input')[0].checked;
 	var $status = $agent.find('.led-box div');
 
 	$status.removeClass();
-	if(blocked && enabled) {
+	if(blocked && unpaused) {
 		$status.addClass('led-red');
-	} else if(!blocked && enabled && data.queue.length > 0) {
+	} else if(!blocked && unpaused && data.queue.length > 0) {
 		$status.addClass('led-blue');
-	} else if(!blocked && enabled) {
+	} else if(!blocked && unpaused) {
 		$status.addClass('led-green');
-	} else if(!enabled) {
+	} else if(!unpaused) {
 		$status.addClass('led-yellow');
 	}
 }
@@ -84,7 +84,7 @@ $(document).ready(function() {
 	  var checked = toggle.getElementsByTagName('input')[0].checked;
 	  var $agent = $(toggle.parentElement.parentElement);
 
-	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': checked }, function(data) {
+	  $.post("/bin/cpc/updateagent", { 'id': id, 'pause': !checked }, function(data) {
 		  refreshQueue($agent);
 	  });
   });
@@ -96,16 +96,16 @@ $(document).ready(function() {
 	  var groupToggle = event.currentTarget;
 	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
 	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
-	  var enabled = temp.indexOf('Enable') >= 0 ? true : false;
+	  var pause = temp.indexOf('Pause') >= 0 ? true : false;
 
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
 		  var parent = individualToggles[i].parentElement;
 		  var $agent = $(parent.parentElement.parentElement);
 
-		  toggle.checked = enabled;
+		  toggle.checked = !pause;
 		  
-		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'enabled': enabled }, function(data) {
+		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'pause': pause }, function(data) {
 			  if(data.agentId && data.agentId !== '') {
 				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
 			  }
