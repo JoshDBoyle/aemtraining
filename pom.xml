@@ -284,6 +284,7 @@
 	</distributionManagement>
 
 	<modules>
+		<module>flush</module>
 	  	<module>core</module>
 	  	<module>ui.apps</module>
 	</modules>

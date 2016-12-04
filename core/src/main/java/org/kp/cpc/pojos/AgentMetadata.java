@@ -12,14 +12,12 @@ public class AgentMetadata {
 	public String title;
 	public String id;
 	public String agentId;
-	public String agentUserId;
 	public boolean paused;
 
 	public AgentMetadata(AgentConfig config, boolean paused) {
 		this.title = config.getName();
 		this.id = config.getId();
 		this.agentId = config.getAgentId();
-		this.agentUserId = config.getAgentUserId();
 		this.paused = paused;
 	}
 	
@@ -33,10 +31,6 @@ public class AgentMetadata {
 
 	public String getAgentId() {
 		return agentId;
-	}
-
-	public String getAgentUserId() {
-		return agentUserId;
 	}
 
 	public boolean getPaused() {

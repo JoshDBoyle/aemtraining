@@ -105,7 +105,8 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 			// For each group title that was specified via Felix, build a List<AgentGroup> of all the specified (in Felix) agents per group
 			for(int i = 0; i < agentGroupTitles.length; i++) {
 				String[] agentIdsPerGroup = agentLists[i].split(",");
-				List<AgentMetadata> agentMetasPerGroup = new ArrayList<AgentMetadata>();
+				List<AgentMetadata> replicationAgentMetasPerGroup = new ArrayList<AgentMetadata>();
+				List<AgentMetadata> flushAgentMetasPerGroup = new ArrayList<AgentMetadata>();
 				
 				// For each agentId per group, let's add them to a List<AgentMetadata> so we can build an official AgentGroup
 				// Basically we're just converting from String[] to List<AgentGroup> here
@@ -115,11 +116,17 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 					if(agents.containsKey(agentIdsPerGroup[j])) {
 						Agent agent = agents.get(agentIdsPerGroup[j]);
 						ReplicationQueue queue = agent.getQueue();
-						agentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), queue.isPaused()));
+						replicationAgentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), queue.isPaused()));
+						//TODO: Call the new path-based servlet on the publish instance this replication agent points to.
+						//		For each flush agent it returns, add a new AgentMetadata to flushAgentMetasPerGroup.  I
+						//		won't be able to pass a Java object over http (so I can't pass back an AgentConfig and use
+						//		that to and queue.isPaused() to instantiate a new AgentMetadata) so I'll add a new constructor
+						//		to AgentMetadata that sets the member variables individually and I'll just retrieve a JSON
+						//		object of the stuff I need from the flush agent.
 					}
 				}
 	
-				agentGroups.add(new AgentGroup(agentMetasPerGroup, agentGroupTitles[i]));
+				agentGroups.add(new AgentGroup(replicationAgentMetasPerGroup, flushAgentMetasPerGroup, agentGroupTitles[i]));
 			}
 		} else {
 			log.error("No agent groups have been configured in the Felix console so we were unable to display any in the Content Publication Console.");

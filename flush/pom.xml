@@ -15,9 +15,9 @@
     <!-- P R O J E C T D E S C R I P T I O N -->
     <!-- ====================================================================== -->
 
-    <artifactId>content-publication-core</artifactId>
+    <artifactId>content-publication-flush</artifactId>
     <packaging>bundle</packaging>
-    <name>Content Publication Console Bundle</name>
+    <name>Content Publication Console Flush Bundle</name>
 
     <dependencies>
         <dependency>
@@ -90,7 +90,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kp.web.content-publication-core</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.kp.web.content-publication-flush</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>
@@ -98,7 +98,7 @@
                 <groupId>org.apache.sling</groupId>
                 <artifactId>maven-sling-plugin</artifactId>
                 <configuration>
-                    <slingUrl>http://${crx.host}:${crx.port}/apps/content-publication/install.author</slingUrl>
+                    <slingUrl>http://${crx.host}:${crx.port}/apps/content-publication/install.publish</slingUrl>
                     <usePut>true</usePut>
                 </configuration>
             </plugin>

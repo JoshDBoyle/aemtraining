@@ -48,7 +48,9 @@
         </div>
 
         <!-- Listing of Replication Agents -->
-        <div data-sly-list.agent="${item.agentMetas}">
+        <h3 class="coral-Heading coral-Heading--3">Replication Agents</h3>
+        <h5 class="coral-Heading coral-Heading--5">The following are the configured replication agents for the ${item.title} group</h5>
+        <div data-sly-list.agent="${item.replicationAgentMetas}">
           <div class="agent coral-Well" data-agent="${agent.agentId}">
             <div class="agent-header">
               <div class="led-box">
@@ -70,6 +72,33 @@
             </div>
           </div>
         </div>
+        
+        <!-- Listing of Dispatcher Flush Agents from Publish -->
+        <h3 class="coral-Heading coral-Heading--3">Dispatcher Flush Agents</h3>
+        <h5 class="coral-Heading coral-Heading--5">The following are the dispatcher flush agents present on each of the publish instances pointed to by each of the above replication agents</h5>
+        <div data-sly-list.agent="${item.flushAgentMetas}">
+          <div class="agent coral-Well" data-agent="${agent.agentId}">
+            <div class="agent-header">
+              <div class="led-box">
+                <div class="led-green"></div>
+              </div>
+              <div class="agent-id">${agent.agentId}</div>
+              <label class="agent-toggle coral-Switch" data-id="${agent.agentId}">
+                <sly data-sly-test="${!agent.paused}">
+                  <input class="coral-Switch-input" type="checkbox" checked disabled="${!cpcuse.canModify}">
+                </sly>
+                <sly data-sly-test="${agent.paused}">
+                  <input class="coral-Switch-input" type="checkbox" disabled="${!cpcuse.canModify}">
+                </sly>
+                <span class="coral-Switch-offLabel">Off</span>
+                <span class="coral-Switch-onLabel">On</span>
+              </label>
+            </div>
+            <div class="agent-queue coral-Well">
+            </div>
+          </div>
+        </div>
+
       </section>
     </div>
   </div>

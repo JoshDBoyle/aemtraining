@@ -9,10 +9,12 @@ import java.util.List;
  */
 public class AgentGroup {
 	public String title;
-	public List<AgentMetadata> agentMetas;
+	public List<AgentMetadata> replicationAgentMetas;
+	public List<AgentMetadata> flushAgentMetas;
 
-	public AgentGroup(List<AgentMetadata> agentMetas, String title) {
+	public AgentGroup(List<AgentMetadata> replicationAgentMetas, List<AgentMetadata> flushAgentMetas, String title) {
 		this.title = title;
-		this.agentMetas = agentMetas;
+		this.replicationAgentMetas = replicationAgentMetas;
+		this.flushAgentMetas = flushAgentMetas;
 	}
 }
