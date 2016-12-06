@@ -2,6 +2,7 @@ package org.kp.cpc.flush.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -27,7 +28,7 @@ import com.day.cq.replication.AgentManager;
  * @author joshua.boyle
  */
 @SlingServlet(
-	    methods = { "POST" }, 
+	    methods = { "GET" }, 
 	    paths = {"/bin/cpc/getflushagents" }, 
 	    name = "org.kp.cpc.flush.servlets.GetFlushAgentsServlet")
 public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
@@ -59,23 +60,21 @@ public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
     	JSONArray jsonArr = new JSONArray();
     	Map<String, Agent> agents = agentMgr.getAgents();
 
-    	agents.forEach((id, agent)->{
-    		AgentConfig config = agent.getConfiguration();
-    		JSONObject current = new JSONObject();
-    		try {
-    			current.put("title", config.getName());
+    	try {
+        	Iterator<Map.Entry<String, Agent>> it = agents.entrySet().iterator();
+            while (it.hasNext()) {
+            	JSONObject current = new JSONObject();
+                Map.Entry pair = (Map.Entry)it.next();
+                Agent agent = ((Agent)pair.getValue());
+                AgentConfig config = agent.getConfiguration();
+                current.put("title", config.getName());
     			current.put("id", config.getId());
     			current.put("agentId", config.getAgentId());
     			current.put("paused", agent.getQueue().isPaused());
     			jsonArr.put(current);
-    		} catch(JSONException e) {
-    			log.error("JSONException caught in GetFlushAgentsServlet.doGet while attempting to build a JSONObject for an Agent.");
-    		} catch(Exception e) {
-    			log.error("Generic Exception caught in GetFlushAgentsServlet.doGet while attempting to build a JSONObject for an Agent.");
-    		}
-    	});
+                it.remove();
+            }
 
-    	try {
     		jsonResponse.put("agents", jsonArr);
 		} catch(JSONException e) {
 			log.error("JSONException caught in GetFlushAgentsServlet.doGet while attempting to add the current agent to the JSONArray.");
