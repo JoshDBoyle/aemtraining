@@ -1,6 +1,8 @@
 package org.kp.cpc.flush.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -9,9 +11,14 @@ import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.commons.json.JSONArray;
+import org.apache.sling.commons.json.JSONException;
+import org.apache.sling.commons.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.day.cq.replication.Agent;
+import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
 
 /**
@@ -48,6 +55,38 @@ public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
     	//				paused: Agent.getQueue().isPaused()
     	//			}
     	//	]}
+    	JSONObject jsonResponse = new JSONObject();
+    	JSONArray jsonArr = new JSONArray();
+    	Map<String, Agent> agents = agentMgr.getAgents();
 
+    	agents.forEach((id, agent)->{
+    		AgentConfig config = agent.getConfiguration();
+    		JSONObject current = new JSONObject();
+    		try {
+    			current.put("title", config.getName());
+    			current.put("id", config.getId());
+    			current.put("agentId", config.getAgentId());
+    			current.put("paused", agent.getQueue().isPaused());
+    			jsonArr.put(current);
+    		} catch(JSONException e) {
+    			log.error("JSONException caught in GetFlushAgentsServlet.doGet while attempting to build a JSONObject for an Agent.");
+    		} catch(Exception e) {
+    			log.error("Generic Exception caught in GetFlushAgentsServlet.doGet while attempting to build a JSONObject for an Agent.");
+    		}
+    	});
+
+    	try {
+    		jsonResponse.put("agents", jsonArr);
+		} catch(JSONException e) {
+			log.error("JSONException caught in GetFlushAgentsServlet.doGet while attempting to add the current agent to the JSONArray.");
+		} catch(Exception e) {
+			log.error("Generic Exception caught in GetFlushAgentsServlet.doGet while attempting to add the current agent to the JSONArray.");
+		}
+    	
+    	response.setContentType("application/json");
+    
+    	PrintWriter out = response.getWriter();
+    	out.print(jsonResponse);
+    	out.flush();
     }
 }
