@@ -1,8 +1,13 @@
 package org.kp.cpc.services.impl;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.felix.scr.annotations.Activate;
@@ -11,18 +16,22 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.jackrabbit.commons.json.JsonParser;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.commons.json.JSONArray;
+import org.apache.sling.commons.json.JSONException;
+import org.apache.sling.commons.json.JSONObject;
+import org.apache.sling.commons.json.JSONTokener;
 import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.apache.sling.xss.JSONUtil;
 import org.kp.cpc.pojos.AgentGroup;
 import org.kp.cpc.pojos.AgentMetadata;
 import org.kp.cpc.services.AgentGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
@@ -123,6 +132,20 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						//		that to and queue.isPaused() to instantiate a new AgentMetadata) so I'll add a new constructor
 						//		to AgentMetadata that sets the member variables individually and I'll just retrieve a JSON
 						//		object of the stuff I need from the flush agent.
+						
+						//The agent's transport URI will be in the form:  http://localhost:4503/bin/receive?sling:authRequestLogin=1
+						JSONObject response = getFlushJSON(agent.getConfiguration().getTransportURI());
+						
+						//A dispatcher flush agent transportURI will be in the form:  https://xlzxped0016x.lvdc.kp.org:44301/dispatcher/invalidate.cache
+						try {
+							JSONArray flushAgents = response.getJSONArray("agents");
+							int flushAgentCount = flushAgents.length();
+							for(int k = 0; k < flushAgentCount; k++) {
+								flushAgentMetasPerGroup.add(new AgentMetadata(flushAgents.getJSONObject(k)));
+							}
+						} catch (JSONException e) {
+							log.error("JSONException caught in AgentGroupServiceImpl.getAgentGroups while attempting to read from flush agents");
+						}
 					}
 				}
 	
@@ -135,6 +158,37 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 		return agentGroups;
 	}
 
+	/**
+	 * Makes a GET request to a single publish instance and returns the response as a JSON object
+	 * 
+	 * @param url			The url of the publish instance to which this GET request should be made
+	 * 
+	 * @return				a JSONObject containing the relevant information for any dispatcher flush agents configured on the publish instance
+	 * @see					JSONObject
+	 */
+	private JSONObject getFlushJSON(String publishUrl) {
+		JSONObject jsonResponse;
+
+		try {
+			URL url = new URL(publishUrl);
+			Scanner scanner = new Scanner(url.openStream());
+			String response = scanner.useDelimiter("\\Z").next();
+			jsonResponse = new JSONObject(response);
+			scanner.close();
+		} catch(MalformedURLException e) {
+			jsonResponse = new JSONObject();
+			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON");
+		} catch(JSONException e) {
+			jsonResponse = new JSONObject();
+			log.error("JSONExceptoin caught in AgentGroupService.getFlushJSON");
+		} catch(IOException e) {
+			jsonResponse = new JSONObject();
+			log.error("IOException caught in AgentGroupService.getFlushJSON");
+		}
+
+		return jsonResponse;
+	}
+	
 	/**
 	 * Helper method which returns a Java List of the AgentConfigs for 
 	 * each agent on author (agents.author)

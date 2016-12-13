@@ -47,13 +47,15 @@ public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
     	//				title: AgentConfig.getName(),
     	//				id: AgentConfig.getId(),
     	//				agentId: AgentConfig.getAgentId(),
-    	//				paused: Agent.getQueue().isPaused()
+    	//				paused: Agent.getQueue().isPaused(),
+    	//				transportUri: AgentConfig.getTransportURI()
     	//			},
     	//			{
     	//				title: AgentConfig.getName(),
     	//				id: AgentConfig.getId(),
     	//				agentId: AgentConfig.getAgentId(),
     	//				paused: Agent.getQueue().isPaused()
+    	//				transportUri: AgentConfig.getTransportURI()
     	//			}
     	//	]}
     	JSONObject jsonResponse = new JSONObject();
@@ -71,6 +73,7 @@ public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
     			current.put("id", config.getId());
     			current.put("agentId", config.getAgentId());
     			current.put("paused", agent.getQueue().isPaused());
+    			current.put("transportUri", config.getTransportURI());
     			jsonArr.put(current);
                 it.remove();
             }
