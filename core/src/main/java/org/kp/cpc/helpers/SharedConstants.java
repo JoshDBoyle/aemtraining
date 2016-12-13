@@ -32,4 +32,6 @@ public class SharedConstants {
     
     public static final String ACTIVATION_REPORT = "activated";
     public static final String MODIFICATION_REPORT = "modified";
+    
+    public static final String FLUSH_SERVICE_ENDPOINT = "/bin/cpc/getflushagents";
 }

@@ -25,6 +25,11 @@
             <artifactId>content-publication-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>content-publication-flush</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -58,7 +63,12 @@
                         <embedded>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>content-publication-core</artifactId>
-                            <target>/apps/content-publication/install</target>
+                            <target>/apps/content-publication/install.author</target>
+                        </embedded>
+                        <embedded>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>content-publication-flush</artifactId>
+                            <target>/apps/content-publication/install.publish</target>
                         </embedded>
                     </embeddeds>
                     <targetURL>http://${crx.host}:${crx.port}/crx/packmgr/service.jsp</targetURL>

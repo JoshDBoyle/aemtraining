@@ -26,6 +26,7 @@ import org.apache.sling.commons.json.JSONObject;
 import org.apache.sling.commons.json.JSONTokener;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.apache.sling.xss.JSONUtil;
+import org.kp.cpc.helpers.SharedConstants;
 import org.kp.cpc.pojos.AgentGroup;
 import org.kp.cpc.pojos.AgentMetadata;
 import org.kp.cpc.services.AgentGroupService;
@@ -134,7 +135,10 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						//		object of the stuff I need from the flush agent.
 						
 						//The agent's transport URI will be in the form:  http://localhost:4503/bin/receive?sling:authRequestLogin=1
-						JSONObject response = getFlushJSON(agent.getConfiguration().getTransportURI());
+						String publishUrl = agent.getConfiguration().getTransportURI();
+						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
+
+						JSONObject response = getFlushJSON(publishUrl);
 						
 						//A dispatcher flush agent transportURI will be in the form:  https://xlzxped0016x.lvdc.kp.org:44301/dispatcher/invalidate.cache
 						try {
@@ -170,7 +174,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 		JSONObject jsonResponse;
 
 		try {
-			URL url = new URL(publishUrl);
+			URL url = new URL(publishUrl + SharedConstants.FLUSH_SERVICE_ENDPOINT);
 			Scanner scanner = new Scanner(url.openStream());
 			String response = scanner.useDelimiter("\\Z").next();
 			jsonResponse = new JSONObject(response);

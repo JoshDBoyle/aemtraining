@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
     <filter root="/apps/content-publication">
-        <exclude pattern="/apps/content-publication/install" />
+        <exclude pattern="/apps/content-publication/install.author" />
+        <exclude pattern="/apps/content-publication/install.publish" />
     </filter>
     <filter root="/apps/cq" mode="update"/>
 </workspaceFilter>
