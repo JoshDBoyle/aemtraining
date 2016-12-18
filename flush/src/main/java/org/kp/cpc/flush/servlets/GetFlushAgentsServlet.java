@@ -65,17 +65,26 @@ public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
     	try {
         	Iterator<Map.Entry<String, Agent>> it = agents.entrySet().iterator();
             while (it.hasNext()) {
-            	JSONObject current = new JSONObject();
-                Map.Entry pair = (Map.Entry)it.next();
-                Agent agent = ((Agent)pair.getValue());
-                AgentConfig config = agent.getConfiguration();
-                current.put("title", config.getName());
-    			current.put("id", config.getId());
-    			current.put("agentId", config.getAgentId());
-    			current.put("paused", agent.getQueue().isPaused());
-    			current.put("transportUri", config.getTransportURI());
-    			jsonArr.put(current);
-                it.remove();
+	            JSONObject current = new JSONObject();
+	            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>)it.next();
+	            Agent agent = ((Agent)pair.getValue());
+	            AgentConfig config = agent.getConfiguration();
+	
+	            if(null != config.getSerializationType() && config.getSerializationType().equals("flush")) {
+	                current.put("title", config.getName());
+	    			current.put("id", config.getId());
+	    			current.put("agentId", config.getAgentId());
+	
+	    			if(null != agent.getQueue()) {
+	    				current.put("paused", agent.getQueue().isPaused());
+	    			} else {
+	    				current.put("paused", false);
+	    			}
+	
+	    			current.put("transportUri", config.getTransportURI());
+	
+	    			jsonArr.put(current);
+	            }
             }
 
     		jsonResponse.put("agents", jsonArr);

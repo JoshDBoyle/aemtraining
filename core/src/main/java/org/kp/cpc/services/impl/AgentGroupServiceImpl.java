@@ -1,13 +1,16 @@
 package org.kp.cpc.services.impl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.felix.scr.annotations.Activate;
@@ -16,16 +19,13 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.jackrabbit.commons.json.JsonParser;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.json.JSONArray;
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
-import org.apache.sling.commons.json.JSONTokener;
 import org.apache.sling.commons.osgi.PropertiesUtil;
-import org.apache.sling.xss.JSONUtil;
 import org.kp.cpc.helpers.SharedConstants;
 import org.kp.cpc.pojos.AgentGroup;
 import org.kp.cpc.pojos.AgentMetadata;
@@ -138,7 +138,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						String publishUrl = agent.getConfiguration().getTransportURI();
 						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
 
-						JSONObject response = getFlushJSON(publishUrl);
+						JSONObject response = getFlushJSON(publishUrl, agent.getConfiguration().getTransportUser(), agent.getConfiguration().getTransportPassword());
 						
 						//A dispatcher flush agent transportURI will be in the form:  https://xlzxped0016x.lvdc.kp.org:44301/dispatcher/invalidate.cache
 						try {
@@ -170,15 +170,30 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 * @return				a JSONObject containing the relevant information for any dispatcher flush agents configured on the publish instance
 	 * @see					JSONObject
 	 */
-	private JSONObject getFlushJSON(String publishUrl) {
+	private JSONObject getFlushJSON(String publishUrl, String transportUser, String transportPassword) {
 		JSONObject jsonResponse;
 
 		try {
+			
 			URL url = new URL(publishUrl + SharedConstants.FLUSH_SERVICE_ENDPOINT);
-			Scanner scanner = new Scanner(url.openStream());
-			String response = scanner.useDelimiter("\\Z").next();
-			jsonResponse = new JSONObject(response);
-			scanner.close();
+			String auth = transportUser + ":" + transportPassword;
+	        String encodedAuth = Base64.getEncoder().encode(auth.getBytes()).toString();
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            //connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
+            
+            InputStream content = (InputStream)connection.getInputStream();
+            BufferedReader in = new BufferedReader (new InputStreamReader(content));
+            String line;
+            String total = "";
+            while ((line = in.readLine()) != null) {
+                total += line;
+            }
+
+            return new JSONObject(total);
 		} catch(MalformedURLException e) {
 			jsonResponse = new JSONObject();
 			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON");
