@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -138,7 +137,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						String publishUrl = agent.getConfiguration().getTransportURI();
 						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
 
-						JSONObject response = getFlushJSON(publishUrl, agent.getConfiguration().getTransportUser(), agent.getConfiguration().getTransportPassword());
+						JSONObject response = getFlushJSON(publishUrl, agent.getId());
 						
 						//A dispatcher flush agent transportURI will be in the form:  https://xlzxped0016x.lvdc.kp.org:44301/dispatcher/invalidate.cache
 						try {
@@ -170,20 +169,17 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 * @return				a JSONObject containing the relevant information for any dispatcher flush agents configured on the publish instance
 	 * @see					JSONObject
 	 */
-	private JSONObject getFlushJSON(String publishUrl, String transportUser, String transportPassword) {
+	private JSONObject getFlushJSON(String publishUrl, String authorAgentId) {
 		JSONObject jsonResponse;
 
 		try {
 			
 			URL url = new URL(publishUrl + SharedConstants.FLUSH_SERVICE_ENDPOINT);
-			String auth = transportUser + ":" + transportPassword;
-	        String encodedAuth = Base64.getEncoder().encode(auth.getBytes()).toString();
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-            //connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
             
             InputStream content = (InputStream)connection.getInputStream();
             BufferedReader in = new BufferedReader (new InputStreamReader(content));
@@ -193,7 +189,11 @@ public class AgentGroupServiceImpl implements AgentGroupService {
                 total += line;
             }
 
-            return new JSONObject(total);
+            jsonResponse = new JSONObject(total);
+            
+    		if(null != jsonResponse && jsonResponse.has("agents")) {
+    			jsonResponse.put("authorAgentId", authorAgentId);
+    		}
 		} catch(MalformedURLException e) {
 			jsonResponse = new JSONObject();
 			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON");
@@ -204,7 +204,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 			jsonResponse = new JSONObject();
 			log.error("IOException caught in AgentGroupService.getFlushJSON");
 		}
-
+		
 		return jsonResponse;
 	}
 	
