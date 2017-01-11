@@ -90,9 +90,9 @@ $(document).ready(function() {
   });
 
   /**
-   * GROUP TOGGLING
+   * GROUP PAUSING/UNPAUSING
    */
-  $('.group-toggle').on('click', function(event) {
+  $('#pause-group-btn, #unpause-group-btn').on('click', function(event) {
 	  var groupToggle = event.currentTarget;
 	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
 	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
@@ -104,6 +104,24 @@ $(document).ready(function() {
 		  var $agent = $(parent.parentElement.parentElement);
 
 		  toggle.checked = !pause;
+		  
+		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'pause': pause }, function(data) {
+			  if(data.agentId && data.agentId !== '') {
+				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
+			  }
+		  });
+	  }
+  });
+  
+  /**
+   * GROUP CACHE INVALIDATION
+   */
+  $('#clear-group-cache-btn').on('click', function(event) {
+	  var groupToggle = event.currentTarget;
+	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.flush-agent');
+
+	  for(var i = 0; i < individualToggles.length; i++) {
+		  var toggle = individualToggles[i];
 		  
 		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'pause': pause }, function(data) {
 			  if(data.agentId && data.agentId !== '') {

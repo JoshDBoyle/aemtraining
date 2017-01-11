@@ -6,7 +6,9 @@
 	display: inline-block;
     margin: 5px;
     width: 45%;
-    height: 225px;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    background-color: white;
+    border-radius: 20px;
 }
 
 .agent-header {
@@ -22,6 +24,7 @@
     min-height: 30px;
     margin-top: 13px;
     margin-left: 15px;
+    font-size: 16px;
 }
 
 .agent-toggle {
@@ -36,6 +39,7 @@
 	height: 135px;
 	background: #DFDFDF;
 	border: 1px solid black;
+	border-radius: 20px;
 }
 
 .agent-queue a {
@@ -172,6 +176,9 @@
   	float: left;
 }
 
+.coral-Well {
+	border: 1px solid #333;
+}
 .coral-Table-cell .led-box {
 	width: 100%;
 }
@@ -276,4 +283,27 @@
 
 .no-agents {
 	margin: 15px;
+}
+
+.flush-agents {
+	margin-top: .9375rem
+}
+
+.flush-agents .coral-Well {
+	height: 40px;
+    background-color: #AAA;
+    border-radius: 20px;
+}
+
+.flush-agents .flush-id {
+	float: left;
+    width: auto;
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: auto;
+    font-size: 16px;
+}
+
+.flush-agents button {
+	float: right;
 }

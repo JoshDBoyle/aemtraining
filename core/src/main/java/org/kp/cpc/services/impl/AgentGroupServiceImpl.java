@@ -18,8 +18,6 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.json.JSONArray;
 import org.apache.sling.commons.json.JSONException;
@@ -27,7 +25,8 @@ import org.apache.sling.commons.json.JSONObject;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.kp.cpc.helpers.SharedConstants;
 import org.kp.cpc.pojos.AgentGroup;
-import org.kp.cpc.pojos.AgentMetadata;
+import org.kp.cpc.pojos.FlushAgentMetadata;
+import org.kp.cpc.pojos.ReplicationAgentMetadata;
 import org.kp.cpc.services.AgentGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,15 +64,13 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	private List<AgentGroup> agentGroups;
 	
 	@Reference
-	AgentManager agentMgr;
+	private AgentManager agentMgr;
 	
 	@Reference
-	ResourceResolverFactory factory;
+	private ResourceResolverFactory factory;
 
 	private Map<String, Agent> agents;
 	private List<AgentConfig> allAgentConfigs;
-	
-	private ResourceResolver resolver;
 	
 	private static final Logger log = LoggerFactory.getLogger(AgentGroupServiceImpl.class);
 	
@@ -84,12 +81,6 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 */
 	@Activate
 	protected void activate(Map<String, Object> properties) {
-		try {
-			resolver = factory.getAdministrativeResourceResolver(null);
-		} catch (LoginException e) {
-			e.printStackTrace();
-		}
-
 		agents = agentMgr.getAgents();
 		agentGroupTitles = PropertiesUtil.toStringArray(properties.get("agent.groups"));
 		agentLists = PropertiesUtil.toStringArray(properties.get("agent.lists"));
@@ -111,48 +102,59 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 		agentGroups = new ArrayList<AgentGroup>();
 
 		if(null != agentLists) {
-			// For each group title that was specified via Felix, build a List<AgentGroup> of all the specified (in Felix) agents per group
+			// For each agent group that's specified in Felix
 			for(int i = 0; i < agentGroupTitles.length; i++) {
 				String[] agentIdsPerGroup = agentLists[i].split(",");
-				List<AgentMetadata> replicationAgentMetasPerGroup = new ArrayList<AgentMetadata>();
-				List<AgentMetadata> flushAgentMetasPerGroup = new ArrayList<AgentMetadata>();
 				
-				// For each agentId per group, let's add them to a List<AgentMetadata> so we can build an official AgentGroup
-				// Basically we're just converting from String[] to List<AgentGroup> here
+				// Will hold a List of ReplicationAgentMetadata where each instance represents a single replication agent configured on this author
+				// instance.  Each replication agent on this author instance is then associated to n number of flush agents on its corresponding
+				// publish instance.
+				List<ReplicationAgentMetadata> replicationAgentMetasPerGroup = new ArrayList<ReplicationAgentMetadata>();
+				
+				// Each agent group title can have n number of actual replication agents configured to be part of that group so let's loop through the
+				// the ids specified in Felix for this particular group
 				for(int j = 0; j < agentIdsPerGroup.length; j++) {
 					// If the Map of all agents we got from the AgentManager contains this id as it was specified via Felix
-					// Then let's get that Agent's AgentMetadata and add it to the List<AgentMetadata> for our AgentGroup
+					// then let's build out an AgentMetadata object for this agent
 					if(agents.containsKey(agentIdsPerGroup[j])) {
 						Agent agent = agents.get(agentIdsPerGroup[j]);
 						ReplicationQueue queue = agent.getQueue();
-						replicationAgentMetasPerGroup.add(new AgentMetadata(agent.getConfiguration(), queue.isPaused()));
-						//TODO: Call the new path-based servlet on the publish instance this replication agent points to.
-						//		For each flush agent it returns, add a new AgentMetadata to flushAgentMetasPerGroup.  I
-						//		won't be able to pass a Java object over http (so I can't pass back an AgentConfig and use
-						//		that to and queue.isPaused() to instantiate a new AgentMetadata) so I'll add a new constructor
-						//		to AgentMetadata that sets the member variables individually and I'll just retrieve a JSON
-						//		object of the stuff I need from the flush agent.
 						
-						//The agent's transport URI will be in the form:  http://localhost:4503/bin/receive?sling:authRequestLogin=1
+						// Each replication agent can have n number of associated flush agents on the publish instance it points to so we'll need to
+						// get a List of FlushAgentMetadata first so we can build a ReplicationAgentMetadata object for this configured agent
+						List<FlushAgentMetadata> flushAgentsPerReplicationAgent = new ArrayList<FlushAgentMetadata>();
 						String publishUrl = agent.getConfiguration().getTransportURI();
+						
+						// Transport URIs will be in the form:  [protocol]://[server]:[port]/bin/receive?sling:authRequestLogin=1 so let's
+						// parse out the publish instance's URL from it
 						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
 
-						JSONObject response = getFlushJSON(publishUrl, agent.getId());
+						// For this replication agent's corresponding publish instance, let's call our publish-side servlet and get a JSONObject that holds
+						// all the data we need about flush agents configured on that instance
+						JSONObject response = getFlushJSON(publishUrl);
 						
-						//A dispatcher flush agent transportURI will be in the form:  https://xlzxped0016x.lvdc.kp.org:44301/dispatcher/invalidate.cache
 						try {
-							JSONArray flushAgents = response.getJSONArray("agents");
-							int flushAgentCount = flushAgents.length();
+							JSONArray flushAgentsArr = response.getJSONArray("agents");
+							int flushAgentCount = flushAgentsArr.length();
+							
+							// Let's build our List of FlushAgentMetadata that we can put inside our ReplicationAgentMetadata object that represents this
+							// particular configured replication agent
 							for(int k = 0; k < flushAgentCount; k++) {
-								flushAgentMetasPerGroup.add(new AgentMetadata(flushAgents.getJSONObject(k)));
+								flushAgentsPerReplicationAgent.add(new FlushAgentMetadata(flushAgentsArr.getJSONObject(k)));
 							}
 						} catch (JSONException e) {
 							log.error("JSONException caught in AgentGroupServiceImpl.getAgentGroups while attempting to read from flush agents");
 						}
+						
+						// This completes our build of a single ReplicationAgentMetadata that holds n number of FlushAgentMetadata in a List
+						// Let's add our new ReplicationAgentMetadata to our ongoing list of ReplicationAgentMetadata object for this one AgentGroup
+						replicationAgentMetasPerGroup.add(new ReplicationAgentMetadata(agent.getConfiguration(), queue.isPaused(), flushAgentsPerReplicationAgent));
 					}
 				}
 	
-				agentGroups.add(new AgentGroup(replicationAgentMetasPerGroup, flushAgentMetasPerGroup, agentGroupTitles[i]));
+				// We've finished with one Felix-configured group of replication agents so let's add it to the ongoing List of AgentGroup and
+				// move on to the next configured group!
+				agentGroups.add(new AgentGroup(replicationAgentMetasPerGroup, agentGroupTitles[i]));
 			}
 		} else {
 			log.error("No agent groups have been configured in the Felix console so we were unable to display any in the Content Publication Console.");
@@ -169,7 +171,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 * @return				a JSONObject containing the relevant information for any dispatcher flush agents configured on the publish instance
 	 * @see					JSONObject
 	 */
-	private JSONObject getFlushJSON(String publishUrl, String authorAgentId) {
+	private JSONObject getFlushJSON(String publishUrl) {
 		JSONObject jsonResponse;
 
 		try {
@@ -190,10 +192,6 @@ public class AgentGroupServiceImpl implements AgentGroupService {
             }
 
             jsonResponse = new JSONObject(total);
-            
-    		if(null != jsonResponse && jsonResponse.has("agents")) {
-    			jsonResponse.put("authorAgentId", authorAgentId);
-    		}
 		} catch(MalformedURLException e) {
 			jsonResponse = new JSONObject();
 			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON");
