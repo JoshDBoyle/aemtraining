@@ -36,7 +36,7 @@ public class FlushCacheServlet extends SlingSafeMethodsServlet {
             String agentPath = request.getParameter("agentPath");
             Resource temp = request.getResourceResolver().resolve(agentPath);
             
-            if(null != temp) {
+/*            if(null != temp) {
             	Agent flushAgent = temp.adaptTo(Agent.class);
 	            HttpClient client = new HttpClient();
 	 
@@ -51,7 +51,7 @@ public class FlushCacheServlet extends SlingSafeMethodsServlet {
 	            post.releaseConnection();
 	            //log the results
 	            logger.info("result: " + post.getResponseBodyAsString());
-            }
+            }*/
         }catch(Exception e){
             logger.error("Flushcache servlet exception: " + e.getMessage());
         }

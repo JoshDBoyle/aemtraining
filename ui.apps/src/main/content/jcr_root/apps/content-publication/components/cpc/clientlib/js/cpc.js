@@ -47,6 +47,10 @@ function refreshQueues() {
 	}
 }
 
+function toggleSelectAll(event) {
+	debugger;
+}
+
 $(document).ready(function() {
   var legendModal = new CUI.Modal({
 	 element : '#legend-modal',
@@ -142,6 +146,9 @@ $(document).ready(function() {
 
 	  $.get("/bin/cpc/querybydate", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
 		  var results = $('#query-by-date-results');
+		  
+		  $('#select-all').off();
+		  
 		  results.empty();
 		  if(null == data.results) {
 			  var a         = document.createElement('a');
@@ -153,7 +160,13 @@ $(document).ready(function() {
 			  a.click();
 			  $(a).remove();
 		  } else {
-			  var header = "<li>";
+			  var header = 	"<li><h4>" +
+						  	"	<label class=\"coral-Checkbox\">" + 
+				  			"		<input id=\"select-all\" class=\"coral-Checkbox-input\" type=\"checkbox\" name=\"c2\" value=\"2\">" +
+				  			"		<span class=\"coral-Checkbox-checkmark\"></span>" +
+				  			"		<span class=\"coral-Checkbox-description\"></span>" +
+				  			"	</label>" +
+				  			"</h4>";
 			  for(var i = 0; i < data.headers.length; i++) {
 				  header += "<h4>" + data.headers[i] + "</h4>";
 			  }
@@ -163,12 +176,27 @@ $(document).ready(function() {
 
 			  for(var i = 0; i < data.results.length; i++) {
 				  results.append(	"<li>" +
+						  			"	<div><label class=\"coral-Checkbox\">" + 
+						  			"		<input class=\"coral-Checkbox-input\" type=\"checkbox\" name=\"c2\" value=\"2\">" +
+						  			"		<span class=\"coral-Checkbox-checkmark\"></span>" +
+						  			"		<span class=\"coral-Checkbox-description\"></span>" +
+						  			"	</label></div>" +
 				  					"	<div><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></div>" +
 				  					"	<div>" + data.results[i].columnb + "</div>" +
 				  					"	<div>" + data.results[i].columnc + "</div>" +
 				  					"</li>");
 			  }
 		  }
+		  
+		  /**
+		   * REPORT MODAL SELECTION
+		   */
+		  $('#select-all').on('change', function(event) {
+			  var checked = $(this).is(':checked');
+			  $('li div label input').each(function() {
+		      	$(this).attr('checked', checked);
+		      });
+			});
 	  });
   });
   
