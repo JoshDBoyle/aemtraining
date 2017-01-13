@@ -52,6 +52,9 @@ function toggleSelectAll(event) {
 }
 
 $(document).ready(function() {
+
+  var checkedCount = 0;
+	
   var legendModal = new CUI.Modal({
 	 element : '#legend-modal',
 	 visible : false
@@ -143,7 +146,11 @@ $(document).ready(function() {
 	  var end = $('#enddate').val();
 	  var csv = event.currentTarget.classList.contains('query-by-date-button-csv');
 	  var type = $('#report-type').val();
+	  var $activateSelectedBtn = $('#activate-selected-btn');
 
+	  checkedCount = 0;
+	  $activateSelectedBtn.attr('disabled', true);
+	  
 	  $.get("/bin/cpc/querybydate", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
 		  var results = $('#query-by-date-results');
 		  
@@ -177,7 +184,7 @@ $(document).ready(function() {
 			  for(var i = 0; i < data.results.length; i++) {
 				  results.append(	"<li>" +
 						  			"	<div><label class=\"coral-Checkbox\">" + 
-						  			"		<input class=\"coral-Checkbox-input\" type=\"checkbox\" name=\"c2\" value=\"2\">" +
+						  			"		<input class=\"select-one coral-Checkbox-input\" type=\"checkbox\" name=\"c2\" value=\"2\">" +
 						  			"		<span class=\"coral-Checkbox-checkmark\"></span>" +
 						  			"		<span class=\"coral-Checkbox-description\"></span>" +
 						  			"	</label></div>" +
@@ -191,13 +198,39 @@ $(document).ready(function() {
 		  /**
 		   * REPORT MODAL SELECTION
 		   */
-		  $('#select-all').on('change', function(event) {
+		  $('#select-all').on('click', function(event) {
 			  var checked = $(this).is(':checked');
 			  $('li div label input').each(function() {
 		      	$(this).attr('checked', checked);
+		      	if(checked)
+		      		checkedCount += 1;
+		      	else
+		      		checkedCount -= 1;
+		      	
+		      	if(checkedCount >= 1)
+		      		$activateSelectedBtn.attr('disabled', false);
+		      	else
+		      		$activateSelectedBtn.attr('disabled', true);
 		      });
-			});
+		  });
+		  
+		  $('.select-one').on('click', function(event) {
+			  if($(this).is(':checked'))
+				  checkedCount += 1;
+			  else
+				  checkedCount -= 1;
+			  
+			  if(checkedCount >= 1)
+				  $activateSelectedBtn.attr('disabled', false);
+			  else
+				  $activateSelectedBtn.attr('disabled', true);
+		  });
 	  });
+  });
+  
+  $('#activate-selected-btn').on('click', function(event) {
+	  //Get all paths from selected rows and pass them as a comma-delimited string to the servlet in a parameter named "paths"
+	  $.post('/bin/cpc/activateselected')
   });
   
   refreshQueues();
