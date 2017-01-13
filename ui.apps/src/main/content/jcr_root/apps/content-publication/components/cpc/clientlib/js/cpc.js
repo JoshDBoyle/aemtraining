@@ -167,32 +167,41 @@ $(document).ready(function() {
 			  a.click();
 			  $(a).remove();
 		  } else {
-			  var header = 	"<li><h4>" +
-						  	"	<label class=\"coral-Checkbox\">" + 
-				  			"		<input id=\"select-all\" class=\"coral-Checkbox-input\" type=\"checkbox\" name=\"c2\" value=\"2\">" +
-				  			"		<span class=\"coral-Checkbox-checkmark\"></span>" +
-				  			"		<span class=\"coral-Checkbox-description\"></span>" +
-				  			"	</label>" +
-				  			"</h4>";
+			  var table = 	"<table class='coral-Table'>" +
+			  				"	<thead>" +
+			  				"		<tr class='coral-Table-row'>" +
+						  	"			<th class='coral-Table-headerCell'>" +
+						  	"				<label class='coral-Checkbox'>" + 
+				  			"					<input id='select-all' class='coral-Checkbox-input' type='checkbox' name='c2' value='2'>" +
+				  			"					<span class='coral-Checkbox-checkmark'></span>" +
+				  			"					<span class='coral-Checkbox-description'></span>" +
+				  			"				</label>" +
+				  			"			</th>";
+
 			  for(var i = 0; i < data.headers.length; i++) {
-				  header += "<h4>" + data.headers[i] + "</h4>";
+				  table += "<th class='coral-Table-headerCell'>" + data.headers[i] + "</th>";
 			  }
 
-			  header += "</li>";
-			  results.append(header);
+			  table += "</tr></thead><tbody>";
 
 			  for(var i = 0; i < data.results.length; i++) {
-				  results.append(	"<li>" +
-						  			"	<div><label class=\"coral-Checkbox\">" + 
-						  			"		<input class=\"select-one coral-Checkbox-input\" type=\"checkbox\" name=\"c2\" value=\"2\">" +
-						  			"		<span class=\"coral-Checkbox-checkmark\"></span>" +
-						  			"		<span class=\"coral-Checkbox-description\"></span>" +
-						  			"	</label></div>" +
-				  					"	<div><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></div>" +
-				  					"	<div>" + data.results[i].columnb + "</div>" +
-				  					"	<div>" + data.results[i].columnc + "</div>" +
-				  					"</li>");
+				  table +=	"<tr class='coral-Table-row'>" +
+				  			"	<td class='coral-Table-cell'>" +
+				  			"		<label class='coral-Checkbox'>" + 
+				  			"			<input class='select-one coral-Checkbox-input' type='checkbox' name='c2' value='2'>" +
+				  			"			<span class='coral-Checkbox-checkmark'></span>" +
+				  			"			<span class='coral-Checkbox-description'></span>" +
+				  			"		</label>" +
+				  			"   </td>" +
+		  					"	<td class='coral-Table-cell'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
+		  					"	<td class='coral-Table-cell'>" + data.results[i].columnb + "</td>" +
+		  					"	<td class='coral-Table-cell'>" + data.results[i].columnc + "</td>" +
+		  					"</tr>";
 			  }
+			  
+			  table += '</tbody></table>';
+			  
+			  results.append(table);
 		  }
 		  
 		  /**
@@ -200,7 +209,7 @@ $(document).ready(function() {
 		   */
 		  $('#select-all').on('click', function(event) {
 			  var checked = $(this).is(':checked');
-			  $('li div label input').each(function() {
+			  $('.select-one').each(function() {
 		      	$(this).attr('checked', checked);
 		      	if(checked)
 		      		checkedCount += 1;
