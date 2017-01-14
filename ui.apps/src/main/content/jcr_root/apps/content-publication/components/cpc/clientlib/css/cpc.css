@@ -36,6 +36,14 @@
 
 .view-log-btn {
 	float: right;
+	display: inline-block;
+	margin-right: 15px;
+	margin-top: 7px;
+}
+
+.view-queue-btn {
+	float: right;
+	display: inline-block;
 	margin-right: 15px;
 	margin-top: 7px;
 }
@@ -120,19 +128,19 @@
 }
 
 #query-by-date-results th:nth-child(1) {
-	width: 30px;
+	width: 35px;
 }
 
 #query-by-date-results th:nth-child(2) {
-	width: 325px;
+	width: 370px;
 }
 
 #query-by-date-results th:nth-child(3) {
-	width: 100px;
+	width: 130px;
 }
 
 #query-by-date-results th:nth-child(4) {
-	width: 225px;
+	width: 100px;
 }
 
 #query-by-date-results td:nth-child(1) {
@@ -140,11 +148,11 @@
 }
 
 #query-by-date-results td:nth-child(2) {
-	width: 400px;
+	width: 370px;
 }
 
 #query-by-date-results td:nth-child(3) {
-	width: 100px;
+	width: 130px;
 }
 
 #query-by-date-results td:nth-child(4) {
@@ -153,6 +161,10 @@
 
 #query-by-date-results tr {
 	background-color: #FFF;
+	border: none;
+}
+
+#query-by-date-results table {
 	border: none;
 }
 

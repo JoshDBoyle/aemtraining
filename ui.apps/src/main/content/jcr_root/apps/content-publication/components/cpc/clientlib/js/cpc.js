@@ -139,6 +139,24 @@ $(document).ready(function() {
   });
   
   /**
+   * VIEW AGENT LOG BUTTON
+   */
+  $('.view-log-btn').on('click', function(event) {
+	  var $this = $(this);
+	  
+	  $.get('/bin/cpc/viewagentlog', { id: $(this).parent().parent().attr('data-agent') }, function(data) {
+		  var $well = $this.parent().parent().find('.agent-queue').first();
+		  
+		  $well.empty();
+		  $well.append(data);
+	  });
+  });
+  
+  $('.view-queue-btn').on('click', function(event) {
+	  refreshQueue($(this).parent().parent());
+  });
+  
+  /**
    * REPORTING OPTIONS
    */
   $('.query-by-date-button, .query-by-date-button-csv').on('click', function(event) {

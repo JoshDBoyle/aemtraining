@@ -1,7 +1,9 @@
 package org.kp.cpc.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.servlet.ServletException;
 
@@ -23,8 +25,8 @@ import com.day.cq.replication.AgentManager;
  */
 @SlingServlet(
 	    methods = { "GET" }, 
-	    paths = {"/bin/cpc/activateselected" }, 
-	    name = "org.kp.cpc.services.ActivateSelectedServlet")
+	    paths = {"/bin/cpc/viewagentlog" }, 
+	    name = "org.kp.cpc.services.ViewAgentLogServlet")
 public class ViewAgentLogServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
 
@@ -35,7 +37,10 @@ public class ViewAgentLogServlet extends SlingAllMethodsServlet {
     
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
     	String agentId = request.getParameter("id");
-    	
+    	PrintWriter out = response.getWriter();
+
+    	response.setContentType("text/html");
+
     	if(null != agentId) {
     		Agent agent = agentMgr.getAgents().get(agentId);
     		
@@ -44,9 +49,10 @@ public class ViewAgentLogServlet extends SlingAllMethodsServlet {
 
     			// Build the response for display client-side
     			if(null != lines) {
-		    		while(lines.iterator().hasNext()) {
-		    			String line = lines.iterator().next();
-		                
+    				Iterator<String> it = lines.iterator();
+		    		while(it.hasNext()) {
+		    			String temp = it.next();
+		    			out.println(temp + "<br>");
 		    		}
     			}
     		}
