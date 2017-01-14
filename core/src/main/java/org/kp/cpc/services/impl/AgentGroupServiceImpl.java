@@ -174,8 +174,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	private JSONObject getFlushJSON(String publishUrl) {
 		JSONObject jsonResponse;
 
-		try {
-			
+		try {			
 			URL url = new URL(publishUrl + SharedConstants.FLUSH_SERVICE_ENDPOINT);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

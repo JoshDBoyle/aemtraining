@@ -129,10 +129,17 @@ $(document).ready(function() {
 
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
-		  
-		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'pause': pause }, function(data) {
-			  if(data.agentId && data.agentId !== '') {
-				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
+		  $.ajax({
+			  url: toggle.dataset.transport-uri,
+			  type: 'post',
+			  headers: {
+				  'CQ-Action': 'Activate',   
+				  'CQ-Handle': '/',
+				  'Content-length': '0'
+			  },
+			  dataType: 'json',
+			  success: function (data) {
+		        console.info(data);
 			  }
 		  });
 	  }

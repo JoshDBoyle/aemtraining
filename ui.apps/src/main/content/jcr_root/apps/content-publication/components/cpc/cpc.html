@@ -81,7 +81,7 @@
             
             <!-- List of all corresponding flush agents.  item refers to one ReplicationAgentMetadata in our List<ReplicationAgentMetadata> -->
             <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}">
-              <div class="flush-agent coral-Well" data-transport-uri="${flush.transportUri}">
+              <div class="flush-agent coral-Well" data-transport-uri="${flush.transportUri}" data-id="${flush.agentId}">
                 <div class="flush-id">${flush.agentId}</div>
                 <button class="coral-Button coral-Button--primary">Clear Cache</button>
               </div>
