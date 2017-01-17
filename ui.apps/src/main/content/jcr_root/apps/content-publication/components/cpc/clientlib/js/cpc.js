@@ -3,7 +3,7 @@
  */
 function clearCache(toggle) {
 	  $.ajax({
-		  url: toggle.dataset.transport-uri,
+		  url: toggle.dataset.transporturi,
 		  type: 'post',
 		  headers: {
 			  'CQ-Action': 'Activate',   
