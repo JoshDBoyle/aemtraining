@@ -7,8 +7,7 @@ function clearCache(toggle) {
 		  type: 'post',
 		  headers: {
 			  'CQ-Action': 'Activate',   
-			  'CQ-Handle': '/',
-			  'Content-length': '0'
+			  'CQ-Handle': '/'
 		  },
 		  dataType: 'json',
 		  success: function (data) {
