@@ -8,7 +8,6 @@
     width: 45%;
     box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
     background-color: white;
-    border-radius: 20px;
 }
 
 .agent-header {
@@ -50,10 +49,9 @@
 
 .agent-queue {
 	overflow: scroll;
-	height: 135px;
+	height: 175px;
 	background: #DFDFDF;
 	border: 1px solid black;
-	border-radius: 20px;
 }
 
 .agent-queue a {
@@ -127,34 +125,22 @@
 	margin: 10px;
 }
 
-#query-by-date-results th:nth-child(1) {
-	width: 35px;
-}
-
-#query-by-date-results th:nth-child(2) {
-	width: 370px;
-}
-
-#query-by-date-results th:nth-child(3) {
-	width: 130px;
-}
-
-#query-by-date-results th:nth-child(4) {
-	width: 100px;
-}
-
+#query-by-date-results th:nth-child(1),
 #query-by-date-results td:nth-child(1) {
 	width: 35px;
 }
 
+#query-by-date-results th:nth-child(2),
 #query-by-date-results td:nth-child(2) {
 	width: 370px;
 }
 
+#query-by-date-results th:nth-child(3),
 #query-by-date-results td:nth-child(3) {
 	width: 130px;
 }
 
+#query-by-date-results th:nth-child(4),
 #query-by-date-results td:nth-child(4) {
 	width: 100px;
 }
@@ -310,7 +296,6 @@
 .flush-agents .coral-Well {
 	height: 40px;
     background-color: #AAA;
-    border-radius: 20px;
 }
 
 .flush-agents .flush-id {

@@ -1,4 +1,22 @@
 /**
+ * Clears the cache for a single dispatcher
+ */
+function clearCache(toggle) {
+	  $.ajax({
+		  url: toggle.dataset.transport-uri,
+		  type: 'post',
+		  headers: {
+			  'CQ-Action': 'Activate',   
+			  'CQ-Handle': '/',
+			  'Content-length': '0'
+		  },
+		  dataType: 'json',
+		  success: function (data) {
+	        console.info('Cache successfully cleared: ' + data);
+		  }
+	  });
+}
+/**
  * Sets the status light for an individual agent
  */
 function setQueueStatus($agent, data) {
@@ -31,7 +49,7 @@ function refreshQueue($agent) {
 
 		if(data.queue.length > 0) {
 			for(var j = 0; j < data.queue.length; j++) {
-				$queue.append("<a href=\"" + data.queue[j].path + "\">" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
+				$queue.append("<a target='_blank' href='" + data.queue[j].path + ".html'>" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
 			}
 		}
 	});
@@ -47,19 +65,17 @@ function refreshQueues() {
 	}
 }
 
-function toggleSelectAll(event) {
-	debugger;
-}
-
+/**
+ * Entry listener for document.ready where we establish our CoralUI objects and add all listeners
+ */
 $(document).ready(function() {
-
   var checkedCount = 0;
-	
+
   var legendModal = new CUI.Modal({
 	 element : '#legend-modal',
 	 visible : false
   });
-  
+
   var agentsInfoModal = new CUI.Modal({
     element : '#agents-info-modal',
     visible : false
@@ -70,6 +86,9 @@ $(document).ready(function() {
 	 visible : false
   });
 
+  /**
+   * COMMAND BAR MODAL LISTENERS
+   */
   $('#legend-button').on('click', function(event) {
 	  legendModal.show();
   });
@@ -83,7 +102,7 @@ $(document).ready(function() {
   });
 
   /**
-   * INDIVIDUAL AGENT TOGGLING
+   * INDIVIDUAL AGENT QUEUE PAUSING/UNPAUSING
    */
   $('.agent-toggle').on('click', function(event) {
 	  var toggle = event.currentTarget;
@@ -97,7 +116,7 @@ $(document).ready(function() {
   });
 
   /**
-   * GROUP PAUSING/UNPAUSING
+   * GROUP AGENT QUEUE PAUSING/UNPAUSING
    */
   $('#pause-group-btn, #unpause-group-btn').on('click', function(event) {
 	  var groupToggle = event.currentTarget;
@@ -119,7 +138,14 @@ $(document).ready(function() {
 		  });
 	  }
   });
-  
+
+  /**
+   * INDIVIDUAL CACHE INVALIDATION
+   */
+  $('.clear-cache-btn').on('click', function(event) {
+	  clearCache(event.currentTarget);
+  });
+
   /**
    * GROUP CACHE INVALIDATION
    */
@@ -128,20 +154,7 @@ $(document).ready(function() {
 	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.flush-agent');
 
 	  for(var i = 0; i < individualToggles.length; i++) {
-		  var toggle = individualToggles[i];
-		  $.ajax({
-			  url: toggle.dataset.transport-uri,
-			  type: 'post',
-			  headers: {
-				  'CQ-Action': 'Activate',   
-				  'CQ-Handle': '/',
-				  'Content-length': '0'
-			  },
-			  dataType: 'json',
-			  success: function (data) {
-		        console.info(data);
-			  }
-		  });
+		  clearCache(individualToggles[i]);  
 	  }
   });
   
@@ -164,7 +177,7 @@ $(document).ready(function() {
   });
   
   /**
-   * REPORTING OPTIONS
+   * REPORTING OPTIONS WITHIN REPORT MODAL
    */
   $('.query-by-date-button, .query-by-date-button-csv').on('click', function(event) {
 	  var start = $('#startdate').val();
@@ -230,7 +243,9 @@ $(document).ready(function() {
 		  }
 		  
 		  /**
-		   * REPORT MODAL SELECTION
+		   * SELECT ALL LISTENER FOR REPORT MODAL
+		   * 
+		   * This listener is added here as opposed to document.ready because it won't bind until there's results
 		   */
 		  $('#select-all').on('click', function(event) {
 			  var checked = $(this).is(':checked');
@@ -248,6 +263,11 @@ $(document).ready(function() {
 		      });
 		  });
 		  
+		  /**
+		   * SELECT ONE ROW LISTENER FOR REPORT MODAL
+		   * 
+		   * This listener is added here as opposed to document.ready because it won't bind until there's results
+		   */
 		  $('.select-one').on('click', function(event) {
 			  if($(this).is(':checked'))
 				  checkedCount += 1;
@@ -261,11 +281,24 @@ $(document).ready(function() {
 		  });
 	  });
   });
-  
+
+  /**
+   * ACTIVATE SELECTED ROWS LISTENER FOR REPORT MODAL
+   * 
+   * For each selected row's content path, performs replication
+   */
   $('#activate-selected-btn').on('click', function(event) {
-	  //Get all paths from selected rows and pass them as a comma-delimited string to the servlet in a parameter named "paths"
-	  $.post('/bin/cpc/activateselected')
+	  var $selectedInputs = $('#query-by-date-results .select-one:checked');
+	  var pathsToReplicate = '';
+	  
+	  $selectedInputs.each(function() {
+		  pathsToReplicate += $(this).parent().parent().next().text() + ',';
+	  });
+	  	
+	  $.post('/bin/cpc/activateselected', { 'paths': pathsToReplicate.slice(0, -1) }, function(data) {
+		  console.log('Replication has finished with the following data object returned: ' + data);
+	  });
   });
-  
+
   refreshQueues();
 })

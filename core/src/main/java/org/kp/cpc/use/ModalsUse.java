@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.kp.cpc.services.impl.AgentGroupServiceImpl;
 
-import com.adobe.cq.sightly.WCMUsePojo;
 import com.day.cq.replication.AgentConfig;
 
 /**
@@ -12,11 +11,13 @@ import com.day.cq.replication.AgentConfig;
  * 
  * @author joshua.boyle
  */
-public class ModalsUse extends WCMUsePojo {
+public class ModalsUse extends CPCBaseUse {
 	private List<AgentConfig> allAgentConfigs;
 
     @Override
     public void activate() throws Exception {
+    	super.activate();
+
     	AgentGroupServiceImpl ags = getSlingScriptHelper().getService(AgentGroupServiceImpl.class);
     	if(null != ags) {
     		allAgentConfigs = ags.getAllAgentConfigs();
