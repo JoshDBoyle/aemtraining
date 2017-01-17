@@ -143,7 +143,7 @@ $(document).ready(function() {
    * INDIVIDUAL CACHE INVALIDATION
    */
   $('.clear-cache-btn').on('click', function(event) {
-	  clearCache(event.currentTarget);
+	  clearCache(event.currentTarget.parentElement);
   });
 
   /**
