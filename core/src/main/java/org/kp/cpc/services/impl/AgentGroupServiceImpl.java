@@ -132,6 +132,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						// For this replication agent's corresponding publish instance, let's call our publish-side servlet and get a JSONObject that holds
 						// all the data we need about flush agents configured on that instance
 						JSONObject response = getFlushJSON(publishUrl);
+						log.error("JOSH HERE'S THE JSON THAT WAS RECEIVED FROM PUBLISH: " + response.toString());
 						
 						try {
 							JSONArray flushAgentsArr = response.getJSONArray("agents");
