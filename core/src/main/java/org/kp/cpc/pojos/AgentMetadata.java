@@ -28,4 +28,8 @@ public class AgentMetadata {
 	public boolean getPaused() {
 		return paused;
 	}
+	
+	public String getTransportUri() {
+		return transportUri;
+	}
 }
