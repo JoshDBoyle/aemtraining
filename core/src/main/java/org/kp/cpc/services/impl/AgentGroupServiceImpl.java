@@ -128,7 +128,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						// Transport URIs will be in the form:  [protocol]://[server]:[port]/bin/receive?sling:authRequestLogin=1 so let's
 						// parse out the publish instance's URL from it
 						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
-
+						log.error("JOSH HERE'S THE PUBLISH URL WE'RE CALLING: " + publishUrl);
 						// For this replication agent's corresponding publish instance, let's call our publish-side servlet and get a JSONObject that holds
 						// all the data we need about flush agents configured on that instance
 						JSONObject response = getFlushJSON(publishUrl);
@@ -137,7 +137,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						try {
 							JSONArray flushAgentsArr = response.getJSONArray("agents");
 							int flushAgentCount = flushAgentsArr.length();
-							
+							log.error("JOSH WE HAVE THE FOLLOWING NUMBER OF FLUSH AGENTS THAT CAME BACK FROM PUBLISH: " + flushAgentsArr.length());
 							// Let's build our List of FlushAgentMetadata that we can put inside our ReplicationAgentMetadata object that represents this
 							// particular configured replication agent
 							for(int k = 0; k < flushAgentCount; k++) {
