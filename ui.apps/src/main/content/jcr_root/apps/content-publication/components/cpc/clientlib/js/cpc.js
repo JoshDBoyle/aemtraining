@@ -2,19 +2,13 @@
  * Clears the cache for a single dispatcher
  */
 function clearCache(toggle) {
-	  $.ajax({
-		  url: toggle.dataset.transporturi,
-		  type: 'post',
-		  headers: {
-			  'CQ-Action': 'Activate',   
-			  'CQ-Handle': '/'
-		  },
-		  dataType: 'json',
-		  success: function (data) {
-	        console.info('Cache successfully cleared: ' + data);
-		  }
-	  });
+	var $agent = $(toggle).closest('.agent');
+
+	$.post('/bin/cpc/flushcache', { 'replicationAgentId': $agent.attr('data-agent'), 'flushAgentId': $(toggle).attr('data-id') }, function(data) {
+		console.log(data);
+	});
 }
+
 /**
  * Sets the status light for an individual agent
  */
@@ -295,6 +289,7 @@ $(document).ready(function() {
 	  });
 	  	
 	  $.post('/bin/cpc/activateselected', { 'paths': pathsToReplicate.slice(0, -1) }, function(data) {
+		  debugger;
 		  console.log('Replication has finished with the following data object returned: ' + data);
 	  });
   });

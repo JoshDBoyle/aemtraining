@@ -53,7 +53,7 @@
 
         <!-- Listing of Replication Agents.  item refers to one AgentGroup in our List<AgentGroup> -->
         <div data-sly-list.agent="${item.replicationAgentMetas}">
-          <div class="agent coral-Well" data-agent="${agent.agentId}">
+          <div class="agent coral-Well" data-agent="${agent.agentId}" data-transporturi="${agent.transportUri}">
             <div class="agent-header">
               <div class="led-box">
                 <div class="led-green"></div>
@@ -80,7 +80,7 @@
             </div>
             
             <!-- List of all corresponding flush agents.  item refers to one ReplicationAgentMetadata in our List<ReplicationAgentMetadata> -->
-            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}">
+            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}" data-sly-test="${cpcuse.canModify}">
               <div class="flush-agent coral-Well" data-transporturi="${flush.transportUri @ context='unsafe'}" data-id="${flush.agentId}">
                 <div class="flush-id">${flush.agentId}</div>
                 <button class="clear-cache-btn coral-Button coral-Button--primary">Clear Cache</button>
