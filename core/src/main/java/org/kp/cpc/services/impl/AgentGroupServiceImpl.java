@@ -7,10 +7,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -164,6 +175,35 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 		return agentGroups;
 	}
 
+	private SSLContext getTrustingSSLContext() {
+	    try {
+	        TrustManager[] trustAllCerts = new TrustManager[] {
+	        		new X509TrustManager() {
+	        			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	    	                return null;
+	    	            }
+	        			
+	    	            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	    	            }
+	    	            
+	    	            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	    	            }
+	        		}
+	        };
+
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        
+	        return sc;
+	    } catch (NoSuchAlgorithmException e) {
+	        log.error("NoSuchAlgorithmException caught in AgentGroupServiceImpl.getTrustingSSLContext() while attempting to build an SSLContext for author==>publish communication.");
+	    } catch (KeyManagementException e) {
+	        log.error("KeyManagementException caught in AgentGroupServiceImpl.getTrustingSSLContext() while attempting to build an SSLContext for author==>publish communication.");
+	    }
+	    
+	    return null;
+	}
+	
 	/**
 	 * Makes a GET request to a single publish instance and returns the response as a JSON object
 	 * 
@@ -173,25 +213,38 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 * @see					JSONObject
 	 */
 	private JSONObject getFlushJSON(String publishUrl) {
-		JSONObject jsonResponse;
+		JSONObject jsonResponse = new JSONObject();
 
 		try {			
 			URL url = new URL(publishUrl + SharedConstants.FLUSH_SERVICE_ENDPOINT);
+			SSLContext context = getTrustingSSLContext();
+			
+			if(null != context) {
+		        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-            
-            InputStream content = (InputStream)connection.getInputStream();
-            BufferedReader in = new BufferedReader (new InputStreamReader(content));
-            String line;
-            String total = "";
-            while ((line = in.readLine()) != null) {
-                total += line;
-            }
+		        HostnameVerifier allHostsValid = new HostnameVerifier() {
+		            public boolean verify(String hostname, SSLSession session) {
+		                return true;
+		            }
+		        };
 
-            jsonResponse = new JSONObject(total);
+		        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+				
+	            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+	            
+	            connection.setRequestMethod("GET");
+	            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+	            
+	            InputStream content = (InputStream)connection.getInputStream();
+	            BufferedReader in = new BufferedReader (new InputStreamReader(content));
+	            String line;
+	            String total = "";
+	            while ((line = in.readLine()) != null) {
+	                total += line;
+	            }
+	
+	            jsonResponse = new JSONObject(total);
+			}
 		} catch(MalformedURLException e) {
 			jsonResponse = new JSONObject();
 			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON" + e.getMessage());
