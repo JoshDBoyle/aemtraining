@@ -194,13 +194,13 @@ public class AgentGroupServiceImpl implements AgentGroupService {
             jsonResponse = new JSONObject(total);
 		} catch(MalformedURLException e) {
 			jsonResponse = new JSONObject();
-			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON");
+			log.error("MalformedURLException caught in AgentGroupService.getFlushJSON" + e.getMessage());
 		} catch(JSONException e) {
 			jsonResponse = new JSONObject();
-			log.error("JSONExceptoin caught in AgentGroupService.getFlushJSON");
+			log.error("JSONExceptoin caught in AgentGroupService.getFlushJSON" + e.getMessage());
 		} catch(IOException e) {
 			jsonResponse = new JSONObject();
-			log.error("IOException caught in AgentGroupService.getFlushJSON");
+			log.error("IOException caught in AgentGroupService.getFlushJSON: " + e.getMessage());
 		}
 		
 		return jsonResponse;
