@@ -53,7 +53,7 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
             		PostMethod post = new PostMethod(agent.getConfiguration().getTransportURI());
             		log.error("JOSH I'M ABOUT TO MAKE MY POST REQUEST");
             		post.setRequestHeader("CQ-Action", "Activate");
-            		post.setRequestHeader("CQ-Handle", "/");
+            		post.setRequestHeader("CQ-Handle", "/content/kporg/**");
 
                     client.executeMethod(post);
                     post.releaseConnection();
