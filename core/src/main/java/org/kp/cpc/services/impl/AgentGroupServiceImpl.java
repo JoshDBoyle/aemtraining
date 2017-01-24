@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,16 +138,18 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						// Transport URIs will be in the form:  [protocol]://[server]:[port]/bin/receive?sling:authRequestLogin=1 so let's
 						// parse out the publish instance's URL from it
 						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
-						log.error("JOSH HERE'S THE PUBLISH URL WE'RE CALLING: " + publishUrl);
+
 						// For this replication agent's corresponding publish instance, let's call our publish-side servlet and get a JSONObject that holds
 						// all the data we need about flush agents configured on that instance
 						JSONObject response = getFlushJSON(publishUrl);
-						log.error("JOSH HERE'S THE JSON THAT WAS RECEIVED FROM PUBLISH: " + response.toString());
+
+						log.debug("CPC: We've received the following json back from the publish instance at " + publishUrl);
+						log.debug("CPC: " + response.toString());
 						
 						try {
 							JSONArray flushAgentsArr = response.getJSONArray("agents");
 							int flushAgentCount = flushAgentsArr.length();
-							log.error("JOSH WE HAVE THE FOLLOWING NUMBER OF FLUSH AGENTS THAT CAME BACK FROM PUBLISH: " + flushAgentsArr.length());
+
 							// Let's build our List of FlushAgentMetadata that we can put inside our ReplicationAgentMetadata object that represents this
 							// particular configured replication agent
 							for(int k = 0; k < flushAgentCount; k++) {
@@ -169,7 +170,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 				agentGroups.add(new AgentGroup(replicationAgentMetasPerGroup, agentGroupTitles[i]));
 			}
 		} else {
-			log.error("No agent groups have been configured in the Felix console so we were unable to display any in the Content Publication Console.");
+			log.warn("CPC: No agent groups have been configured in the Felix console so we were unable to display any in the Content Publication Console.");
 		}
 
 		return agentGroups;
@@ -275,7 +276,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 		
 		return jsonResponse;
 	}
-	
+
 	/**
 	 * Helper method which returns a Java List of the AgentConfigs for 
 	 * each agent on author (agents.author)
