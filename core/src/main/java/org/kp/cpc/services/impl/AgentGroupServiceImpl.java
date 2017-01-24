@@ -220,30 +220,47 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 			SSLContext context = getTrustingSSLContext();
 			
 			if(null != context) {
-		        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-
-		        HostnameVerifier allHostsValid = new HostnameVerifier() {
-		            public boolean verify(String hostname, SSLSession session) {
-		                return true;
-		            }
-		        };
-
-		        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-				
-	            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-	            
-	            connection.setRequestMethod("GET");
-	            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-	            
-	            InputStream content = (InputStream)connection.getInputStream();
-	            BufferedReader in = new BufferedReader (new InputStreamReader(content));
-	            String line;
-	            String total = "";
-	            while ((line = in.readLine()) != null) {
-	                total += line;
-	            }
+				if(publishUrl.contains("https")) {
+			        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
 	
-	            jsonResponse = new JSONObject(total);
+			        HostnameVerifier allHostsValid = new HostnameVerifier() {
+			            public boolean verify(String hostname, SSLSession session) {
+			                return true;
+			            }
+			        };
+	
+			        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+					
+		            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		            
+		            connection.setRequestMethod("GET");
+		            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+		            
+		            InputStream content = (InputStream)connection.getInputStream();
+		            BufferedReader in = new BufferedReader (new InputStreamReader(content));
+		            String line;
+		            String total = "";
+		            while ((line = in.readLine()) != null) {
+		                total += line;
+		            }
+		
+		            jsonResponse = new JSONObject(total);
+				} else {
+					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		            
+		            connection.setRequestMethod("GET");
+		            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+		            
+		            InputStream content = (InputStream)connection.getInputStream();
+		            BufferedReader in = new BufferedReader (new InputStreamReader(content));
+		            String line;
+		            String total = "";
+		            while ((line = in.readLine()) != null) {
+		                total += line;
+		            }
+		
+		            jsonResponse = new JSONObject(total);
+				}
 			}
 		} catch(MalformedURLException e) {
 			jsonResponse = new JSONObject();
