@@ -2,8 +2,6 @@ package org.kp.cpc.flush.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -18,9 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.Agent;
-import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
-import com.day.cq.replication.ReplicationActionType;
 
 /**
  * Path-based Sling Servlet that accepts GET requests to retrieve metadata about any available flush agents
@@ -39,8 +35,7 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
     
     Logger log = LoggerFactory.getLogger(FlushCacheServlet.class);
     
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
-    	
+    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {  	
     	PrintWriter writer = response.getWriter();
     	String agentId = request.getParameter("id");
     	
@@ -51,15 +46,29 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
             	if(null != agent) {
             		HttpClient client = new HttpClient();
             		PostMethod post = new PostMethod(agent.getConfiguration().getTransportURI());
-            		log.error("JOSH I'M ABOUT TO MAKE MY POST REQUEST");
-            		post.setRequestHeader("CQ-Action", "Activate");
-            		post.setRequestHeader("CQ-Handle", "/content/kporg/**");
+            		
+            		/**
+            		 * Here's a sample curl request we're attempting to emulate here:
+            		 * 
+            		 * 		curl -v \
+							-H "CQ-Action: DELETE" \
+							-H "CQ-Handle:/" \
+							-H "Content-Length: 0" \
+							-H "Content-Type: application/octet-stream" \
+							http://localhost:80/dispatcher/invalidate.cache;
+            		 */
+            		log.error("JOSH:  We're about to make our POST request to the dispatcher at :" + agent.getConfiguration().getTransportURI());
+            		post.setRequestHeader("CQ-Action", "DELETE");
+            		post.setRequestHeader("CQ-Handle", "/");
+            		post.setRequestHeader("Content-Length", "0");
+            		post.setRequestHeader("Content-Type", "application/octet-stream");
 
                     client.executeMethod(post);
+                    log.error("JOSH: POST has been made and here's what we have back from the dispatcher: " + post.getResponseBodyAsString());
+
                     post.releaseConnection();
 
-                    log.error("JOSH HERE'S WHAT THE DISPATCHER HAS TO SAY ABOUT THAT INVALIDATION: " + post.getResponseBodyAsString());
-                    writer.print("The cache for the " + agentId + " dispatcher was successfully invalidated");
+                    writer.println("The cache for the " + agentId + " dispatcher was successfully invalidated");
             	}
             }            
         } catch(Exception e){
