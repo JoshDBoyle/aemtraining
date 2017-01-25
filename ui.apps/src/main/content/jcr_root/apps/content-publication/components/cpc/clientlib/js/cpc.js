@@ -49,7 +49,7 @@ function refreshQueue($agent) {
 }
 
 /**
- * Wrapper that refreshes each for all agents
+ * Wrapper that refreshes each queue for all agents
  */
 function refreshQueues() {
 	var $agents = $('.agent');
@@ -289,8 +289,7 @@ $(document).ready(function() {
 	  });
 	  	
 	  $.post('/bin/cpc/activateselected', { 'paths': pathsToReplicate.slice(0, -1) }, function(data) {
-		  debugger;
-		  console.log('Replication has finished with the following data object returned: ' + data);
+		  alert(data);
 	  });
   });
 

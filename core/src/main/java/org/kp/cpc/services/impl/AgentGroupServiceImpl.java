@@ -223,7 +223,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 			if(null != context) {
 				if(publishUrl.contains("https")) {
 			        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-	
+
 			        HostnameVerifier allHostsValid = new HostnameVerifier() {
 			            public boolean verify(String hostname, SSLSession session) {
 			                return true;

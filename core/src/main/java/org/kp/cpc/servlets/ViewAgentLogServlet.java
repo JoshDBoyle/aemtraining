@@ -19,7 +19,7 @@ import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentManager;
 
 /**
- * Path-based Sling Servlet that replicates a number of paths
+ * Path-based Sling Servlet that, given an agentId, returns the current agent log contents
  * 
  * @author joshua.boyle
  */

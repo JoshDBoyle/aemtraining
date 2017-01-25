@@ -19,7 +19,8 @@ import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentManager;
 
 /**
- * Path-based Sling Servlet that accepts GET requests to retrieve metadata about any available flush agents
+ * Path-based Sling Servlet that accepts GET requests and attempts to flush the cache
+ * for the dispatcher configured within the flush agent specified by the id parameter
  * 
  * @author joshua.boyle
  */
@@ -57,14 +58,16 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
 							-H "Content-Type: application/octet-stream" \
 							http://localhost:80/dispatcher/invalidate.cache;
             		 */
-            		log.error("JOSH:  We're about to make our POST request to the dispatcher at :" + agent.getConfiguration().getTransportURI());
+            		log.debug("CPC:  We're about to make our POST request for cache deletion to the dispatcher at :" + agent.getConfiguration().getTransportURI());
+
             		post.setRequestHeader("CQ-Action", "DELETE");
             		post.setRequestHeader("CQ-Handle", "/");
             		post.setRequestHeader("Content-Length", "0");
             		post.setRequestHeader("Content-Type", "application/octet-stream");
 
                     client.executeMethod(post);
-                    log.error("JOSH: POST has been made and here's what we have back from the dispatcher: " + post.getResponseBodyAsString());
+
+                    log.debug("CPC: POST has been made and here's what we have back from the dispatcher: " + post.getResponseBodyAsString());
 
                     post.releaseConnection();
 
@@ -72,7 +75,7 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
             	}
             }            
         } catch(Exception e){
-        	writer.print("The cache for the " + agentId + " dispatcher was unable to be invalidated due to an error");
+        	writer.println("The cache for the " + agentId + " dispatcher was unable to be invalidated due to an error");
             log.error("Generic Exception caught in FlushCacheServlet: " + e.getMessage());
         }
     }

@@ -48,7 +48,8 @@
 }
 
 .agent-queue {
-	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: scroll;
 	height: 175px;
 	background: #DFDFDF;
 	border: 1px solid black;

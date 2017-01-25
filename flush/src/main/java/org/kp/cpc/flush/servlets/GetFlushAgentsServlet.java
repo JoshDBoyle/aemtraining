@@ -88,7 +88,7 @@ public class GetFlushAgentsServlet extends SlingAllMethodsServlet {
             }
 
     		jsonResponse.put("agents", jsonArr);
-    		log.error("JOSH HERE'S THE JSON THAT'S BEING SENT BACK TO AUTHOR: " + jsonResponse);
+    		log.debug("CPC: Here's the JSON we're sending back to author: " + jsonResponse);
 		} catch(JSONException e) {
 			log.error("JSONException caught in GetFlushAgentsServlet.doGet while attempting to add the current agent to the JSONArray.");
 		} catch(Exception e) {

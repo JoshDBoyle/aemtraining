@@ -2,12 +2,10 @@ package org.kp.cpc.servlets;
 
 import java.io.IOException;
 
-import javax.jcr.Session;
 import javax.servlet.ServletException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -18,12 +16,20 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentManager;
-import com.day.cq.replication.ReplicationActionType;
-import com.day.cq.replication.ReplicationException;
-import com.day.cq.replication.Replicator;
 
 /**
- * Path-based Sling Servlet that replicates the paths specified by a comma-delimited request parameter
+ * Path-based Sling Servlet accepting POST requests.
+ * 
+ * Each POST request is assumed to contain two parameters:
+ * 
+ * 		- replicationAgentId: 	the agentId (i.e. xjzxiep0010x) for a replication agent
+ * 		- flushAgentId:			the agentId for a flush agent that can be found on the
+ * 								publish instance associated with the above replication agent
+ * 
+ * Given the above two parameters, this servlet makes a GET request over to the publish instance
+ * configured for the replication agent with an id specified by replicationAgentId, and passes
+ * the flushAgentId for the flush agent we need to reference in making any cache flush requests
+ * to a dispatcher.
  * 
  * @author joshua.boyle
  */
@@ -52,10 +58,13 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
 
     		if(null != url) {
     			GetMethod get = new GetMethod(url + "/bin/cpc/flushcache");
-    			log.error("JOSH HERE'S THE GET REQUEST URL WE'RE ABOUT TO MAKE FOR CACHE FLUSH: " + url);
+    			
+    			log.debug("CPC: GET request about to be made to publish via the following url: " + url + "/bin/cpc/flushcache");
+    			
     			get.setQueryString("id=" + flushAgentId);
 	
 	            client.executeMethod(get);
+	            response.getWriter().println(get.getResponseBodyAsString());
 	            get.releaseConnection();
     		}
     	}
