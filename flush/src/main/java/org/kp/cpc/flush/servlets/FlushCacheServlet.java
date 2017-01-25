@@ -47,7 +47,7 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
             	if(null != agent) {
             		HttpClient client = new HttpClient();
             		PostMethod post = new PostMethod(agent.getConfiguration().getTransportURI());
-            		
+
             		/**
             		 * Here's a sample curl request we're attempting to emulate here:
             		 * 

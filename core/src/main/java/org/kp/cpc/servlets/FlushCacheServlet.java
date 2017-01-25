@@ -48,7 +48,7 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
     	String replicationAgentId = request.getParameter("replicationAgentId");
     	String flushAgentId = request.getParameter("flushAgentId");
-    	
+
     	if(null != replicationAgentId && null != flushAgentId) {
     		HttpClient client = new HttpClient();
     		Agent replicationAgent = agentMgr.getAgents().get(replicationAgentId);
