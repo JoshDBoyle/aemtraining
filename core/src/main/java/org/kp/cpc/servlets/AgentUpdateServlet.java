@@ -47,14 +47,26 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	Session session = resolver.adaptTo(Session.class);
     	String agentId = request.getParameter("id");
     	String pause = request.getParameter("pause");
+    	
+    	log.error("CPC: Here's the agentId and pause value we got from the client: " + agentId + " : " + pause);
+    	
     	AgentConfig config = agentMgr.getAgents().get(agentId).getConfiguration();
+    	
+    	if(null != config) {
+    		log.error("CPC: We have an AgentConfig fromm the agentId that was specified so we're good");
+    	}
+    	
     	String agentPath = config.getId();
+    	log.error("CPC: Here's the agent's path: " + agentPath);
     	Resource agentRes = resolver.resolve(agentPath + "/" + JcrConstants.JCR_CONTENT);
+    	log.error("CPC: And here's the path to the Resource we built fromm the agentPath: " + agentRes.getPath());
     	JSONObject jsonResponse = new JSONObject();
         Agent agent = agentId == null ? null : agentMgr.getAgents().get(agentId);
         ReplicationQueue queue = agent.getQueue();
+        log.error("CPC: Here's the state of that agent's ReplicationQueue: " + (null == queue ? "NULL" : "NON NULL"));
 
     	if(null != agentRes) {
+    		log.error("CPC: Okay we're now goinng to call queue.setPaused with a value of " + pause.equals("true"));
     		queue.setPaused(pause.equals("true"));
     		
     		try {
@@ -72,9 +84,12 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("Problem setting JSON response in AgentUpdateService.doPost.");
     		} finally {
-    			// Explicitly logout of our session to prevent memory leaks
     			session.logout();
     		}
     	} 
+    }
+    
+    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
+    	doPost(request, response);
     }
 }
