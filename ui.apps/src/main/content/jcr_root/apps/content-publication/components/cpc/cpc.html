@@ -80,10 +80,10 @@
             </div>
             
             <!-- List of all corresponding flush agents.  item refers to one ReplicationAgentMetadata in our List<ReplicationAgentMetadata> -->
-            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}" data-sly-test="${cpcuse.canClear}">
+            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}">
               <div class="flush-agent coral-Well" data-transporturi="${flush.transportUri @ context='unsafe'}" data-id="${flush.agentId}">
                 <div class="flush-id">${flush.agentId}</div>
-                <button class="clear-cache-btn coral-Button coral-Button--primary">Clear Cache</button>
+                <button data-sly-test="${cpcuse.canClear}" class="clear-cache-btn coral-Button coral-Button--primary">Clear Cache</button>
               </div>
             </div>
           </div>
