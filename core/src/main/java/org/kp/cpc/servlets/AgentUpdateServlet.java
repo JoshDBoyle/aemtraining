@@ -11,6 +11,7 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
@@ -46,33 +47,45 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	ResourceResolver resolver = request.getResourceResolver();
     	Session session = resolver.adaptTo(Session.class);
     	String agentId = request.getParameter("id");
-    	String pause = request.getParameter("pause");
-    	
-    	log.error("CPC: Here's the agentId and pause value we got from the client: " + agentId + " : " + pause);
+    	String enabled = request.getParameter("enabled");
     	
     	AgentConfig config = agentMgr.getAgents().get(agentId).getConfiguration();
     	
     	if(null != config) {
     		log.error("CPC: We have an AgentConfig fromm the agentId that was specified so we're good");
     	}
-    	
+
     	String agentPath = config.getId();
-    	log.error("CPC: Here's the agent's path: " + agentPath);
     	Resource agentRes = resolver.resolve(agentPath + "/" + JcrConstants.JCR_CONTENT);
-    	log.error("CPC: And here's the path to the Resource we built fromm the agentPath: " + agentRes.getPath());
     	JSONObject jsonResponse = new JSONObject();
         Agent agent = agentId == null ? null : agentMgr.getAgents().get(agentId);
         ReplicationQueue queue = agent.getQueue();
-        log.error("CPC: Here's the state of that agent's ReplicationQueue: " + (null == queue ? "NULL" : "NON NULL"));
 
+        /**
+    	 * The enabled state of an agent is determined by the "enabled" property both being present
+    	 * on the jcr:content node for the agent as well as this property having a value of "true".
+    	 * If this property either has a value of "false" or is completely absent, the agent is
+    	 * considered as disabled by AEM.  Since AEM prefers to completely remove this property
+    	 * when disabling an agent, we'll do the same for consistency.
+    	 * 
+    	 * It should also be noted that a disabled agent doesn't queue up content and although you can
+    	 * pause an agent's queue instead of disabling, pausing the queue requires that there actually
+    	 * BE a queue of content.  A use case in the CPC is that we want to be able to put an agent in
+    	 * a state that is neither paused nor disabled where content still queues up but doesn't activate.
+    	 * For CPC 1.0's release, this feature will not be completed so we're just going with disabling
+    	 * and enabling of agents entirely as it's cleanest.
+    	 */
     	if(null != agentRes) {
-    		log.error("CPC: Okay we're now goinng to call queue.setPaused with a value of " + pause.equals("true"));
-    		queue.setPaused(pause.equals("true"));
+    		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
+    		if(enabled.equals("true"))
+    			mvm.put("enabled", enabled);
+    		else
+    			mvm.remove("enabled");
     		
     		try {
     			session.save();
     			jsonResponse.put("agentId", agentId);
-    			jsonResponse.put("paused", pause);
+    			jsonResponse.put("enabled", enabled);
     			response.setContentType("application/json");
     	        response.getWriter().write(jsonResponse.toString(2)); 
     		} catch(RepositoryException rex) {
@@ -88,7 +101,7 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     		}
     	} 
     }
-    
+
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);
     }

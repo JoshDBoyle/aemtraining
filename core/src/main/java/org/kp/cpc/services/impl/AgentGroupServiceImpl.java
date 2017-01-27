@@ -28,7 +28,10 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.commons.json.JSONArray;
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
@@ -41,10 +44,10 @@ import org.kp.cpc.services.AgentGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
-import com.day.cq.replication.ReplicationQueue;
 
 /**
  * OSGi service that manages custom groupings of Agents for use by the Content Publication Console
@@ -78,6 +81,8 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	
 	@Reference
 	private ResourceResolverFactory factory;
+	
+	private ResourceResolver resolver;
 
 	private Map<String, Agent> agents;
 	private List<AgentConfig> allAgentConfigs;
@@ -91,6 +96,12 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 */
 	@Activate
 	protected void activate(Map<String, Object> properties) {
+		try {
+			resolver = factory.getAdministrativeResourceResolver(null);
+		} catch (LoginException e) {
+			e.printStackTrace();
+		}
+		
 		agents = agentMgr.getAgents();
 		agentGroupTitles = PropertiesUtil.toStringArray(properties.get("agent.groups"));
 		agentLists = PropertiesUtil.toStringArray(properties.get("agent.lists"));
@@ -126,9 +137,9 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 				for(int j = 0; j < agentIdsPerGroup.length; j++) {
 					// If the Map of all agents we got from the AgentManager contains this id as it was specified via Felix
 					// then let's build out an AgentMetadata object for this agent
-					if(agents.containsKey(agentIdsPerGroup[j])) {
-						Agent agent = agents.get(agentIdsPerGroup[j]);
-						ReplicationQueue queue = agent.getQueue();
+					if(agents.containsKey(agentIdsPerGroup[j].trim())) {
+						// Felix config may accidentally have been made with leading or trailing space so let's clean that up before resolving an Agent
+						Agent agent = agents.get(agentIdsPerGroup[j].trim());
 						
 						// Each replication agent can have n number of associated flush agents on the publish instance it points to so we'll need to
 						// get a List of FlushAgentMetadata first so we can build a ReplicationAgentMetadata object for this configured agent
@@ -161,7 +172,12 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						
 						// This completes our build of a single ReplicationAgentMetadata that holds n number of FlushAgentMetadata in a List
 						// Let's add our new ReplicationAgentMetadata to our ongoing list of ReplicationAgentMetadata object for this one AgentGroup
-						replicationAgentMetasPerGroup.add(new ReplicationAgentMetadata(agent.getConfiguration(), queue.isPaused(), flushAgentsPerReplicationAgent));
+						ValueMap vm = resolver.resolve(agent.getConfiguration().getId() + "/" + JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class);
+						
+						if(null != vm && vm.containsKey("enabled") && (vm.get("enabled", String.class).equals("true")))
+							replicationAgentMetasPerGroup.add(new ReplicationAgentMetadata(agent.getConfiguration(), true, flushAgentsPerReplicationAgent));
+						else
+							replicationAgentMetasPerGroup.add(new ReplicationAgentMetadata(agent.getConfiguration(), false, flushAgentsPerReplicationAgent));
 					}
 				}
 	

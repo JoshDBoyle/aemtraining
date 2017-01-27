@@ -14,17 +14,17 @@ function clearCache(toggle) {
  */
 function setQueueStatus($agent, data) {
 	var blocked = data ? data.metaData.queueStatus.isBlocked : false;
-	var unpaused = $agent.find('input')[0].checked;
+	var enabled = $agent.find('input')[0].checked;
 	var $status = $agent.find('.led-box div');
 
 	$status.removeClass();
-	if(blocked && unpaused) {
+	if(blocked && enabled) {
 		$status.addClass('led-red');
-	} else if(!blocked && unpaused && data.queue.length > 0) {
+	} else if(!blocked && enabled && data.queue.length > 0) {
 		$status.addClass('led-blue');
-	} else if(!blocked && unpaused) {
+	} else if(!blocked && enabled) {
 		$status.addClass('led-green');
-	} else if(!unpaused) {
+	} else if(!enabled) {
 		$status.addClass('led-yellow');
 	}
 }
@@ -95,7 +95,7 @@ $(document).ready(function() {
   });
 
   /**
-   * INDIVIDUAL AGENT QUEUE PAUSING/UNPAUSING
+   * INDIVIDUAL AGENT QUEUE ENABLING/DISABLING
    */
   $('.agent-toggle').on('click', function(event) {
 	  var toggle = event.currentTarget;
@@ -103,7 +103,7 @@ $(document).ready(function() {
 	  var checked = toggle.getElementsByTagName('input')[0].checked;
 	  var $agent = $(toggle.parentElement.parentElement);
 
-	  $.post("/bin/cpc/updateagent", { 'id': id, 'pause': !checked }, function(data) {
+	  $.post("/bin/cpc/updateagent", { 'id': id, 'enabled': checked }, function(data) {
 		  refreshQueue($agent);
 	  });
   });
@@ -115,16 +115,16 @@ $(document).ready(function() {
 	  var groupToggle = event.currentTarget;
 	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
 	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
-	  var pause = temp.indexOf('Pause') >= 0 ? true : false;
+	  var enabled = temp.indexOf('Enable') >= 0 ? true : false;
 
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
 		  var parent = individualToggles[i].parentElement;
 		  var $agent = $(parent.parentElement.parentElement);
 
-		  toggle.checked = !pause;
+		  toggle.checked = enabled;
 		  
-		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'pause': pause }, function(data) {
+		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'enabled': enabled }, function(data) {
 			  if(data.agentId && data.agentId !== '') {
 				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
 			  }
@@ -213,6 +213,7 @@ $(document).ready(function() {
 				  table += "<th class='coral-Table-headerCell'>" + data.headers[i] + "</th>";
 			  }
 
+			  table += "<th class='coral-Table-headerCell'>Debug</th>"
 			  table += "</tr></thead><tbody>";
 
 			  for(var i = 0; i < data.results.length; i++) {
@@ -224,15 +225,22 @@ $(document).ready(function() {
 				  			"			<span class='coral-Checkbox-description'></span>" +
 				  			"		</label>" +
 				  			"   </td>" +
-		  					"	<td class='coral-Table-cell'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
+		  					"	<td class='content-path coral-Table-cell'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
 		  					"	<td class='coral-Table-cell'>" + data.results[i].columnb + "</td>" +
 		  					"	<td class='coral-Table-cell'>" + data.results[i].columnc + "</td>" +
+		  					"	<td class='coral-Table-cell'>" +
+		  					" 		<button class='debug-content coral-Button coral-Button--square coral-Button--primary'>" +
+		  					"			<i class='coral-Icon coral-Icon--globe'></i>" +
+		  					"		</button>" + 
+		  					"	</td>" +
 		  					"</tr>";
 			  }
-			  
+
 			  table += '</tbody></table>';
-			  
+
 			  results.append(table);
+			  queryByDateModal.center();
+			  
 		  }
 		  
 		  /**
@@ -243,7 +251,7 @@ $(document).ready(function() {
 		  $('#select-all').on('click', function(event) {
 			  var checked = $(this).is(':checked');
 			  $('.select-one').each(function() {
-		      	$(this).attr('checked', checked);
+		      	$(this).prop('checked', checked);
 		      	if(checked)
 		      		checkedCount += 1;
 		      	else
@@ -271,6 +279,32 @@ $(document).ready(function() {
 				  $activateSelectedBtn.attr('disabled', false);
 			  else
 				  $activateSelectedBtn.attr('disabled', true);
+		  });
+		  
+		  /**
+		   * DEBUG ONE ROW LISTENER FOR REPORT MODAL
+		   * 
+		   * When clicking the debug button for a row within the results table of this modal, this listener will open up that row's
+		   * content path in new tabs on author, on the chosen publish instance, and on any dispatchers associated with that publish
+		   * instance simultaneously.  This feature is used to compare content across an entire "stack" or "path" to see if there are
+		   * any content discrepancies.
+		   */
+		  $('.debug-content').on('click', function(event) {
+			  var publishUrl = $('#chosen-publish').val();
+			  var text = $("#chosen-publish option:selected").text();
+			  var path = $(this).parent().siblings('.content-path').eq(0).children('a').eq(0).attr('href');
+
+			  var $flushAgents = $(".agent[data-agent='" + text +"'] .flush-agent");
+			  
+			  
+			  window.open(path, '_blank'); 					// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
+			  window.open(publishUrl + path, '_blank'); 	// Open on chosen publish instance (need full URL since we're leaving the instance)
+			  
+			  // For this publish instance, we may have multiple dispatchers so let's loop through them
+			  $.each($flushAgents, function(idx, val) {
+				  var transportUri = $(val).attr('data-transporturi');
+				  window.open(transportUri.substring(0, transportUri.indexOf('/dispatcher')) + path, '_blank');
+			  });
 		  });
 	  });
   });

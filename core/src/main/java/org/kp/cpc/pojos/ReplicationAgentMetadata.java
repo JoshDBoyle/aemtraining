@@ -7,11 +7,11 @@ import com.day.cq.replication.AgentConfig;
 public class ReplicationAgentMetadata extends AgentMetadata {
 	public List<FlushAgentMetadata> flushAgents;
 	
-	public ReplicationAgentMetadata(AgentConfig config, boolean paused, List<FlushAgentMetadata> flushAgents) {
+	public ReplicationAgentMetadata(AgentConfig config, boolean enabled, List<FlushAgentMetadata> flushAgents) {
 		this.title = config.getName();
 		this.id = config.getId();
 		this.agentId = config.getAgentId();
-		this.paused = paused;
+		this.enabled = enabled;
 		this.transportUri = config.getTransportURI();
 		this.flushAgents = flushAgents;
 	}

@@ -85,8 +85,8 @@
 }
 
 .agent-info-body, .query-by-date-body {
-	max-height: 250px;
-	width: 775px;
+	max-height: 500px;
+	width: 875px;
 }
 
 .agent-info-entry {
@@ -123,7 +123,8 @@
 }
 
 .param-wrapper {
-	margin: 10px;
+	padding: 10px;
+	text-align: center;
 }
 
 #query-by-date-results th:nth-child(1),
@@ -133,17 +134,22 @@
 
 #query-by-date-results th:nth-child(2),
 #query-by-date-results td:nth-child(2) {
-	width: 370px;
+	width: 400px;
 }
 
 #query-by-date-results th:nth-child(3),
 #query-by-date-results td:nth-child(3) {
-	width: 130px;
+	width: 140px;
 }
 
 #query-by-date-results th:nth-child(4),
 #query-by-date-results td:nth-child(4) {
-	width: 100px;
+	width: 160px;
+}
+
+#query-by-date-results th:nth-child(5),
+#query-by-date-results td:nth-child(5) {
+	width: 60px;
 }
 
 #query-by-date-results tr {

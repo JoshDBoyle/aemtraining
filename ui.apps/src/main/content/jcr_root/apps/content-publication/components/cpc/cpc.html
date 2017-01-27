@@ -38,13 +38,13 @@
           <div class="coral-ButtonGroup ">
             <button id="unpause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
               <i class="coral-Icon coral-Icon--playCircle"></i>
-              Unpause all ${item.title} agents
+              Enable all ${item.title} agents
             </button>
             <button id="pause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
               <i class="coral-Icon coral-Icon--pauseCircle"></i>
-              Pause all ${item.title} agents
+              Disable all ${item.title} agents
             </button>
-            <button id="clear-group-cache-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+            <button data-sly-test="${cpcuse.canClear}" id="clear-group-cache-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
               <i class="coral-Icon coral-Icon--folderDelete"></i>
               Invalidate cache for all ${item.title} dispatchers
             </button>
@@ -60,10 +60,10 @@
               </div>
               <div class="agent-id">${agent.agentId}</div>
               <label class="agent-toggle coral-Switch" data-id="${agent.agentId}">
-                <sly data-sly-test="${!agent.paused}">
+                <sly data-sly-test="${agent.enabled}">
                   <input class="coral-Switch-input" type="checkbox" checked disabled="${!cpcuse.canModify}">
                 </sly>
-                <sly data-sly-test="${agent.paused}">
+                <sly data-sly-test="${!agent.enabled}">
                   <input class="coral-Switch-input" type="checkbox" disabled="${!cpcuse.canModify}">
                 </sly>
                 <span class="coral-Switch-offLabel">Off</span>
@@ -80,7 +80,7 @@
             </div>
             
             <!-- List of all corresponding flush agents.  item refers to one ReplicationAgentMetadata in our List<ReplicationAgentMetadata> -->
-            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}" data-sly-test="${cpcuse.canModify}">
+            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}" data-sly-test="${cpcuse.canClear}">
               <div class="flush-agent coral-Well" data-transporturi="${flush.transportUri @ context='unsafe'}" data-id="${flush.agentId}">
                 <div class="flush-id">${flush.agentId}</div>
                 <button class="clear-cache-btn coral-Button coral-Button--primary">Clear Cache</button>

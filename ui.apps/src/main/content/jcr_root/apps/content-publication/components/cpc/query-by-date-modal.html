@@ -43,6 +43,15 @@
       </select>
     </span>
     
+    <span class="coral-Select" data-init="select">
+      <button type="button" class="coral-Select-button coral-MinimalButton">
+        <span class="coral-Select-button-text">One</span>
+      </button>
+      <select id="chosen-publish" class="coral-Select-select" data-sly-list="${modalsuse.publishers}">
+        <option value="${item.url}">${item.id}</option>
+      </select>
+    </span>
+    
   </div>
 
   <div class="query-by-date-body coral-Modal-body">
