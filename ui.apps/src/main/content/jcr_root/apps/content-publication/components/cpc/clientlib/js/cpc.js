@@ -296,7 +296,7 @@ $(document).ready(function() {
 
 			  var $flushAgents = $(".agent[data-agent='" + text +"'] .flush-agent");
 			  
-			  window.open(path, '_blank'); 					// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
+			  window.open(path + '?wcmmode=preview', '_blank'); 					// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
 			  window.open(publishUrl + path, '_blank'); 	// Open on chosen publish instance (need full URL since we're leaving the instance)
 			  
 			  // For this publish instance, we may have multiple dispatchers so let's loop through them
