@@ -34,7 +34,7 @@
       <section class="coral-TabPanel-pane is-active">
         
         <!-- Agent Group Control -->
-        <div class="agent-disable-wrapper ${!cpcuse.canModify ? 'hidden' : ''}">
+        <div class="agent-disable-wrapper ${!cpcuse.canModify && !cpcuse.canClear ? 'hidden' : ''}">
           <div class="coral-ButtonGroup ">
             <button id="unpause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
               <i class="coral-Icon coral-Icon--playCircle"></i>
