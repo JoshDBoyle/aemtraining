@@ -296,7 +296,6 @@ $(document).ready(function() {
 
 			  var $flushAgents = $(".agent[data-agent='" + text +"'] .flush-agent");
 			  
-			  
 			  window.open(path, '_blank'); 					// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
 			  window.open(publishUrl + path, '_blank'); 	// Open on chosen publish instance (need full URL since we're leaving the instance)
 			  
