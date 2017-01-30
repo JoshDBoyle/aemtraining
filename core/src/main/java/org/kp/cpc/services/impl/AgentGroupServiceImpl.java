@@ -148,7 +148,12 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						
 						// Transport URIs will be in the form:  [protocol]://[server]:[port]/bin/receive?sling:authRequestLogin=1 so let's
 						// parse out the publish instance's URL from it
-						publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
+						if(publishUrl.equals("standby")) {
+							publishUrl = agent.getConfiguration().getProperties().get("standby", String.class);
+							publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
+						} else {
+							publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
+						}
 
 						// For this replication agent's corresponding publish instance, let's call our publish-side servlet and get a JSONObject that holds
 						// all the data we need about flush agents configured on that instance
@@ -174,7 +179,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						// Let's add our new ReplicationAgentMetadata to our ongoing list of ReplicationAgentMetadata object for this one AgentGroup
 						ValueMap vm = resolver.resolve(agent.getConfiguration().getId() + "/" + JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class);
 						
-						if(null != vm && vm.containsKey("enabled") && (vm.get("enabled", String.class).equals("true")))
+						if(null != vm && vm.containsKey("standby"))
 							replicationAgentMetasPerGroup.add(new ReplicationAgentMetadata(agent.getConfiguration(), true, flushAgentsPerReplicationAgent));
 						else
 							replicationAgentMetasPerGroup.add(new ReplicationAgentMetadata(agent.getConfiguration(), false, flushAgentsPerReplicationAgent));

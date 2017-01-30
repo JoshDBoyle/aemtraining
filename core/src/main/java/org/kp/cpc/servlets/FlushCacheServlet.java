@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.Agent;
+import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
 
 /**
@@ -52,7 +53,13 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
     	if(null != replicationAgentId && null != flushAgentId) {
     		HttpClient client = new HttpClient();
     		Agent replicationAgent = agentMgr.getAgents().get(replicationAgentId);
-    		String url = replicationAgent.getConfiguration().getTransportURI();
+    		AgentConfig config = replicationAgent.getConfiguration();
+    		String url = "";
+    		
+    		if(config.getProperties().containsKey("standby"))
+    			url = config.getProperties().get("standby", String.class);
+    		else
+    			url = replicationAgent.getConfiguration().getTransportURI();
     		
     		url = url.substring(0, url.indexOf("/bin/receive"));
 

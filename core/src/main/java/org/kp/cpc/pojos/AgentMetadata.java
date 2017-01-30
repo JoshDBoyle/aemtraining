@@ -10,7 +10,7 @@ public class AgentMetadata {
 	public String title;
 	public String id;
 	public String agentId;
-	public boolean enabled;
+	public boolean standby;
 	public String transportUri;
 	
 	public String getTitle() {
@@ -25,8 +25,8 @@ public class AgentMetadata {
 		return agentId;
 	}
 
-	public boolean getEnabled() {
-		return enabled;
+	public boolean getStandby() {
+		return standby;
 	}
 	
 	public String getTransportUri() {

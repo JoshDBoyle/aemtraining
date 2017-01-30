@@ -21,13 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.commons.jcr.JcrConstants;
-import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentConfig;
 import com.day.cq.replication.AgentManager;
-import com.day.cq.replication.ReplicationQueue;
 
 /**
- * Path-based Sling Servlet that enables or disables a single Agent based on a RequestParameter
+ * Path-based Sling Servlet that puts a single Agent into "standby" mode
  * 
  * @author joshua.boyle
  */
@@ -47,45 +45,42 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	ResourceResolver resolver = request.getResourceResolver();
     	Session session = resolver.adaptTo(Session.class);
     	String agentId = request.getParameter("id");
-    	String enabled = request.getParameter("enabled");
+    	String standby = request.getParameter("standby");
     	
     	AgentConfig config = agentMgr.getAgents().get(agentId).getConfiguration();
-    	
-    	if(null != config) {
-    		log.error("CPC: We have an AgentConfig fromm the agentId that was specified so we're good");
-    	}
-
     	String agentPath = config.getId();
     	Resource agentRes = resolver.resolve(agentPath + "/" + JcrConstants.JCR_CONTENT);
     	JSONObject jsonResponse = new JSONObject();
-        Agent agent = agentId == null ? null : agentMgr.getAgents().get(agentId);
-        ReplicationQueue queue = agent.getQueue();
 
         /**
-    	 * The enabled state of an agent is determined by the "enabled" property both being present
-    	 * on the jcr:content node for the agent as well as this property having a value of "true".
-    	 * If this property either has a value of "false" or is completely absent, the agent is
-    	 * considered as disabled by AEM.  Since AEM prefers to completely remove this property
-    	 * when disabling an agent, we'll do the same for consistency.
+    	 * AEM OOTB allows for enabling/disabling an Agent or pausing/unpausing an Agent's Queue.  However, our use case is that we want to be able
+    	 * to "pause" an Agent indefinitely such that it doesn't replicate anything but so that content can still be queued up for replication.  If
+    	 * you disable an Agent, nothing queues up as the Agent doesn't receive replication requests.  If you pause an Agent's Queue, content DOES
+    	 * queue up but eventually Sling will drop the thread and the paused/unpaused state is lost.  Further, if an Agent's Queue hasn't received
+    	 * an event in a while, pausing/unpausing the Queue is not possible because no thread exists to handle it.
     	 * 
-    	 * It should also be noted that a disabled agent doesn't queue up content and although you can
-    	 * pause an agent's queue instead of disabling, pausing the queue requires that there actually
-    	 * BE a queue of content.  A use case in the CPC is that we want to be able to put an agent in
-    	 * a state that is neither paused nor disabled where content still queues up but doesn't activate.
-    	 * For CPC 1.0's release, this feature will not be completed so we're just going with disabling
-    	 * and enabling of agents entirely as it's cleanest.
+    	 * So to get around these limitations, we're going to swap out the transportURI of the Agent we want to "pause" instead.  This will cause the
+    	 * Agent to stay "active" such that it receives replication requests but they will not be able to be replicated and thus they'll just stay
+    	 * in a blocked queue.  I'm referring to this mode as "standby".
     	 */
     	if(null != agentRes) {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
-    		if(enabled.equals("true"))
-    			mvm.put("enabled", enabled);
-    		else
-    			mvm.remove("enabled");
     		
+    		// IF we want to put this Agent in standby
+    		// THEN copy the Agent's real transportURI to a property named "standby"
+    		// ELSE set the Agent's transportURI back to it's proper value and remove the standby property
+    		if(standby.equals("true")) {
+    			mvm.put("standby", config.getTransportURI());        
+    			mvm.put("transportUri", "standby");
+    		} else {
+    			mvm.put("transportUri", mvm.get("standby"));
+    			mvm.remove("standby");
+    		}
+
     		try {
     			session.save();
     			jsonResponse.put("agentId", agentId);
-    			jsonResponse.put("enabled", enabled);
+    			jsonResponse.put("standby", standby);
     			response.setContentType("application/json");
     	        response.getWriter().write(jsonResponse.toString(2)); 
     		} catch(RepositoryException rex) {
@@ -100,9 +95,5 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     			session.logout();
     		}
     	} 
-    }
-
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
-    	doPost(request, response);
     }
 }
