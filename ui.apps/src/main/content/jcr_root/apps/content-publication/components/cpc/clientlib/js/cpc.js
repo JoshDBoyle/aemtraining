@@ -122,7 +122,7 @@ $(document).ready(function() {
 		  var parent = individualToggles[i].parentElement;
 		  var $agent = $(parent.parentElement.parentElement);
 
-		  toggle.checked = !enabled;
+		  toggle.checked = !standby;
 		  
 		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'standby': standby }, function(data) {
 			  if(data.agentId && data.agentId !== '') {
