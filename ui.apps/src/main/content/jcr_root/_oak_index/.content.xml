@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root 
+	xmlns:oak="http://jackrabbit.apache.org/oak/ns/1.0"
+	xmlns:jcr="http://www.jcp.org/jcr/1.0"
+	xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+	jcr:primaryType="nt:unstructured">
+	<cqLastModified
+	        jcr:primaryType="oak:QueryIndexDefinition"
+	        declaringNodeTypes="{Name}[cq:PageContent,nt:unstructured]"
+	        propertyNames="{Name}[cq:lastModified]"
+	        reindex="{Boolean}false"
+	        reindexCount="{Long}1"
+	        type="property"/>
+	<cqLastReplicated
+	        jcr:primaryType="oak:QueryIndexDefinition"
+	        declaringNodeTypes="{Name}[cq:PageContent,nt:unstructured]"
+	        propertyNames="{Name}[cq:lastReplicated]"
+	        reindex="{Boolean}false"
+	        reindexCount="{Long}1"
+	        type="property"/>
+	<cqLastReplicatedBy
+	        jcr:primaryType="oak:QueryIndexDefinition"
+	        declaringNodeTypes="{Name}[cq:PageContent,nt:unstructured]"
+	        propertyNames="{Name}[cq:lastReplicatedBy]"
+	        reindex="{Boolean}false"
+	        reindexCount="{Long}1"
+	        type="property"/>
+</jcr:root>
