@@ -316,3 +316,11 @@
 .flush-agents button {
 	float: right;
 }
+
+.flush-agents .flush-failed, .flush-agents .flush-succeeded {
+	display: none;
+	float: right;
+	margin-top: 0px;
+	margin-right: 10px;
+	box-shadow: 0 5px 10px rgba(0,0,0,0.30), 0 5px 10px rgba(0,0,0,0.22);
+}

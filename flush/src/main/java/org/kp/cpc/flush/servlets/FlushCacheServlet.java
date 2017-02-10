@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
@@ -36,10 +38,10 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
     
     Logger log = LoggerFactory.getLogger(FlushCacheServlet.class);
     
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {  	
-    	PrintWriter writer = response.getWriter();
+    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {      	
+    	PrintWriter writer;
     	String agentId = request.getParameter("id");
-    	
+
     	try { 
             if(null != agentId) {
             	Agent agent = agentMgr.getAgents().get(agentId);
@@ -71,12 +73,24 @@ public class FlushCacheServlet extends SlingAllMethodsServlet {
 
                     post.releaseConnection();
 
-                    writer.println("The cache for the " + agentId + " dispatcher was successfully invalidated");
+                    response.setContentType("text/plain; charset=UTF-8");
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    writer = response.getWriter();
+                    writer.println("Cache deletion successful");
             	}
             }            
-        } catch(Exception e){
-        	writer.println("The cache for the " + agentId + " dispatcher was unable to be invalidated due to an error");
-            log.error("Generic Exception caught in FlushCacheServlet: " + e.getMessage());
+        } catch(IOException ie) {
+        	response.setContentType("text/plain; charset=UTF-8");
+        	response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+        	writer = response.getWriter();
+        	writer.println("Cache deletion failed with the following response: " + ie.getMessage());
+            log.error("IOException caught in FlushCacheServlet: " + ie.getMessage());
+        } catch(Exception e) {
+        	response.setContentType("text/plain; charset=UTF-8");
+        	response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+        	writer = response.getWriter();
+        	writer.println("Cache deletion failed with the following response: " + e.getMessage());
+        	log.error("Generic Exception caught in FlushCacheServlet: " + e.getMessage());
         }
     }
 }

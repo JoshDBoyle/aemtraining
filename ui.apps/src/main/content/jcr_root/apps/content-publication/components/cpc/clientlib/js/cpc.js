@@ -5,7 +5,15 @@ function clearCache(toggle) {
 	var $agent = $(toggle).closest('.agent');
 
 	$.post('/bin/cpc/flushcache', { 'replicationAgentId': $agent.attr('data-agent'), 'flushAgentId': $(toggle).attr('data-id') }, function(data) {
-		console.log(data);
+		if(null != data) {
+			if(data.status == '502') {
+				$(toggle).find('.flush-succeeded').css('display', 'none');
+				$(toggle).find('.flush-failed').css('display', 'inline-block');
+			} else if(data.status == '200') {
+				$(toggle).find('.flush-failed').css('display', 'none');
+				$(toggle).find('.flush-succeeded').css('display', 'inline-block');
+			}
+		}
 	});
 }
 

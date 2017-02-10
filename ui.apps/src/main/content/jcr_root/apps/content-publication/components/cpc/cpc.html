@@ -79,6 +79,22 @@
               <div class="flush-agent coral-Well" data-transporturi="${flush.transportUri @ context='unsafe'}" data-id="${flush.agentId}">
                 <div class="flush-id">${flush.agentId}</div>
                 <button data-sly-test="${cpcuse.canClear}" class="clear-cache-btn coral-Button coral-Button--primary">Clear Cache</button>
+                <div class="coral-Alert coral-Alert--error flush-failed">
+				  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
+				    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
+				  </button>
+				  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--alert"></i>
+				  <strong class="coral-Alert-title">Error</strong>
+				  <div class="coral-Alert-message">Cache deletion failed</div>
+				</div>
+				<div class="coral-Alert coral-Alert--success flush-succeeded">
+				  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
+				    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
+				  </button>
+				  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
+				  <strong class="coral-Alert-title">Success</strong>
+				  <div class="coral-Alert-message">Cache deletion succeeded</div>
+				</div>
               </div>
             </div>
           </div>
