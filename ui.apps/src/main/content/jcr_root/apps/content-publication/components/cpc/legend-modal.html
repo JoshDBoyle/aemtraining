@@ -26,7 +26,7 @@
               <div class="led-green"></div>
             </div>
           </td>
-          <td class="coral-Table-cell">Agent is enabled, unblocked, and has no queue</td>
+          <td class="coral-Table-cell">Agent is enabled, active (not in standby), and has no queue</td>
         </tr>
         <tr class="coral-Table-row">
           <td class="coral-Table-cell">
@@ -34,7 +34,7 @@
               <div class="led-blue"></div>
             </div>
           </td>
-          <td class="coral-Table-cell">Agent is enabled and unblocked, and is actively replicating</td>
+          <td class="coral-Table-cell">Agent is enabled, active, and the queue is unblocked and actively replicating content</td>
         </tr>
         <tr class="coral-Table-row">
           <td class="coral-Table-cell">
@@ -42,7 +42,7 @@
               <div class="led-red"></div>
             </div>
           </td>
-          <td class="coral-Table-cell">Agent is enabled and actively replicating but is blocked</td>
+          <td class="coral-Table-cell">Agent is enabled, active, and actively replicating content but its queue is blocked</td>
         </tr>
         <tr class="coral-Table-row">
           <td class="coral-Table-cell">
@@ -50,7 +50,15 @@
               <div class="led-yellow"></div>
             </div>
           </td>
-          <td class="coral-Table-cell">Agent is disabled</td>
+          <td class="coral-Table-cell">Agent is in standby mode.  Replication requests will continue to queue up as normal but nothing will be replicated until the agent is no longer in standby and the remaining duration of its retry period has elapsed</td>
+        </tr>
+        <tr class="coral-Table-row">
+          <td class="coral-Table-cell">
+            <div class="led-box">
+              <div class="led-grey"></div>
+            </div>
+          </td>
+          <td class="coral-Table-cell">Agent is disabled.  Replication requests will be ignored altogether by this Agent.</td>
         </tr>
       </tbody>
     </table>

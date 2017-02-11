@@ -45,7 +45,8 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	ResourceResolver resolver = request.getResourceResolver();
     	Session session = resolver.adaptTo(Session.class);
     	String agentId = request.getParameter("id");
-    	String standby = request.getParameter("standby");
+    	String type = request.getParameter("type");
+    	String value = request.getParameter("value");
     	
     	AgentConfig config = agentMgr.getAgents().get(agentId).getConfiguration();
     	String agentPath = config.getId();
@@ -66,21 +67,33 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	if(null != agentRes) {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
     		
-    		// IF we want to put this Agent in standby
-    		// THEN copy the Agent's real transportURI to a property named "standby"
-    		// ELSE set the Agent's transportURI back to it's proper value and remove the standby property
-    		if(standby.equals("true")) {
-    			mvm.put("standby", config.getTransportURI());        
-    			mvm.put("transportUri", "standby");
-    		} else {
-    			mvm.put("transportUri", mvm.get("standby"));
-    			mvm.remove("standby");
+    		if(type.equals("standby")) {
+	    		// IF we want to put this Agent in standby
+	    		// THEN copy the Agent's real transportURI to a property named "standby"
+	    		// ELSE set the Agent's transportURI back to it's proper value and remove the standby property
+	    		if(value.equals("true")) {
+	    			mvm.put("standby", config.getTransportURI());        
+	    			mvm.put("transportUri", "standby");
+	    		} else {
+	    			mvm.put("transportUri", mvm.get("standby"));
+	    			mvm.remove("standby");
+	    		}
+    		} else if(type.equals("enabled")) {
+    			/**
+    			 * Enabling an Agent in AEM works via an "enabled" property on the Agent's jcr:content node.
+    			 * To disable, you can either remove that property or set it to a non-true value.  OOTB, AEM
+    			 * removes the property so we'll do the same for consistency.
+    			 */
+	    		if(value.equals("true")) {
+	    			mvm.put("enabled", "true");
+	    		} else {
+	    			mvm.remove("enabled");
+	    		}
     		}
 
     		try {
     			session.save();
     			jsonResponse.put("agentId", agentId);
-    			jsonResponse.put("standby", standby);
     			response.setContentType("application/json");
     	        response.getWriter().write(jsonResponse.toString(2)); 
     		} catch(RepositoryException rex) {

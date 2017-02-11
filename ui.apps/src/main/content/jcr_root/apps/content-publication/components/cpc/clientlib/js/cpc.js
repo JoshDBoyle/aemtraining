@@ -20,20 +20,23 @@ function clearCache(toggle) {
 /**
  * Sets the status light for an individual agent
  */
-function setQueueStatus($agent, data) {
-	var blocked = data ? data.metaData.queueStatus.isBlocked : false;
-	var standby = !$agent.find('input')[0].checked;
+function setAgentStatus($agent, queueData, agentData) {
+	var blocked = queueData ? queueData.metaData.queueStatus.isBlocked : false;
+	var standby = agentData.standby ? true : false;
+	var enabled = agentData.enabled ? agentData.enabled : false;
 	var $status = $agent.find('.led-box div');
 
 	$status.removeClass();
-	if(blocked && !standby) {
+	if(blocked && !standby && enabled) {
 		$status.addClass('led-red');
-	} else if(!blocked && !standby && data.queue.length > 0) {
+	} else if(!blocked && !standby && enabled && queueData.queue.length > 0) {
 		$status.addClass('led-blue');
-	} else if(!blocked && !standby) {
-		$status.addClass('led-green');
+	} else if(!enabled) {
+		$status.addClass('led-grey');
 	} else if(standby) {
 		$status.addClass('led-yellow');
+	} else if(!blocked && !standby && enabled) {
+		$status.addClass('led-green');
 	}
 }
 
@@ -41,18 +44,22 @@ function setQueueStatus($agent, data) {
  * Refreshes the queue for an individual agent
  */
 function refreshQueue($agent) {
-	$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.queue.json', function(data) {
-		var $agentTemp = $("[data-agent='" + data.metaData.queueStatus.agentId + "']");
-		var $queue = $agentTemp.find('.agent-queue').eq(0);
+	$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.queue.json').success(function(queueSuccess) {
+		var queueData = queueSuccess;
+		$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.json').success(function(agentSuccess) {
+			var agentData = agentSuccess;
+			var $agentTemp = $("[data-agent='" + queueData.metaData.queueStatus.agentId + "']");
+			var $queue = $agentTemp.find('.agent-queue').eq(0);
 
-		setQueueStatus($agentTemp, data);
-		$queue.empty();
+			setAgentStatus($agentTemp, queueData, agentData);
+			$queue.empty();
 
-		if(data.queue.length > 0) {
-			for(var j = 0; j < data.queue.length; j++) {
-				$queue.append("<a target='_blank' href='" + data.queue[j].path + ".html'>" + data.queue[j].path + "</a>" + "<span>" + data.queue[j].type + "</span>");
+			if(queueData.queue.length > 0) {
+				for(var j = 0; j < queueData.queue.length; j++) {
+					$queue.append("<a target='_blank' href='" + queueData.queue[j].path + ".html'>" + queueData.queue[j].path + "</a>" + "<span>" + queueData.queue[j].type + "</span>");
+				}
 			}
-		}
+		});
 	});
 }
 
@@ -103,52 +110,60 @@ $(document).ready(function() {
   });
 
   /**
-   * INDIVIDUAL AGENT QUEUE PAUSING/UNPAUSING
+   * INDIVIDUAL AGENT STANDBY AND ENABLED TOGGLING
    */
-  $('.agent-toggle').on('click', function(event) {
+  $('.agent-toggle-standby, .agent-toggle-enabled').on('click', function(event) {
 	  var toggle = event.currentTarget;
 	  var id = toggle.getAttribute('data-id');
-	  var checked = toggle.getElementsByTagName('input')[0].checked;
+	  var type = toggle.classList.contains('agent-toggle-standby') ? 'standby' : 'enabled';
+	  var checked = type == 'standby' ? !toggle.getElementsByTagName('input')[0].checked : toggle.getElementsByTagName('input')[0].checked;
 	  var $agent = $(toggle.parentElement.parentElement);
-
-	  $.post("/bin/cpc/updateagent", { 'id': id, 'standby': !checked }, function(data) {
+	  
+	  $.post("/bin/cpc/updateagent", { 'id': id, 'type': type, 'value': checked }, function(data) {
 		  refreshQueue($agent);
 	  });
   });
 
   /**
-   * GROUP AGENT QUEUE PAUSING/UNPAUSING
+   * STANDBY AND ENABLED TOGGLING BY AGENT GROUP
    */
-  $('#pause-group-btn, #unpause-group-btn').on('click', function(event) {
+  $('#pause-group-btn, #unpause-group-btn, #enable-group-btn, #disable-group-btn').on('click', function(event) {
 	  var groupToggle = event.currentTarget;
-	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle > input');
+	  var type = groupToggle.id == 'pause-group-btn' || groupToggle.id == 'unpause-group-btn' ? 'standby' : 'enabled';
+	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle-' + type + ' > input');
 	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
-	  var standby = temp.indexOf('Pause') >= 0 ? true : false;
+	  var value;
+	  
+	  if(groupToggle.id == 'pause-group-btn' || groupToggle.id == 'enable-group-btn') {
+		  value = true;
+	  } else {
+		  value = false;
+	  }
 
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
 		  var parent = individualToggles[i].parentElement;
 		  var $agent = $(parent.parentElement.parentElement);
 
-		  toggle.checked = !standby;
+		  toggle.checked = type == 'standby' ? !value : value;
 		  
-		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'standby': standby }, function(data) {
+		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'type': type, 'value': value }, function(data) {
 			  if(data.agentId && data.agentId !== '') {
 				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
 			  }
 		  });
 	  }
   });
-
+  
   /**
-   * INDIVIDUAL CACHE INVALIDATION
+   * INDIVIDUAL CACHE DELETION
    */
   $('.clear-cache-btn').on('click', function(event) {
 	  clearCache(event.currentTarget.parentElement);
   });
 
   /**
-   * GROUP CACHE INVALIDATION
+   * CACHE DELETION BY GROUP
    */
   $('#clear-group-cache-btn').on('click', function(event) {
 	  var groupToggle = event.currentTarget;

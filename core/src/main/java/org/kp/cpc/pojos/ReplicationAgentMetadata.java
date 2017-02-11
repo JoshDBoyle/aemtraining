@@ -12,6 +12,7 @@ public class ReplicationAgentMetadata extends AgentMetadata {
 		this.id = config.getId();
 		this.agentId = config.getAgentId();
 		this.standby = standby;
+		this.enabled = config.isEnabled();
 		
 		if(standby)
 			this.transportUri = config.getProperties().get("standby", String.class);

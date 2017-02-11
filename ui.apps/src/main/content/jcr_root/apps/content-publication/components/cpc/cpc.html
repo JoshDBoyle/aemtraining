@@ -44,9 +44,17 @@
               <i class="coral-Icon coral-Icon--pauseCircle"></i>
               Pause all ${item.title} agents
             </button>
+            <button id="enable-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+              <i class="coral-Icon coral-Icon--playCircle"></i>
+              Enable all ${item.title} agents
+            </button>
+            <button id="disable-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+              <i class="coral-Icon coral-Icon--pauseCircle"></i>
+              Disable all ${item.title} agents
+            </button>
             <button data-sly-test="${cpcuse.canClear}" id="clear-group-cache-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
               <i class="coral-Icon coral-Icon--folderDelete"></i>
-              Invalidate cache for all ${item.title} dispatchers
+              Delete cache for all ${item.title} dispatchers
             </button>
           </div>
         </div>
@@ -59,17 +67,22 @@
                 <div class="led-green"></div>
               </div>
               <div class="agent-id">${agent.agentId}</div>
-              <label class="agent-toggle coral-Switch" data-id="${agent.agentId}">
-                <input class="coral-Switch-input" type="checkbox" checked="${!agent.standby}" disabled="${!cpcuse.canModify}">
-                <span class="coral-Switch-offLabel">Off</span>
-                <span class="coral-Switch-onLabel">On</span>
-              </label>
               <button class="view-queue-btn coral-MinimalButton" type="button" title="View Queue">
                 <i class="coral-MinimalButton-icon coral-Icon coral-Icon--layers"></i>
               </button>
               <button class="view-log-btn coral-MinimalButton" type="button" title="View Log">
                 <i class="coral-MinimalButton-icon coral-Icon coral-Icon--textLeft"></i>
               </button>
+              <label class="agent-toggle-enabled coral-Switch" data-id="${agent.agentId}">
+                <input class="coral-Switch-input" type="checkbox" checked="${agent.enabled}" disabled="${!cpcuse.canModify}">
+                <span class="coral-Switch-offLabel">Disabled</span>
+                <span class="coral-Switch-onLabel">Enabled</span>
+              </label>
+              <label class="agent-toggle-standby coral-Switch" data-id="${agent.agentId}">
+                <input class="coral-Switch-input" type="checkbox" checked="${!agent.standby}" disabled="${!cpcuse.canModify}">
+                <span class="coral-Switch-offLabel">Standby</span>
+                <span class="coral-Switch-onLabel">Active</span>
+              </label>
             </div>
             <div class="agent-queue coral-Well">
             </div>
@@ -78,7 +91,7 @@
             <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}">
               <div class="flush-agent coral-Well" data-transporturi="${flush.transportUri @ context='unsafe'}" data-id="${flush.agentId}">
                 <div class="flush-id">${flush.agentId}</div>
-                <button data-sly-test="${cpcuse.canClear}" class="clear-cache-btn coral-Button coral-Button--primary">Clear Cache</button>
+                <button data-sly-test="${cpcuse.canClear}" class="clear-cache-btn coral-Button coral-Button--primary">Delete Cache</button>
                 <div class="coral-Alert coral-Alert--error flush-failed">
 				  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
 				    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
