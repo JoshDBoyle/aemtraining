@@ -64,6 +64,8 @@ public class QueryByDateServlet extends SlingAllMethodsServlet {
 	    				request.getParameter("start"), 
 	    				request.getParameter("end"),
 	    				request.getParameter("csv"));
+	    	} else if(type.equals(SharedConstants.LOCKED_REPORT)) {
+	    		
 	    	}
     	} catch(Exception e) {
     		log.error("Generic exception caught in QueryByDateService trying to retrieve results by date range");
