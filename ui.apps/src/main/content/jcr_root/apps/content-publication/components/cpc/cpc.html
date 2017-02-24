@@ -8,31 +8,27 @@
 <div data-sly-use.cpcuse="org.kp.cpc.use.CPCUse">
 
   <!-- Command Bar -->
-  <div class="command-bar">
-    <button id="legend-button" class="coral-MinimalButton">
-      <i class="coral-Icon coral-Icon--infoCircle coral-MinimalButton-icon"></i>
-      <div>Legend</div>
+  <div class="command-bar coral--dark">
+    <button id="legend-button" is="coral-button" variant="minimal" icon="infoCircle">
+      Legend
     </button>
-    <button id="all-agents-list-button" class="coral-MinimalButton">
-      <i class="coral-Icon coral-Icon--book coral-MinimalButton-icon"></i>
-      <div>Agent Listing</div>
+    <button id="all-agents-list-button" is="coral-button" variant="minimal" icon="book">
+      Agent Listing
     </button>
-    <button id="query-by-date-button" class="coral-MinimalButton">
-      <i class="coral-Icon coral-Icon--report coral-MinimalButton-icon"></i>
-      <div>Reporting</div>
+    <button id="query-by-date-button" is="coral-button" variant="minimal" icon="report">
+      Reporting
     </button>
   </div>
 
-  <div class="coral-TabPanel coral-TabPanel--large" data-init="tabs">
-    <div class="no-agents" data-sly-test="${cpcuse.agentGroups.size <= 0}">
-      No agent groups have been configured in the Felix console.
-    </div>
-    <nav data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-navigation">
-      <a class="coral-TabPanel-tab ${itemList.first ? 'is-active' : ''}" data-toggle="tab">${item.title}</a>
-    </nav>
-    <div data-sly-list="${cpcuse.agentGroups}" class="coral-TabPanel-content">
-      <section class="coral-TabPanel-pane is-active">
-        
+  <coral-tabview maximized orientation="horizontal">
+    <coral-tablist data-sly-list="${cpcuse.agentGroups}">
+      <coral-tab role="tab">
+        <coral-tab-label>${item.title}</coral-tab-label>
+      </coral-tab>
+    </coral-tablist>
+    <coral-panelstack maximized role="presentation" data-sly-list="${cpcuse.agentGroups}">
+      <coral-panel role="tabpanel">
+
         <!-- Agent Group Control -->
         <div class="agent-disable-wrapper ${!cpcuse.canModify && !cpcuse.canClear ? 'hidden' : ''}">
           <div class="coral-ButtonGroup ">
@@ -93,29 +89,29 @@
                 <div class="flush-id">${flush.agentId}</div>
                 <button data-sly-test="${cpcuse.canClear}" class="clear-cache-btn coral-Button coral-Button--primary">Delete Cache</button>
                 <div class="coral-Alert coral-Alert--error flush-failed">
-				  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
-				    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
-				  </button>
-				  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--alert"></i>
-				  <strong class="coral-Alert-title">Error</strong>
-				  <div class="coral-Alert-message">Cache deletion failed</div>
-				</div>
-				<div class="coral-Alert coral-Alert--success flush-succeeded">
-				  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
-				    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
-				  </button>
-				  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
-				  <strong class="coral-Alert-title">Success</strong>
-				  <div class="coral-Alert-message">Cache deletion succeeded</div>
-				</div>
+                  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
+                    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
+                  </button>
+                  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--alert"></i>
+                  <strong class="coral-Alert-title">Error</strong>
+                  <div class="coral-Alert-message">Cache deletion failed</div>
+                </div>
+                <div class="coral-Alert coral-Alert--success flush-succeeded">
+                  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
+                    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
+                  </button>
+                  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
+                  <strong class="coral-Alert-title">Success</strong>
+                  <div class="coral-Alert-message">Cache deletion succeeded</div>
+                </div>
               </div>
             </div>
+
           </div>
-        </div>
-        
-      </section>
-    </div>
-  </div>
+        </div> 
+      </coral-panel>
+    </coral-panelstack>
+  </coral-tabview>
 
 </div>
 

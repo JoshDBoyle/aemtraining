@@ -60,11 +60,13 @@
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.jcr.api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.adobe.aem</groupId>
-            <artifactId>uber-jar</artifactId>
-            <classifier>unobfuscated-apis</classifier>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.aem</groupId>
+		    <artifactId>uber-jar</artifactId>
+		    <version>6.2.0</version>
+		    <classifier>apis</classifier>
+		    <scope>provided</scope>
+		</dependency>
         <dependency>
 		    <groupId>commons-httpclient</groupId>
 		    <artifactId>commons-httpclient</artifactId>

@@ -95,13 +95,13 @@
                 <version>4.8.1</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.adobe.aem</groupId>
-                <artifactId>uber-jar</artifactId>
-                <version>6.1.0</version>
-                <scope>provided</scope>
-                <classifier>unobfuscated-apis</classifier>
-            </dependency>
+			<dependency>
+			    <groupId>com.adobe.aem</groupId>
+			    <artifactId>uber-jar</artifactId>
+			    <version>6.2.0</version>
+			    <classifier>apis</classifier>
+			    <scope>provided</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 

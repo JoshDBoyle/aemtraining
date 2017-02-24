@@ -5,5 +5,8 @@
         jcr:primaryType="nt:unstructured"
         jcr:title="CPC"
         href="/cpc.html"
-        id="kp-cpc"/>
+        id="kp-cpc"
+        consoleId="kp-cpc"
+        icon="graphPathing"
+        order="{Long}9000"/>
 </jcr:root>
