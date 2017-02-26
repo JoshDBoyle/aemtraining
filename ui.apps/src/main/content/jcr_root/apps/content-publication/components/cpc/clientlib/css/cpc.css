@@ -10,50 +10,86 @@ coral-panelstack {
 	margin: 15px 0;
 }
 
-.agent {
-	display: inline-block;
-    margin: 5px;
-    min-width: 550px;
-    width: 45%;
-    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
-    background-color: white;
+coral-actionbar-container {
+	top: 50%;
+  	transform: translateY(-50%);
 }
 
-.agent-header {
-	width: 100%;
-	min-height: 30px;
-	display: inline-block;
+coral-masonry-item {
+	padding: 10px;
+	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
-.agent-id {
-    overflow: hidden;
-    display: inline-block;
-    float: left;
-    min-height: 30px;
-    margin-top: 13px;
-    margin-left: 15px;
-    font-size: 16px;
+.agent-queue.coral-Well {
+	background-color: #999;	
+	margin: 10px;
 }
 
-.agent-toggle-standby, .agent-toggle-enabled {
-	float: right;
-	display: inline-block;
-    width: 165px;
-    min-height: 30px;
+.switch-label {
+	margin: 9px 8px 0;
 }
 
-.view-log-btn {
-	float: right;
-	display: inline-block;
+.switch-label:nth-child(even) {
 	margin-right: 15px;
-	margin-top: 7px;
 }
 
-.view-queue-btn {
-	float: right;
-	display: inline-block;
-	margin-top: 7px;
+.id-label {
+	margin-left: 15px;
 }
+
+.coral-ActionBar-container > .coral-ActionBar-item.cache-deletion-failure, 
+.coral-ActionBar-container > .coral-ActionBar-item.cache-deletion-success {
+	display: none;
+}
+
+/* .delete-cache-btn { */
+/* 	margin-top: 10px; */
+/* } */
+
+/* .agent { */
+/* 	display: inline-block; */
+/*     margin: 5px; */
+/*     min-width: 550px; */
+/*     width: 45%; */
+/*     box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22); */
+/*     background-color: white; */
+/* } */
+
+/* .agent-header { */
+/* 	width: 100%; */
+/* 	min-height: 30px; */
+/* 	display: inline-block; */
+/* } */
+
+/* .agent-id { */
+/*     overflow: hidden; */
+/*     display: inline-block; */
+/*     float: left; */
+/*     min-height: 30px; */
+/*     margin-top: 13px; */
+/*     margin-left: 15px; */
+/*     font-size: 16px; */
+/* } */
+
+/* .agent-toggle-standby, .agent-toggle-enabled { */
+/* 	float: right; */
+/* 	display: inline-block; */
+/*     width: 165px; */
+/*     min-height: 30px; */
+/* } */
+
+/* .view-log-btn { */
+/* 	float: right; */
+/* 	display: inline-block; */
+/* 	margin-right: 15px; */
+/* 	margin-top: 7px; */
+/* } */
+
+/* .view-queue-btn { */
+/* 	float: right; */
+/* 	display: inline-block; */
+/* 	margin-top: 7px; */
+/* } */
 
 .agent-queue {
 	overflow-x: hidden;
@@ -187,11 +223,11 @@ coral-panelstack {
   	padding: 20px;
 }
 
-.led-box {
-	display: inline-block;
-	margin: 13px 0;
-  	float: left;
-}
+/* .led-box { */
+/* 	display: inline-block; */
+/* 	margin: 13px 0; */
+/*   	float: left; */
+/* } */
 
 .coral-Well {
 	border: 1px solid #333;
@@ -333,13 +369,13 @@ coral-panelstack {
 	float: right;
 }
 
-.flush-agents .flush-failed, .flush-agents .flush-succeeded {
-	display: none;
-	float: right;
-	margin-top: 0px;
-	margin-right: 10px;
-	box-shadow: 0 5px 10px rgba(0,0,0,0.30), 0 5px 10px rgba(0,0,0,0.22);
-}
+/* .flush-agents .flush-failed, .flush-agents .flush-succeeded { */
+/* 	display: none; */
+/* 	float: right; */
+/* 	margin-top: 0px; */
+/* 	margin-right: 10px; */
+/* 	box-shadow: 0 5px 10px rgba(0,0,0,0.30), 0 5px 10px rgba(0,0,0,0.22); */
+/* } */
 
 #legend-modal {
 	max-width: 600px;

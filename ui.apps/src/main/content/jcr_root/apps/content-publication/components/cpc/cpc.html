@@ -1,6 +1,3 @@
-<sly data-sly-use.clientLib="${'/libs/granite/sightly/templates/clientlib.html'}" />
-<sly data-sly-call="${clientLib.css @ categories='cpc'}" />
-
 <sly data-sly-include="${'legend-modal.html'}"/>
 <sly data-sly-include="${'agents-info-modal.html'}"/>
 <sly data-sly-include="${'query-by-date-modal.html'}"/>
@@ -22,97 +19,120 @@
 
   <coral-tabview maximized orientation="horizontal">
     <coral-tablist data-sly-list="${cpcuse.agentGroups}">
-      <coral-tab role="tab">
+      <coral-tab role="tab" id="${item.title}">
         <coral-tab-label>${item.title}</coral-tab-label>
       </coral-tab>
     </coral-tablist>
     <coral-panelstack maximized role="presentation" data-sly-list="${cpcuse.agentGroups}">
       <coral-panel role="tabpanel">
-
-        <!-- Agent Group Control -->
-        <div class="agent-disable-wrapper ${!cpcuse.canModify && !cpcuse.canClear ? 'hidden' : ''}">
-          <div class="coral-ButtonGroup ">
-            <button id="unpause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
-              <i class="coral-Icon coral-Icon--playCircle"></i>
-              Unpause all ${item.title} agents
-            </button>
-            <button id="pause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
-              <i class="coral-Icon coral-Icon--pauseCircle"></i>
-              Pause all ${item.title} agents
-            </button>
-            <button id="enable-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
-              <i class="coral-Icon coral-Icon--playCircle"></i>
-              Enable all ${item.title} agents
-            </button>
-            <button id="disable-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
-              <i class="coral-Icon coral-Icon--pauseCircle"></i>
-              Disable all ${item.title} agents
-            </button>
-            <button data-sly-test="${cpcuse.canClear}" id="clear-group-cache-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
-              <i class="coral-Icon coral-Icon--folderDelete"></i>
-              Delete cache for all ${item.title} dispatchers
-            </button>
-          </div>
-        </div>
-
-        <!-- Listing of Replication Agents.  item refers to one AgentGroup in our List<AgentGroup> -->
-        <div data-sly-list.agent="${item.replicationAgentMetas}">
-          <div class="agent coral-Well" data-agent="${agent.agentId}" data-transporturi="${agent.transportUri}">
-            <div class="agent-header">
-              <div class="led-box">
-                <div class="led-green"></div>
-              </div>
-              <div class="agent-id">${agent.agentId}</div>
-              <button class="view-queue-btn coral-MinimalButton" type="button" title="View Queue">
-                <i class="coral-MinimalButton-icon coral-Icon coral-Icon--layers"></i>
+        <coral-panel-content>
+          <!-- Agent Group Control -->
+          <div class="agent-disable-wrapper ${!cpcuse.canModify && !cpcuse.canClear ? 'hidden' : ''}">
+            <div class="coral-ButtonGroup ">
+              <button id="unpause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+                <i class="coral-Icon coral-Icon--playCircle"></i>
+                Unpause all ${item.title} agents
               </button>
-              <button class="view-log-btn coral-MinimalButton" type="button" title="View Log">
-                <i class="coral-MinimalButton-icon coral-Icon coral-Icon--textLeft"></i>
+              <button id="pause-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+                <i class="coral-Icon coral-Icon--pauseCircle"></i>
+                Pause all ${item.title} agents
               </button>
-              <label class="agent-toggle-enabled coral-Switch" data-id="${agent.agentId}">
-                <input class="coral-Switch-input" type="checkbox" checked="${agent.enabled}" disabled="${!cpcuse.canModify}">
-                <span class="coral-Switch-offLabel">Disabled</span>
-                <span class="coral-Switch-onLabel">Enabled</span>
-              </label>
-              <label class="agent-toggle-standby coral-Switch" data-id="${agent.agentId}">
-                <input class="coral-Switch-input" type="checkbox" checked="${!agent.standby}" disabled="${!cpcuse.canModify}">
-                <span class="coral-Switch-offLabel">Standby</span>
-                <span class="coral-Switch-onLabel">Active</span>
-              </label>
+              <button id="enable-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+                <i class="coral-Icon coral-Icon--playCircle"></i>
+                Enable all ${item.title} agents
+              </button>
+              <button id="disable-group-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+                <i class="coral-Icon coral-Icon--pauseCircle"></i>
+                Disable all ${item.title} agents
+              </button>
+              <button data-sly-test="${cpcuse.canClear}" id="delete-group-cache-btn" class="coral-ButtonGroup-item coral-Button coral-Button--secondary">
+                <i class="coral-Icon coral-Icon--folderDelete"></i>
+                Delete cache for all ${item.title} dispatchers
+              </button>
             </div>
-            <div class="agent-queue coral-Well">
-            </div>
-            
-            <!-- List of all corresponding flush agents.  item refers to one ReplicationAgentMetadata in our List<ReplicationAgentMetadata> -->
-            <div class="flush-agents" data-sly-list.flush="${agent.flushAgents}">
-              <div class="flush-agent coral-Well" data-transporturi="${flush.transportUri @ context='unsafe'}" data-id="${flush.agentId}">
-                <div class="flush-id">${flush.agentId}</div>
-                <button data-sly-test="${cpcuse.canClear}" class="clear-cache-btn coral-Button coral-Button--primary">Delete Cache</button>
-                <div class="coral-Alert coral-Alert--error flush-failed">
-                  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
-                    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
-                  </button>
-                  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--alert"></i>
-                  <strong class="coral-Alert-title">Error</strong>
-                  <div class="coral-Alert-message">Cache deletion failed</div>
-                </div>
-                <div class="coral-Alert coral-Alert--success flush-succeeded">
-                  <button type="button" class="coral-MinimalButton coral-Alert-closeButton" title="Close" data-dismiss="alert">
-                    <i class="coral-Icon coral-Icon--sizeXS coral-Icon--close coral-MinimalButton-icon"></i>
-                  </button>
-                  <i class="coral-Alert-typeIcon coral-Icon coral-Icon--sizeS coral-Icon--checkCircle"></i>
-                  <strong class="coral-Alert-title">Success</strong>
-                  <div class="coral-Alert-message">Cache deletion succeeded</div>
-                </div>
-              </div>
-            </div>
-
           </div>
-        </div> 
+  
+          <!-- Listing of Replication Agents.  item refers to one AgentGroup in our List<AgentGroup> -->
+          <coral-masonry layout="variable" columnwidth="550" spacing="15" data-sly-list.agent="${item.replicationAgentMetas}">
+            <coral-masonry-item class="agent coral--dark" data-agent="${agent.agentId}" data-transporturi="${agent.transportUri}">
+              <coral-actionbar>
+                <coral-actionbar-container>
+                  <coral-actionbar-item class="led-box">
+                    <div class="led-green"></div>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <div class="id-label">${agent.agentId}</div>
+                  </coral-actionbar-item>
+                </coral-actionbar-container>
+                <coral-actionbar-container>
+                  <coral-actionbar-item>
+                    <div class="switch-label">Standby</div>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <coral-switch class="agent-toggle-standby" data-id="${agent.agentId}" checked="${!agent.standby}" disabled="${!cpcuse.canModify}"></coral-switch>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <div class="switch-label">Active</div>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <div class="switch-label">Disabled</div>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <coral-switch class="agent-toggle-enabled" data-id="${agent.agentId}" checked="${agent.enabled}" disabled="${!cpcuse.canModify}"></coral-switch>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <div class="switch-label">Enabled</div>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <button class="view-log-btn" is="coral-button" variant="minimal" title="View Log" icon="textLeft"></button>
+                  </coral-actionbar-item>
+                  <coral-actionbar-item>
+                    <button class="view-queue-btn" is="coral-button" variant="minimal" title="View Queue" icon="layers"></button>
+                  </coral-actionbar-item>
+                </coral-actionbar-container>
+              </coral-actionbar>
+              <div class="agent-queue coral-Well">
+              </div>
+              
+              <!-- List of all corresponding flush agents.  item refers to one ReplicationAgentMetadata in our List<ReplicationAgentMetadata> -->
+              <sly data-sly-list.flush="${agent.flushAgents}">
+                <coral-actionbar>
+                  <coral-actionbar-container>
+                    <coral-actionbar-item>
+                      <div>${flush.agentId}</div>
+                    </coral-actionbar-item>
+                  </coral-actionbar-container>
+                  <coral-actionbar-container>
+                    <coral-actionbar-item class="cache-deletion-failure">
+                      <coral-alert variant="error">
+                        <coral-alert-content>Cache deletion failed</coral-alert-content>
+                      </coral-alert>
+                    </coral-actionbar-item>
+                    <coral-actionbar-item class="cache-deletion-success">
+                      <coral-alert variant="success">
+                        <coral-alert-content>Cache deletion Succeeded</coral-alert-content>
+                      </coral-alert>
+                    </coral-actionbar-item>
+                    <coral-actionbar-item>
+                      <button 
+                        class="delete-cache-btn" 
+                        is="coral-button"
+                        variant="primary" 
+                        icon="globeRemove" 
+                        iconsize="S" 
+                        data-transporturi=${flush.transportUri}
+                        data-id="${flush.agentId}">
+                        Delete Cache
+                      </button>
+                    </coral-actionbar-item>
+                  </coral-actionbar-container>
+                </coral-actionbar>
+              </sly>
+            </coral-masonry-item>
+          </coral-masonry>
+        </coral-panel-content>
       </coral-panel>
     </coral-panelstack>
   </coral-tabview>
 
 </div>
-
-<sly data-sly-call="${clientLib.js @ categories='cpc'}" />

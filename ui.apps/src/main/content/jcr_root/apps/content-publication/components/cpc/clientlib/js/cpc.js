@@ -1,17 +1,24 @@
 /**
  * Clears the cache for a single dispatcher
  */
-function clearCache(toggle) {
-	var $agent = $(toggle).closest('.agent');
+function clearCache(deleteCacheBtn) {
+	var $agent = $(deleteCacheBtn).closest('.agent');
 
-	$.post('/bin/cpc/flushcache', { 'replicationAgentId': $agent.attr('data-agent'), 'flushAgentId': $(toggle).attr('data-id') }, function(data) {
+	$.post('/bin/cpc/flushcache', { 'replicationAgentId': $agent.attr('data-agent'), 'flushAgentId': $(deleteCacheBtn).attr('data-id') }, function(data) {
 		if(null != data) {
+			var $container = $(deleteCacheBtn).closest('coral-actionbar-container');
+			var $success = $container.find('.cache-deletion-success');
+			var $failure = $container.find('.cache-deletion-failure');
+			
+			// Bumping the margin-top 8px is a hack to account for the way CoralUI handles placement of coral-actionbar-items on display
+			$(deleteCacheBtn).css('margin-top', '8px');
+			
 			if(data.status == '502') {
-				$(toggle).find('.flush-succeeded').css('display', 'none');
-				$(toggle).find('.flush-failed').css('display', 'inline-block');
+				$success.hide();
+				$failure.show();
 			} else if(data.status == '200') {
-				$(toggle).find('.flush-failed').css('display', 'none');
-				$(toggle).find('.flush-succeeded').css('display', 'inline-block');
+				$failure.hide();
+				$success.show();
 			}
 		}
 	});
@@ -44,9 +51,9 @@ function setAgentStatus($agent, queueData, agentData) {
  * Refreshes the queue for an individual agent
  */
 function refreshQueue($agent) {
-	$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.queue.json').success(function(queueSuccess) {
+	$.getJSON('/etc/replication/agents.author/' + $agent.attr('data-agent') + '/jcr:content.queue.json').success(function(queueSuccess) {
 		var queueData = queueSuccess;
-		$.getJSON('/etc/replication/agents.author/' + $agent.find('.agent-id')[0].innerText + '/jcr:content.json').success(function(agentSuccess) {
+		$.getJSON('/etc/replication/agents.author/' + $agent.attr('data-agent') + '/jcr:content.json').success(function(agentSuccess) {
 			var agentData = agentSuccess;
 			var $agentTemp = $("[data-agent='" + queueData.metaData.queueStatus.agentId + "']");
 			var $queue = $agentTemp.find('.agent-queue').eq(0);
@@ -93,7 +100,7 @@ $(document).ready(function() {
 	 element : '#query-by-date-modal',
 	 visible : false
   });
-
+  
   /**
    * COMMAND BAR MODAL LISTENERS
    */
@@ -116,8 +123,8 @@ $(document).ready(function() {
 	  var toggle = event.currentTarget;
 	  var id = toggle.getAttribute('data-id');
 	  var type = toggle.classList.contains('agent-toggle-standby') ? 'standby' : 'enabled';
-	  var checked = type == 'standby' ? !toggle.getElementsByTagName('input')[0].checked : toggle.getElementsByTagName('input')[0].checked;
-	  var $agent = $(toggle.parentElement.parentElement);
+	  var checked = type == 'standby' ? toggle.checked : !toggle.checked;
+	  var $agent = $(toggle).closest('.agent');
 	  
 	  $.post("/bin/cpc/updateagent", { 'id': id, 'type': type, 'value': checked }, function(data) {
 		  refreshQueue($agent);
@@ -130,26 +137,18 @@ $(document).ready(function() {
   $('#pause-group-btn, #unpause-group-btn, #enable-group-btn, #disable-group-btn').on('click', function(event) {
 	  var groupToggle = event.currentTarget;
 	  var type = groupToggle.id == 'pause-group-btn' || groupToggle.id == 'unpause-group-btn' ? 'standby' : 'enabled';
-	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.agent-toggle-' + type + ' > input');
-	  var temp = (groupToggle.textContent || groupToggle.innerText).trim();
-	  var value;
-	  
-	  if(groupToggle.id == 'pause-group-btn' || groupToggle.id == 'enable-group-btn') {
-		  value = true;
-	  } else {
-		  value = false;
-	  }
+	  var individualToggles = $(groupToggle).closest('coral-panel-content')[0].querySelectorAll('.agent-toggle-' + type);
+	  var value = (groupToggle.id == 'pause-group-btn' || groupToggle.id == 'enable-group-btn') ? true : false;
 
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
-		  var parent = individualToggles[i].parentElement;
-		  var $agent = $(parent.parentElement.parentElement);
+		  var $agent = $(individualToggles[i]).closest('.agent');
 
 		  toggle.checked = type == 'standby' ? !value : value;
 		  
-		  $.post("/bin/cpc/updateagent", { 'id': parent.getAttribute('data-id'), 'type': type, 'value': value }, function(data) {
+		  $.post("/bin/cpc/updateagent", { 'id': $agent.attr('data-agent'), 'type': type, 'value': value }, function(data) {
 			  if(data.agentId && data.agentId !== '') {
-				  refreshQueue($("div[data-agent='" + data.agentId +"']").eq(0));
+				  refreshQueue($("coral-masonry-item[data-agent='" + data.agentId +"']").eq(0));
 			  }
 		  });
 	  }
@@ -158,16 +157,16 @@ $(document).ready(function() {
   /**
    * INDIVIDUAL CACHE DELETION
    */
-  $('.clear-cache-btn').on('click', function(event) {
-	  clearCache(event.currentTarget.parentElement);
+  $('.delete-cache-btn').on('click', function(event) {
+	  clearCache(event.currentTarget);
   });
 
   /**
    * CACHE DELETION BY GROUP
    */
-  $('#clear-group-cache-btn').on('click', function(event) {
+  $('#delete-group-cache-btn').on('click', function(event) {
 	  var groupToggle = event.currentTarget;
-	  var individualToggles = groupToggle.parentElement.parentElement.parentElement.querySelectorAll('.flush-agent');
+	  var individualToggles = $(groupToggle).closest('coral-panel-content')[0].querySelectorAll('.delete-cache-btn');
 
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  clearCache(individualToggles[i]);  
@@ -180,8 +179,8 @@ $(document).ready(function() {
   $('.view-log-btn').on('click', function(event) {
 	  var $this = $(this);
 	  
-	  $.get('/bin/cpc/viewagentlog', { id: $(this).parent().parent().attr('data-agent') }, function(data) {
-		  var $well = $this.parent().parent().find('.agent-queue').first();
+	  $.get('/bin/cpc/viewagentlog', { id: $(this).closest('.agent').attr('data-agent') }, function(data) {
+		  var $well = $this.closest('.agent').find('.agent-queue').first();
 		  
 		  $well.empty();
 		  $well.append(data);
@@ -189,7 +188,7 @@ $(document).ready(function() {
   });
   
   $('.view-queue-btn').on('click', function(event) {
-	  refreshQueue($(this).parent().parent());
+	  refreshQueue($(this).closest('.agent'));
   });
   
   /**
