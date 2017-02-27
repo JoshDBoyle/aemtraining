@@ -85,35 +85,20 @@ function refreshQueues() {
  */
 $(document).ready(function() {
   var checkedCount = 0;
-
-  var legendModal = new CUI.Modal({
-	 element : '#legend-modal',
-	 visible : false
-  });
-
-  var agentsInfoModal = new CUI.Modal({
-    element : '#agents-info-modal',
-    visible : false
-  });
-
-  var queryByDateModal = new CUI.Modal({
-	 element : '#query-by-date-modal',
-	 visible : false
-  });
   
   /**
    * COMMAND BAR MODAL LISTENERS
    */
-  $('#legend-button').on('click', function(event) {
-	  legendModal.show();
+  $('#legend-btn').on('click', function(event) {
+	  $('#legend-modal')[0].show();
   });
   
-  $('#all-agents-list-button').on('click', function(event) {
-	  agentsInfoModal.show();
+  $('#agent-list-btn').on('click', function(event) {
+	  $('#agent-list-modal')[0].show();
   });
 
-  $('#query-by-date-button').on('click', function(event) {
-	  queryByDateModal.show();
+  $('#reporting-btn').on('click', function(event) {
+	  $('#reporting-modal')[0].show();
   });
 
   /**
@@ -194,10 +179,10 @@ $(document).ready(function() {
   /**
    * REPORTING OPTIONS WITHIN REPORT MODAL
    */
-  $('.query-by-date-button, .query-by-date-button-csv').on('click', function(event) {
+  $('#query-btn, #query-to-csv-btn').on('click', function(event) {
 	  var start = $('#startdate').val();
 	  var end = $('#enddate').val();
-	  var csv = event.currentTarget.classList.contains('query-by-date-button-csv');
+	  var csv = event.currentTarget.id == 'query-to-csv-btn';
 	  var type = $('#report-type').val();
 	  var $activateSelectedBtn = $('#activate-selected-btn');
 
@@ -220,45 +205,40 @@ $(document).ready(function() {
 			  a.click();
 			  $(a).remove();
 		  } else {
-			  var table = 	"<table class='coral-Table'>" +
-			  				"	<thead>" +
-			  				"		<tr class='coral-Table-row'>" +
-						  	"			<th class='coral-Table-headerCell'>" +
-						  	"				<label class='coral-Checkbox'>" + 
-				  			"					<input id='select-all' class='coral-Checkbox-input' type='checkbox' name='c2' value='2'>" +
-				  			"					<span class='coral-Checkbox-checkmark'></span>" +
-				  			"					<span class='coral-Checkbox-description'></span>" +
-				  			"				</label>" +
-				  			"			</th>";
+			  var table = 	"<coral-table>" +
+			  				"	<table is='coral-table-inner'>" +
+			  				"		<colgroup>" +
+			  				"			<col is='coral-col'>" +
+			  				"			<col is='coral-col' sortable sortabledirection='ascending'>" +
+			  				"			<col is='coral-col' sortable sortabletype='date' sortabledirection='ascending'>" +
+			  				"			<col is='coral-col'>" +
+			  				"		</colgroup>" +
+			  				"		<thead is='coral-thead' sticky>" +
+			  				"			<tr is='coral-tr'>" +
+						  	"				<th is='coral-th'><coral-checkbox id='select-all'/></th>";
 
 			  for(var i = 0; i < data.headers.length; i++) {
-				  table += "<th class='coral-Table-headerCell'>" + data.headers[i] + "</th>";
+				  table += "<th is='coral-th'>" + data.headers[i] + "</th>";
 			  }
 
-			  table += "<th class='coral-Table-headerCell'>Debug</th>"
-			  table += "</tr></thead><tbody>";
+			  table += "<th is='coral-th'>Debug</th>"
+			  table += "</tr></thead><tbody is='coral-tbody'>";
 
 			  for(var i = 0; i < data.results.length; i++) {
-				  table +=	"<tr class='coral-Table-row'>" +
-				  			"	<td class='coral-Table-cell'>" +
-				  			"		<label class='coral-Checkbox'>" + 
-				  			"			<input class='select-one coral-Checkbox-input' type='checkbox' name='c2' value='2'>" +
-				  			"			<span class='coral-Checkbox-checkmark'></span>" +
-				  			"			<span class='coral-Checkbox-description'></span>" +
-				  			"		</label>" +
+				  table +=	"<tr is='coral-tr>" +
+				  			"	<td is='coral-td'>" +
+				  			"		<coral-checkbox class='select-one'/>" + 
 				  			"   </td>" +
-		  					"	<td class='content-path coral-Table-cell'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
-		  					"	<td class='coral-Table-cell'>" + data.results[i].columnb + "</td>" +
-		  					"	<td class='coral-Table-cell'>" + data.results[i].columnc + "</td>" +
-		  					"	<td class='coral-Table-cell'>" +
-		  					" 		<button class='debug-content coral-Button coral-Button--square coral-Button--primary'>" +
-		  					"			<i class='coral-Icon coral-Icon--globe'></i>" +
-		  					"		</button>" + 
+		  					"	<td is='coral-td'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
+		  					"	<td is='coral-td'>" + data.results[i].columnb + "</td>" +
+		  					"	<td is='coral-td'>" + data.results[i].columnc + "</td>" +
+		  					"	<td is='coral-td'>" +
+		  					" 		<button is='button' icon='globe' variant='primary'/>" + 
 		  					"	</td>" +
 		  					"</tr>";
 			  }
 
-			  table += '</tbody></table>';
+			  table += '</tbody></table></coral-table>';
 
 			  results.append(table);
 			  queryByDateModal.center();

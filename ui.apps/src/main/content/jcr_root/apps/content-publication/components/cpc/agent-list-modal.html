@@ -1,0 +1,26 @@
+<!-- Modal definition for the Agent List modal accessible via the command bar -->
+<coral-dialog variant=default data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="agent-list-modal">
+  <coral-dialog-header>Agent Listing</coral-dialog-header>
+  <coral-dialog-content>
+    <coral-table>
+      <table is="coral-table-inner">
+        <colgroup>
+          <col is="coral-col" sortable sortabledirection="ascending">
+          <col is="coral-col" sortable sortabledirection="ascending">
+        </colgroup>
+        <thead is="coral-thead" sticky>
+          <tr is="coral-tr">
+            <th is="coral-th">Title</th>
+            <th is="coral-th">ID</th>
+          </tr>
+        </coral-thead>
+        <tbody is="coral-tbody" data-sly-list.agent="${modalsuse.allAgentConfigs}">
+          <tr is="coral-tr">
+            <td is="coral-td">${agent.getName}</td>
+            <td is="coral-td">${agent.getAgentId}</td>
+          </tr>
+        </tbody>
+      </table>
+    </coral-table>
+  </coral-dialog-content>
+</coral-dialog>

@@ -1,0 +1,42 @@
+<!-- Modal definition for the Reporting modal accessible via the command bar -->
+<coral-dialog variant="default" data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="reporting-modal">
+
+  <coral-dialog-header>Reporting by Date Range</coral-dialog-header>
+
+  <coral-dialog-content>
+    <coral-actionbar>
+      <coral-actionbar-container>
+        <coral-actionbar-item>
+          <coral-datepicker id="startdate" placeholder="Start Date..." name="startdate" valueformat="YYYY-MM-DD" displayformat="YYYY-MM-DD"></coral-datepicker>
+        </coral-actionbar-item>
+        <coral-actionbar-item>
+          <coral-datepicker id="enddate" placeholder="End Date..." name="enddate" valueformat="YYYY-MM-DD" displayformat="YYYY-MM-DD"></coral-datepicker>
+        </coral-actionbar-item>
+        <coral-actionbar-item>
+            <coral-select name="reporttype" id="report-type" placeholder="Report type...">
+              <coral-select-item>Modified</coral-select-item>
+              <coral-select-item>Activated</coral-select-item>
+              <coral-select-item>Locked</coral-select-item>
+            </coral-select>
+        </coral-actionbar-item>
+      </coral-actionbar-container>
+    </coral-actionbar>
+  
+    <div class="query-by-date-body coral-Modal-body">
+      <!-- Results section -->    
+      <section class="results-wrapper">
+        <div id="query-by-date-results" class="coral-well">
+  
+        </div>
+      </section>
+    </div>
+  </coral-dialog-content>
+
+  <coral-dialog-footer>
+    <button is="coral-button" variant="primary" data-sly-test="${modalsuse.canModify}" disabled id="unlock-selected-btn">Unlock Selected</button>
+    <button is="coral-button" variant="primary" data-sly-test="${modalsuse.canModify}" disabled id="activate-selected-btn">Activate Selected</button>
+    <button is="coral-button" variant="primary" id="query-btn">Query</button>
+    <button is="coral-button" variant="primary" id="query-to-csv-btn">Query and Export to CSV</button>
+  </coral-dialog-footer>
+
+</coral-dialog>

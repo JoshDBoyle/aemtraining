@@ -1,18 +1,18 @@
 <sly data-sly-include="${'legend-modal.html'}"/>
-<sly data-sly-include="${'agents-info-modal.html'}"/>
-<sly data-sly-include="${'query-by-date-modal.html'}"/>
+<sly data-sly-include="${'agent-list-modal.html'}"/>
+<sly data-sly-include="${'reporting-modal.html'}"/>
 
 <div data-sly-use.cpcuse="org.kp.cpc.use.CPCUse">
 
   <!-- Command Bar -->
   <div class="command-bar coral--dark">
-    <button id="legend-button" is="coral-button" variant="minimal" icon="infoCircle">
+    <button id="legend-btn" is="coral-button" variant="minimal" icon="infoCircle">
       Legend
     </button>
-    <button id="all-agents-list-button" is="coral-button" variant="minimal" icon="book">
+    <button id="agent-list-btn" is="coral-button" variant="minimal" icon="book">
       Agent Listing
     </button>
-    <button id="query-by-date-button" is="coral-button" variant="minimal" icon="report">
+    <button id="reporting-btn" is="coral-button" variant="minimal" icon="report">
       Reporting
     </button>
   </div>
