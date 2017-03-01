@@ -185,17 +185,19 @@ $(document).ready(function() {
 	  var csv = event.currentTarget.id == 'query-to-csv-btn';
 	  var type = $('#report-type').val();
 	  var $activateSelectedBtn = $('#activate-selected-btn');
+	  var $unlockSelectedBtn = $('#unlock-selected-btn');
 
 	  checkedCount = 0;
 	  $activateSelectedBtn.attr('disabled', true);
 	  
+	  $('#wait-overlay').css('display', 'block');
 	  $.get("/bin/cpc/querybydate", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
-		  var results = $('#query-by-date-results');
+		  var results = $('#results');
 		  
 		  $('#select-all').off();
 		  
 		  results.empty();
-		  if(null == data.results) {
+		  if(csv) {
 			  var a         = document.createElement('a');
 			  a.href        = 'data:attachment/csv,' +  encodeURIComponent(data);
 			  a.target      = '_blank';
@@ -213,7 +215,7 @@ $(document).ready(function() {
 			  				"			<col is='coral-col' sortable sortabletype='date' sortabledirection='ascending'>" +
 			  				"			<col is='coral-col'>" +
 			  				"		</colgroup>" +
-			  				"		<thead is='coral-thead' sticky>" +
+			  				"		<thead is='coral-thead'>" +
 			  				"			<tr is='coral-tr'>" +
 						  	"				<th is='coral-th'><coral-checkbox id='select-all'/></th>";
 
@@ -225,7 +227,7 @@ $(document).ready(function() {
 			  table += "</tr></thead><tbody is='coral-tbody'>";
 
 			  for(var i = 0; i < data.results.length; i++) {
-				  table +=	"<tr is='coral-tr>" +
+				  table +=	"<tr is='coral-tr'>" +
 				  			"	<td is='coral-td'>" +
 				  			"		<coral-checkbox class='select-one'/>" + 
 				  			"   </td>" +
@@ -233,25 +235,24 @@ $(document).ready(function() {
 		  					"	<td is='coral-td'>" + data.results[i].columnb + "</td>" +
 		  					"	<td is='coral-td'>" + data.results[i].columnc + "</td>" +
 		  					"	<td is='coral-td'>" +
-		  					" 		<button is='button' icon='globe' variant='primary'/>" + 
+		  					" 		<button class='debug-content' is='coral-button' variant='minimal' icon='globe' iconsize='S'/>" + 
 		  					"	</td>" +
 		  					"</tr>";
 			  }
 
 			  table += '</tbody></table></coral-table>';
-
 			  results.append(table);
-			  queryByDateModal.center();
-			  
 		  }
+		  
+		  $('#wait-overlay').css('display', 'none');
 		  
 		  /**
 		   * SELECT ALL LISTENER FOR REPORT MODAL
 		   * 
 		   * This listener is added here as opposed to document.ready because it won't bind until there's results
 		   */
-		  $('#select-all').on('click', function(event) {
-			  var checked = $(this).is(':checked');
+		  $('#select-all').on('change', function(event) {
+			  var checked = event.currentTarget.checked;
 			  $('.select-one').each(function() {
 		      	$(this).prop('checked', checked);
 		      	if(checked)
@@ -259,10 +260,13 @@ $(document).ready(function() {
 		      	else
 		      		checkedCount -= 1;
 		      	
-		      	if(checkedCount >= 1)
+		      	if(checkedCount >= 1) {
 		      		$activateSelectedBtn.attr('disabled', false);
-		      	else
+		      		$unlockSelectedBtn.attr('disabled', false);
+		      	} else {
 		      		$activateSelectedBtn.attr('disabled', true);
+		      		$unlockSelectedBtn.attr('disabled', true);
+		      	}
 		      });
 		  });
 		  
@@ -271,16 +275,20 @@ $(document).ready(function() {
 		   * 
 		   * This listener is added here as opposed to document.ready because it won't bind until there's results
 		   */
-		  $('.select-one').on('click', function(event) {
-			  if($(this).is(':checked'))
+		  $('.select-one').on('change', function(event) {
+			  var checked = event.currentTarget.checked;
+			  if(checked)
 				  checkedCount += 1;
 			  else
 				  checkedCount -= 1;
 			  
-			  if(checkedCount >= 1)
+			  if(checkedCount >= 1) {
 				  $activateSelectedBtn.attr('disabled', false);
-			  else
+				  $unlockSelectedBtn.attr('disabled', false);
+			  } else {
 				  $activateSelectedBtn.attr('disabled', true);
+				  $unlockSelectedBtn.attr('disabled', true);
+			  }
 		  });
 		  
 		  /**
@@ -311,16 +319,32 @@ $(document).ready(function() {
   });
 
   /**
+   * STATE VALIDATION FOR THE QUERY AND QUERY TO CSV BUTTONS IN THE REPORTING MODAL
+   * 
+   * Only enable the Query and Query to CSV buttons once we have valid values for all required params
+   */
+  $('#startdate, #enddate, #report-type').on('change', function(event) {
+	  var startParam = $('#startdate').val();
+	  var endParam = $('#enddate').val();
+	  var typeParam = $('#report-type').val();
+	  if('' != startParam && '' != endParam && '' != typeParam) {
+		  $('#query-btn, #query-to-csv-btn').prop('disabled', false);
+	  } else {
+		  $('#query-btn, #query-to-csv-btn').prop('disabled', true);
+	  }
+  });
+  
+  /**
    * ACTIVATE SELECTED ROWS LISTENER FOR REPORT MODAL
    * 
    * For each selected row's content path, performs replication
    */
   $('#activate-selected-btn').on('click', function(event) {
-	  var $selectedInputs = $('#query-by-date-results .select-one:checked');
+	  var $selectedInputs = $('#results .select-one > input:checked');
 	  var pathsToReplicate = '';
 	  
 	  $selectedInputs.each(function() {
-		  pathsToReplicate += $(this).parent().parent().next().text() + ',';
+		  pathsToReplicate += $(this).closest('td').next().text() + ',';
 	  });
 	  	
 	  $.post('/bin/cpc/activateselected', { 'paths': pathsToReplicate.slice(0, -1) }, function(data) {

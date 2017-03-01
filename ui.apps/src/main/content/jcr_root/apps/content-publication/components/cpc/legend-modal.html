@@ -1,5 +1,5 @@
 <!-- Modal definition for the Legend modal accessible via the command bar -->
-<coral-dialog variant="default" data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="legend-modal">
+<coral-dialog variant="default" data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="legend-modal" fullscreen closable="on">
   <coral-dialog-header>Queue Status Legend</coral-dialog-header>
 
   <coral-dialog-content>
@@ -55,4 +55,7 @@
         </tbody>
       </table>
   </coral-dialog-content>
+  <coral-dialog-footer>
+    <button is="coral-button" variant="minimal" coral-close></button>
+  </coral-dialog-footer>
 </div>

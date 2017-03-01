@@ -1,5 +1,5 @@
 <!-- Modal definition for the Agent List modal accessible via the command bar -->
-<coral-dialog variant=default data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="agent-list-modal">
+<coral-dialog variant=default data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="agent-list-modal" fullscreen closable="on">
   <coral-dialog-header>Agent Listing</coral-dialog-header>
   <coral-dialog-content>
     <coral-table>
@@ -23,4 +23,7 @@
       </table>
     </coral-table>
   </coral-dialog-content>
+  <coral-dialog-footer>
+    <button is="coral-button" variant="minimal" coral-close></button>
+  </coral-dialog-footer>
 </coral-dialog>

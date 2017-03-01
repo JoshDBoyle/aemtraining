@@ -46,17 +46,17 @@ public class QueryByDateServlet extends SlingAllMethodsServlet {
 	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
     	ResourceResolver resolver = request.getResourceResolver();
     	Session session = resolver.adaptTo(Session.class);
-    	String type = request.getParameter("type");
+    	String type = request.getParameter("type").toLowerCase();
     	try {	    	
-	    	if(type.equals(SharedConstants.ACTIVATION_REPORT)) {
+	    	if(type.toLowerCase().equals(SharedConstants.ACTIVATION_REPORT)) {
 	    		LastActivatedReport.buildReport(
 	    				response, 
-	    				session, 
+	    				session,
 	    				qb, 
 	    				request.getParameter("start"), 
 	    				request.getParameter("end"),
 	    				request.getParameter("csv"));
-	    	} else if(type.equals(SharedConstants.MODIFICATION_REPORT)) {
+	    	} else if(type.toLowerCase().equals(SharedConstants.MODIFICATION_REPORT)) {
 	    		LastModifiedReport.buildReport(
 	    				response, 
 	    				session, 
