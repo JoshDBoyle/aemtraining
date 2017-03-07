@@ -26,7 +26,7 @@ import com.day.cq.replication.AgentManager;
 @SlingServlet(
 	    methods = { "GET" }, 
 	    paths = {"/bin/cpc/viewagentlog" }, 
-	    name = "org.kp.cpc.services.ViewAgentLogServlet")
+	    name = "org.kp.cpc.servlets.ViewAgentLogServlet")
 public class ViewAgentLogServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
 

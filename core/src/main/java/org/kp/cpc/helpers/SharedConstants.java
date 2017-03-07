@@ -23,12 +23,17 @@ public class SharedConstants {
     public static final String LAST_ACTIVATED_HEADER = "Last Activated";
     public static final String LAST_MODIFIED_BY_HEADER = "Last Modified By";
     public static final String LAST_ACTIVATED_BY_HEADER = "Last Activated By";
+    public static final String LOCKED_BY_HEADER = "Locked By";
+    public static final String LOCKED_BY_PROPERTY = "jcr:lockOwner";
+    public static final String LOCKED_BY_KEY = "columnb";
     
     public static final String UNKNOWN_ACTIVATOR = "Unknown Activator";
     public static final String UNKNOWN_ACTIVATION_DATE = "Unknown Date";
     
     public static final String UNKNOWN_MODIFIER = "Unknown Modifier";
     public static final String UNKNOWN_MODIFICATION_DATE = "Unknown Date";
+    
+    public static final String UNKNOWN_LOCK_OWNER = "Unknown Lock Owner";
     
     public static final String ACTIVATION_REPORT = "activated";
     public static final String MODIFICATION_REPORT = "modified";

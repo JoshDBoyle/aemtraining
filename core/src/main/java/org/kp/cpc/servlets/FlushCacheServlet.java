@@ -39,7 +39,7 @@ import com.day.cq.replication.AgentManager;
 @SlingServlet(
 	    methods = { "POST" }, 
 	    paths = {"/bin/cpc/flushcache" }, 
-	    name = "org.kp.cpc.services.FlushCacheServlet")
+	    name = "org.kp.cpc.servlets.FlushCacheServlet")
 public class FlushCacheServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
 

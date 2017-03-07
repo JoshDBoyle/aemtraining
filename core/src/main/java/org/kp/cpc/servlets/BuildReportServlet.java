@@ -14,6 +14,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.kp.cpc.helpers.LastActivatedReport;
 import org.kp.cpc.helpers.LastModifiedReport;
+import org.kp.cpc.helpers.LockedReport;
 import org.kp.cpc.helpers.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import com.day.cq.search.QueryBuilder;
 
 /**
- * Path-based Sling Servlet that allows for querying based on a date range.
- * Leverages helper classes for each report type to generate the appropriate
- * json or CSV content.
+ * Path-based Sling Servlet that provides an entry point for building various
+ * report.  Leverages helper classes for eachc report type to generate the
+ * appropriate json or CSV content.
  * 
  * If additional report types are requested in the future, this class can be
  * expanded as the funnel through which all reporting requests initially flow
@@ -32,15 +33,15 @@ import com.day.cq.search.QueryBuilder;
  */
 @SlingServlet(
 	    methods = { "GET" }, 
-	    paths = {"/bin/cpc/querybydate" }, 
-	    name = "org.kp.cpc.services.QueryByDateService")
-public class QueryByDateServlet extends SlingAllMethodsServlet {
+	    paths = {"/bin/cpc/buildreport" }, 
+	    name = "org.kp.cpc.servlets.BuildReportServlet")
+public class BuildReportServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
     
     @Reference
     QueryBuilder qb;
     
-    Logger log = LoggerFactory.getLogger(QueryByDateServlet.class);
+    Logger log = LoggerFactory.getLogger(BuildReportServlet.class);
     
     @Override
 	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
@@ -65,12 +66,16 @@ public class QueryByDateServlet extends SlingAllMethodsServlet {
 	    				request.getParameter("end"),
 	    				request.getParameter("csv"));
 	    	} else if(type.equals(SharedConstants.LOCKED_REPORT)) {
-	    		
+	    		LockedReport.buildReport(
+	    				response,
+	    				session,
+	    				qb,
+	    				request.getParameter("csv"));
 	    	}
     	} catch(Exception e) {
-    		log.error("Generic exception caught in QueryByDateService trying to retrieve results by date range");
+    		log.error("Generic exception caught in BuildReportServlet");
     		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("An error occured in QueryByDateService.doGet.");
+            response.getWriter().write("An error occured in BuildReportServlet.doGet.");
     	}	
     }
 }

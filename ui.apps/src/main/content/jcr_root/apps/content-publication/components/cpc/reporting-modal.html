@@ -4,20 +4,20 @@
   <coral-dialog-header>Reporting by Date Range</coral-dialog-header>
 
   <coral-dialog-content>
-    <coral-actionbar>
+    <coral-actionbar class="report-params">
       <coral-actionbar-container>
-        <coral-actionbar-item>
-          <coral-datepicker id="startdate" placeholder="Start Date..." name="startdate" valueformat="YYYY-MM-DD" displayformat="YYYY-MM-DD"></coral-datepicker>
-        </coral-actionbar-item>
-        <coral-actionbar-item>
-          <coral-datepicker id="enddate" placeholder="End Date..." name="enddate" valueformat="YYYY-MM-DD" displayformat="YYYY-MM-DD"></coral-datepicker>
-        </coral-actionbar-item>
         <coral-actionbar-item>
             <coral-select name="reporttype" id="report-type" placeholder="Report type...">
               <coral-select-item>Modified</coral-select-item>
               <coral-select-item>Activated</coral-select-item>
               <coral-select-item>Locked</coral-select-item>
             </coral-select>
+        </coral-actionbar-item>
+        <coral-actionbar-item>
+          <coral-datepicker id="startdate" placeholder="Start Date..." name="startdate" valueformat="YYYY-MM-DD" displayformat="YYYY-MM-DD"></coral-datepicker>
+        </coral-actionbar-item>
+        <coral-actionbar-item>
+          <coral-datepicker id="enddate" placeholder="End Date..." name="enddate" valueformat="YYYY-MM-DD" displayformat="YYYY-MM-DD"></coral-datepicker>
         </coral-actionbar-item>
       </coral-actionbar-container>
       <coral-actionbar-container>

@@ -27,16 +27,21 @@ function clearCache(deleteCacheBtn) {
 /**
  * Sets the status light for an individual agent
  */
-function setAgentStatus($agent, queueData, agentData) {
-	var blocked = queueData ? queueData.metaData.queueStatus.isBlocked : false;
-	var standby = agentData.standby ? true : false;
-	var enabled = agentData.enabled ? agentData.enabled : false;
+function setAgentStatus($agent, data) {
+	var blocked = data.blocked;
+	var standby = data.standby;
+	var enabled = data.enabled;
 	var $status = $agent.find('.led-box div');
-
+	
+	console.log("Agent:   " + data.agentId);
+	console.log("Blocked: " + data.blocked);
+	console.log("Standby: " + data.standby);
+	console.log("Enabled: " + data.enabled);
+	
 	$status.removeClass();
 	if(blocked && !standby && enabled) {
 		$status.addClass('led-red');
-	} else if(!blocked && !standby && enabled && queueData.queue.length > 0) {
+	} else if(!blocked && !standby && enabled && null != data.queue && data.queue.length > 0) {
 		$status.addClass('led-blue');
 	} else if(!enabled) {
 		$status.addClass('led-grey');
@@ -51,22 +56,17 @@ function setAgentStatus($agent, queueData, agentData) {
  * Refreshes the queue for an individual agent
  */
 function refreshQueue($agent) {
-	$.getJSON('/etc/replication/agents.author/' + $agent.attr('data-agent') + '/jcr:content.queue.json').success(function(queueSuccess) {
-		var queueData = queueSuccess;
-		$.getJSON('/etc/replication/agents.author/' + $agent.attr('data-agent') + '/jcr:content.json').success(function(agentSuccess) {
-			var agentData = agentSuccess;
-			var $agentTemp = $("[data-agent='" + queueData.metaData.queueStatus.agentId + "']");
-			var $queue = $agentTemp.find('.agent-queue').eq(0);
-
-			setAgentStatus($agentTemp, queueData, agentData);
-			$queue.empty();
-
-			if(queueData.queue.length > 0) {
-				for(var j = 0; j < queueData.queue.length; j++) {
-					$queue.append("<a target='_blank' href='" + queueData.queue[j].path + ".html'>" + queueData.queue[j].path + "</a>" + "<span>" + queueData.queue[j].type + "</span>");
-				}
+	$.getJSON('/bin/cpc/agentmetadata', {'agentId': $agent.attr('data-agent')}).success(function(data) {
+		$queue = $agent.find('.agent-queue').eq(0);
+		
+		$queue.empty();
+		if(null != data && null != data.queue && data.queue.length > 0) {
+			for(var i = 0; i < data.queue.length; i++) {
+				$queue.append("<a target='_blank' href='" + data.queue[i].path + ".html'>" + data.queue[i].path + "</a>" + "<span>" + data.queue[i].type + "</span>");
 			}
-		});
+		}
+
+		setAgentStatus($agent, data);
 	});
 }
 
@@ -131,9 +131,11 @@ $(document).ready(function() {
 
 		  toggle.checked = type == 'standby' ? !value : value;
 		  
-		  $.post("/bin/cpc/updateagent", { 'id': $agent.attr('data-agent'), 'type': type, 'value': value }, function(data) {
+		  $.post("/bin/cpc/updateagent", { 'id': $agent.attr('data-agent'), 'type': type, 'value': value }).success(function(data) {
 			  if(data.agentId && data.agentId !== '') {
-				  refreshQueue($("coral-masonry-item[data-agent='" + data.agentId +"']").eq(0));
+				  setTimeout(function() {
+					  refreshQueue($("coral-masonry-item[data-agent='" + data.agentId +"']").eq(0));
+				  }, 200);
 			  }
 		  });
 	  }
@@ -186,12 +188,15 @@ $(document).ready(function() {
 	  var type = $('#report-type').val();
 	  var $activateSelectedBtn = $('#activate-selected-btn');
 	  var $unlockSelectedBtn = $('#unlock-selected-btn');
+	  var $results = $('#results');
+	  var height = $results.parent().parent().outerHeight() - $results.prev().outerHeight() - $results.parent().prev().outerHeight();
 
 	  checkedCount = 0;
 	  $activateSelectedBtn.attr('disabled', true);
+	  $('#results').css('height', height);
 	  
 	  $('#wait-overlay').css('display', 'block');
-	  $.get("/bin/cpc/querybydate", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
+	  $.get("/bin/cpc/buildreport", { 'start': start, 'end': end, 'csv': csv, 'type': type }, function(data) {
 		  var results = $('#results');
 		  
 		  $('#select-all').off();
@@ -209,12 +214,6 @@ $(document).ready(function() {
 		  } else {
 			  var table = 	"<coral-table>" +
 			  				"	<table is='coral-table-inner'>" +
-			  				"		<colgroup>" +
-			  				"			<col is='coral-col'>" +
-			  				"			<col is='coral-col' sortable sortabledirection='ascending'>" +
-			  				"			<col is='coral-col' sortable sortabletype='date' sortabledirection='ascending'>" +
-			  				"			<col is='coral-col'>" +
-			  				"		</colgroup>" +
 			  				"		<thead is='coral-thead'>" +
 			  				"			<tr is='coral-tr'>" +
 						  	"				<th is='coral-th'><coral-checkbox id='select-all'/></th>";
@@ -232,9 +231,13 @@ $(document).ready(function() {
 				  			"		<coral-checkbox class='select-one'/>" + 
 				  			"   </td>" +
 		  					"	<td is='coral-td'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
-		  					"	<td is='coral-td'>" + data.results[i].columnb + "</td>" +
-		  					"	<td is='coral-td'>" + data.results[i].columnc + "</td>" +
-		  					"	<td is='coral-td'>" +
+		  					"	<td is='coral-td'>" + data.results[i].columnb + "</td>";
+				  
+				  if(data.headers.length > 2) {
+					  table += "<td is='coral-td'>" + data.results[i].columnc + "</td>";
+				  }
+		  					
+				  table += 	"	<td is='coral-td'>" +
 		  					" 		<button class='debug-content' is='coral-button' variant='minimal' icon='globe' iconsize='S'/>" + 
 		  					"	</td>" +
 		  					"</tr>";
@@ -242,6 +245,20 @@ $(document).ready(function() {
 
 			  table += '</tbody></table></coral-table>';
 			  results.append(table);
+			  
+			  if('' == $('#publishers').val()) {
+				  $('.debug-content').prop('disabled', true);
+			  } else {
+				  $('.debug-content').prop('disabled', false);
+			  }
+			  
+			  $('#publishers').on('change', function(event) {
+				  if('' == $('#publishers').val()) {
+					  $('.debug-content').prop('disabled', true);
+				  } else {
+					  $('.debug-content').prop('disabled', false);
+				  }
+			  });
 		  }
 		  
 		  $('#wait-overlay').css('display', 'none');
@@ -300,14 +317,14 @@ $(document).ready(function() {
 		   * any content discrepancies.
 		   */
 		  $('.debug-content').on('click', function(event) {
-			  var publishUrl = $('#chosen-publish').val();
-			  var text = $("#chosen-publish option:selected").text();
-			  var path = $(this).parent().siblings('.content-path').eq(0).children('a').eq(0).attr('href');
+			  var publishUrl = $('#publishers').val();
+			  var text = $("#publishers:selected").text();
+			  var path = $(this).closest('tr').children().eq(1).find('a').eq(0).attr('href');
 
-			  var $flushAgents = $(".agent[data-agent='" + text +"'] .flush-agent");
+			  var $flushAgents = $(".agent[data-agent='" + text +"'] .flush-agent");s
 			  
-			  window.open(path + '?wcmmode=preview', '_blank'); 					// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
-			  window.open(publishUrl + path, '_blank'); 	// Open on chosen publish instance (need full URL since we're leaving the instance)
+			  window.open(path + '?wcmmode=preview', '_blank'); 	// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
+			  window.open(publishUrl + path, '_blank'); 			// Open on chosen publish instance (need full URL since we're leaving the instance)
 			  
 			  // For this publish instance, we may have multiple dispatchers so let's loop through them
 			  $.each($flushAgents, function(idx, val) {
@@ -319,15 +336,41 @@ $(document).ready(function() {
   });
 
   /**
-   * STATE VALIDATION FOR THE QUERY AND QUERY TO CSV BUTTONS IN THE REPORTING MODAL
+   * STATE VALIDATION FOR STARTDATE AND ENDDATE FIELDS BASED ON SELECTED REPORT TYPE
    * 
-   * Only enable the Query and Query to CSV buttons once we have valid values for all required params
+   * If our chosen report type is "locked" then we don't need to show the date fields
    */
-  $('#startdate, #enddate, #report-type').on('change', function(event) {
+  $('#report-type').on('change', function(event) {
+	  var typeParam = $('#report-type').val();
 	  var startParam = $('#startdate').val();
 	  var endParam = $('#enddate').val();
-	  var typeParam = $('#report-type').val();
-	  if('' != startParam && '' != endParam && '' != typeParam) {
+	  
+	  if(typeParam == 'Locked' || typeParam == '') {
+		  $('#startdate').hide();
+		  $('#enddate').hide();
+		  $('#query-btn, #query-to-csv-btn').prop('disabled', false);
+	  } else {
+		  $('#startdate').show();
+		  $('#enddate').show();
+		  if('' != startParam && '' != endParam) {
+			  $('#query-btn, #query-to-csv-btn').prop('disabled', false);
+		  } else {
+			  $('#query-btn, #query-to-csv-btn').prop('disabled', true);
+		  }
+	  }
+  });
+  
+  /**
+   * STATE VALIDATION FOR THE QUERY AND QUERY TO CSV BUTTONS FOR DATE RANGE REPORTS
+   * 
+   * Only enable the Query and Query to CSV buttons once we have a valid date range
+   * for reports by date range
+   */
+  $('#startdate, #enddate').on('change', function(event) {
+	  var startParam = $('#startdate').val();
+	  var endParam = $('#enddate').val();
+
+	  if('' != startParam && '' != endParam) {
 		  $('#query-btn, #query-to-csv-btn').prop('disabled', false);
 	  } else {
 		  $('#query-btn, #query-to-csv-btn').prop('disabled', true);
@@ -348,6 +391,24 @@ $(document).ready(function() {
 	  });
 	  	
 	  $.post('/bin/cpc/activateselected', { 'paths': pathsToReplicate.slice(0, -1) }, function(data) {
+		  alert(data);
+	  });
+  });
+  
+  /**
+   * UNLOCK SELECTED ROWS LISTENER FOR REPORT MODAL
+   * 
+   * For each selected row's content path, unlocks it
+   */
+  $('#unlock-selected-btn').on('click', function(event) {
+	  var $selectedInputs = $('#results .select-one > input:checked');
+	  var pathsToUnlock = '';
+	  
+	  $selectedInputs.each(function() {
+		  pathsToUnlock += $(this).closest('td').next().text() + ',';
+	  });
+	  	
+	  $.post('/bin/cpc/unlockselected', { 'paths': pathsToUnlock.slice(0, -1) }, function(data) {
 		  alert(data);
 	  });
   });

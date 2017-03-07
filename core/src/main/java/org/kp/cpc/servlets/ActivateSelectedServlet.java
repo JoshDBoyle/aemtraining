@@ -25,7 +25,7 @@ import com.day.cq.replication.Replicator;
 @SlingServlet(
 	    methods = { "POST" }, 
 	    paths = {"/bin/cpc/activateselected" }, 
-	    name = "org.kp.cpc.services.ActivateSelectedServlet")
+	    name = "org.kp.cpc.servlets.ActivateSelectedServlet")
 public class ActivateSelectedServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
 

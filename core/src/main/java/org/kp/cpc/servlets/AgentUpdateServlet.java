@@ -32,7 +32,7 @@ import com.day.cq.replication.AgentManager;
 @SlingServlet(
 	    methods = { "POST" }, 
 	    paths = {"/bin/cpc/updateagent" }, 
-	    name = "org.kp.cpc.services.AgentUpdateService")
+	    name = "org.kp.cpc.servlets.AgentUpdateServlet")
 public class AgentUpdateServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
 

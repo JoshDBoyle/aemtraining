@@ -2,7 +2,6 @@ package org.kp.cpc.helpers;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +24,8 @@ import com.day.cq.search.result.SearchResult;
 import com.day.cq.wcm.api.NameConstants;
 
 /**
- * Generates a json or csv report about content that has been activated.
- * Called from QueryByDateServlet.
+ * Generates a json or csv report about content that locked.
+ * Called from BuildReportServlet.
  * 
  * @author joshua.boyle
  */
@@ -34,42 +33,23 @@ public class LockedReport {
 	public static void buildReport(
 			SlingHttpServletResponse response, 
 			Session session,
-			QueryBuilder qb, 
-			String start, 
-			String end, 
+			QueryBuilder qb,
 			String csv) {
 		
 		Map<String, String> params = new HashMap<String, String>();
 		
 		params.put("type", NameConstants.NT_PAGE);
     	params.put("path", SharedConstants.ROOT_PATH);
-
-    	if(null != start && !start.equals("")) {
-	    	params.put("daterange.lowerBound", start.trim().replace(" ", "T"));
-			params.put("daterange.lowerOperation", ">=");
-    	}
-
-    	if(null != end && !end.equals("")) {
-    		params.put("daterange.upperBound", end.trim().replace(" ", "T"));
-    		params.put("daterange.upperOperation", "<=");
-    	}
-
-		params.put("daterange.property", JcrConstants.JCR_CONTENT + "/@cq:lastReplicated");
-		params.put("property", "jcr:content/@cq:lastReplicationAction");
-		params.put("property.value", "Activate");
-		params.put("p.limit", "-1");
+		params.put("property", "jcr:content/@jcr:lockOwner");
+		params.put("property.operation", "exists");
+		params.put("p.limit", "500");
 		
-		// This is an example of a query for last replicated where the replication action was Activate
+		// This is an example of a query for locked paths
 		//	    			path=/content
 		//	    			type=cq:Page
-		//	    			daterange.property=jcr:content/@cq:lastReplicated
-		//	    			daterange.lowerBound=2013-02-10T00:00:00
-		//	    			daterange.lowerOperation=>=
-		//	    			daterange.upperBound=2017-02-10T00:00:00
-		//	    			daterange.upperOperation=<=
-		//	    			property=jcr:content/@cq:lastReplicationAction
-		//	    			property.value=Deactivate
-    	//					p.limit=-1 (unbounded)
+		//	    			property=jcr:content/@jcr:lockOwner
+		//	    			property.operation=exists
+    	//					p.limit=500 (unbounded)
 		Query query = qb.createQuery(PredicateGroup.create(params), session);
 
         SearchResult result = query.getResult();
@@ -91,7 +71,7 @@ public class LockedReport {
 	
     private static void buildFile(SlingHttpServletResponse response, SearchResult result) throws RepositoryException, IOException {
         OutputStream outputStream = response.getOutputStream();
-        String outputResult = "path," + SharedConstants.LAST_ACTIVATED_BY_HEADER + "," + SharedConstants.LAST_ACTIVATED_HEADER + "\n";
+        String outputResult = "path," + SharedConstants.LOCKED_BY_HEADER + "\n";
 
         for(Hit hit : result.getHits()) {
         	Resource res = hit.getResource();
@@ -99,22 +79,15 @@ public class LockedReport {
         	
         	outputResult += res.getPath() + ",";
         	
-        	if(vm.containsKey(SharedConstants.LAST_ACTIVATED_BY_PROPERTY)) {
-        		outputResult += vm.get(SharedConstants.LAST_ACTIVATED_BY_PROPERTY) + ",";
+        	if(vm.containsKey(SharedConstants.LOCKED_BY_PROPERTY)) {
+        		outputResult += vm.get(SharedConstants.LOCKED_BY_PROPERTY) + ",";
         	} else {
-        		outputResult += SharedConstants.UNKNOWN_ACTIVATOR;	
-        	}
-        	
-        	if(vm.containsKey(SharedConstants.LAST_ACTIVATED_PROPERTY)) {
-        		GregorianCalendar gc = (GregorianCalendar)vm.get(SharedConstants.LAST_ACTIVATED_PROPERTY);
-        		outputResult += gc.getTime().toString() + "\n";
-        	} else {
-        		outputResult += SharedConstants.UNKNOWN_ACTIVATION_DATE + "\n";
+        		outputResult += SharedConstants.UNKNOWN_LOCK_OWNER;	
         	}
         }
 
         response.setHeader("Content-type", "text/csv; charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=\"activated-content-by-date.csv\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"locked-content.csv\"");
         
         outputStream.write(outputResult.getBytes());
         outputStream.flush();
@@ -131,17 +104,10 @@ public class LockedReport {
         	Resource res = hit.getResource();
         	ValueMap vm = res.getChild(JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class);
         	
-        	if(vm.containsKey(SharedConstants.LAST_ACTIVATED_PROPERTY)) {
-        		GregorianCalendar gc = (GregorianCalendar)vm.get(SharedConstants.LAST_ACTIVATED_PROPERTY);
-        		current.put(SharedConstants.LAST_ACTIVATED_KEY, gc.getTime().toString());
+        	if(vm.containsKey(SharedConstants.LOCKED_BY_PROPERTY)) {
+        		current.put(SharedConstants.LOCKED_BY_KEY, vm.get(SharedConstants.LOCKED_BY_PROPERTY));
         	} else {
-        		current.put(SharedConstants.LAST_ACTIVATED_KEY, SharedConstants.UNKNOWN_ACTIVATION_DATE);
-        	}
-        	
-        	if(vm.containsKey(SharedConstants.LAST_ACTIVATED_BY_PROPERTY)) {
-        		current.put(SharedConstants.LAST_ACTIVATED_BY_KEY, vm.get(SharedConstants.LAST_ACTIVATED_BY_PROPERTY));
-        	} else {
-        		current.put(SharedConstants.LAST_ACTIVATED_BY_KEY, SharedConstants.UNKNOWN_ACTIVATOR);	
+        		current.put(SharedConstants.LOCKED_BY_KEY, SharedConstants.UNKNOWN_LOCK_OWNER);
         	}
         	
         	current.put("path", res.getPath());
@@ -151,8 +117,7 @@ public class LockedReport {
         json.put("results", arr);
         
         headers.put("Path");
-        headers.put(SharedConstants.LAST_ACTIVATED_BY_HEADER);
-        headers.put(SharedConstants.LAST_ACTIVATED_HEADER);
+        headers.put(SharedConstants.LOCKED_BY_HEADER);
         
         json.put("totalResults", result.getTotalMatches());
         json.put("headers", headers);
