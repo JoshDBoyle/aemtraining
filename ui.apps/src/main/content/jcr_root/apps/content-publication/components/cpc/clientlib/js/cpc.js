@@ -245,7 +245,8 @@ $(document).ready(function() {
 
 			  table += '</tbody></table></coral-table>';
 			  results.append(table);
-			  
+		
+			  // Toggling of debug buttons based on whether a publish instance has been selected atop the reporting modal
 			  if('' == $('#publishers').val()) {
 				  $('.debug-content').prop('disabled', true);
 			  } else {
