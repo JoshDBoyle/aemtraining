@@ -17,7 +17,7 @@ coral-actionbar-container {
 
 coral-masonry-item.agent {
 	padding: 10px;
-	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+	box-shadow: -10px 10px 15px rgba(0,0,0,0.30), -10 10px 15px rgba(0,0,0,0.22);
 }
 
 coral-dialog {
