@@ -245,21 +245,6 @@ $(document).ready(function() {
 
 			  table += '</tbody></table></coral-table>';
 			  results.append(table);
-		
-			  // Toggling of debug buttons based on whether a publish instance has been selected atop the reporting modal
-			  if('' == $('#publishers').val()) {
-				  $('.debug-content').prop('disabled', true);
-			  } else {
-				  $('.debug-content').prop('disabled', false);
-			  }
-			  
-			  $('#publishers').on('change', function(event) {
-				  if('' == $('#publishers').val()) {
-					  $('.debug-content').prop('disabled', true);
-				  } else {
-					  $('.debug-content').prop('disabled', false);
-				  }
-			  });
 		  }
 		  
 		  $('#wait-overlay').css('display', 'none');
@@ -319,19 +304,29 @@ $(document).ready(function() {
 		   */
 		  $('.debug-content').on('click', function(event) {
 			  var publishUrl = $('#publishers').val();
-			  var text = $("#publishers:selected").text();
+			  var text = $('#publishers')[0].selectedItem;
 			  var path = $(this).closest('tr').children().eq(1).find('a').eq(0).attr('href');
 
-			  var $flushAgents = $(".agent[data-agent='" + text +"'] .flush-agent");s
+			  if(null != text) {
+				  text = text.textContent;
+			  }
 			  
-			  window.open(path + '?wcmmode=preview', '_blank'); 	// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
-			  window.open(publishUrl + path, '_blank'); 			// Open on chosen publish instance (need full URL since we're leaving the instance)
-			  
-			  // For this publish instance, we may have multiple dispatchers so let's loop through them
-			  $.each($flushAgents, function(idx, val) {
-				  var transportUri = $(val).attr('data-transporturi');
-				  window.open(transportUri.substring(0, transportUri.indexOf('/dispatcher')) + path, '_blank');
-			  });
+			  if(null != publishUrl && null != text) {
+				  text = $('#publishers')[0].selectedItem.textContent;
+				  
+				  var $flushAgents = $(".agent[data-agent='" + text +"'] .delete-cache-btn");
+				  
+				  window.open(path, '_blank'); 					// Open on author (only need path because if we're staying on same instance, AEM will handle the rest
+				  window.open(publishUrl + path, '_blank'); 	// Open on chosen publish instance (need full URL since we're leaving the instance)
+				  
+				  // For this publish instance, we may have multiple dispatchers so let's loop through them
+				  $.each($flushAgents, function(idx, val) {
+					  var transportUri = $(val).attr('data-transporturi');
+					  window.open(transportUri.substring(0, transportUri.indexOf('/dispatcher')) + path, '_blank');
+				  });
+			  } else {
+				  alert('Please select a publish instance to debug content');
+			  }
 		  });
 	  });
   });
