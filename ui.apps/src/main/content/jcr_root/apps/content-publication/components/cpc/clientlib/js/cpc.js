@@ -193,6 +193,7 @@ $(document).ready(function() {
 
 	  checkedCount = 0;
 	  $activateSelectedBtn.attr('disabled', true);
+	  $unlockSelectedBtn.attr('disabled', true);
 	  $('#results').css('height', height);
 	  
 	  $('#wait-overlay').css('display', 'block');
