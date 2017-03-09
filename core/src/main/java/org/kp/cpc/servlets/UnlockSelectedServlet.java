@@ -2,20 +2,19 @@ package org.kp.cpc.servlets;
 
 import java.io.IOException;
 
-import javax.jcr.Session;
 import javax.servlet.ServletException;
 
-import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.replication.ReplicationActionType;
-import com.day.cq.replication.ReplicationException;
-import com.day.cq.replication.Replicator;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.WCMException;
 
 /**
  * Path-based Sling Servlet that unlocks the paths specified by a comma-delimited request parameter
@@ -28,37 +27,36 @@ import com.day.cq.replication.Replicator;
 	    name = "org.kp.cpc.servlets.UnlockSelectedServlet")
 public class UnlockSelectedServlet extends SlingAllMethodsServlet {
     static final long serialVersionUID = 1L;
-
-    @Reference
-    Replicator replicator;
     
     Logger log = LoggerFactory.getLogger(UnlockSelectedServlet.class);
     
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
     	String[] paths = request.getParameter("paths").split(",");
+    	ResourceResolver resolver = request.getResourceResolver();
+    	boolean success = true;
 
     	if(null != paths && paths.length > 0) {
-    		Session session = request.getResourceResolver().adaptTo(Session.class);
-    		if(null != session) {
-	    		for(String path : paths) {
-	    			try {
-	    				replicator.replicate(session, ReplicationActionType.ACTIVATE, path);
-	    			} catch(ReplicationException e) {
-	    	    		log.error("ReplicationException caught in ActivateSelectedServlet while trying to activate the following path from the CPC Report Modal: " + path);
-	    	    		response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	    	    		response.getWriter().write("A ReplicationException was thrown and caught during activation.  The selected paths were not activated.");
-	    	    		return;
-	    	    	}
-	    		}
-    		} else {
-    			log.error("Unable to acquire a session off request.getResourceResolver() via adaptation in ActivateSelectedServlet.");
-    			response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	    		response.getWriter().write("Unable to acquire a session.  The selected paths were not activated.");
-	    		return;
+    		for(String path : paths) {
+				Resource resource = resolver.resolve(path);
+				if(null != resource) {
+					Page page = resource.adaptTo(Page.class);
+					
+					if(null != page) {
+						try {
+							page.unlock();
+						} catch(WCMException e) {
+							success = false;
+							log.error("WCMException caught in UnlockSelectedServlet while trying to unlock a Page at path: " + page.getPath());
+						}
+					}
+				}
     		}
     	}
 
-    	response.setStatus(SlingHttpServletResponse.SC_OK);
-		response.getWriter().write("The selected paths were successfully queued for activation");
+		if(success) {
+			response.getWriter().write("The selected paths were successfully unlocked");
+		} else {
+			response.getWriter().write("Some or all of the paths selected were unable to be unlocked");
+		}
     }
 }

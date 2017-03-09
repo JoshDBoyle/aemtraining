@@ -57,7 +57,7 @@ public class AgentMetadataServlet extends SlingAllMethodsServlet {
 	    		metadata.put("enabled", agentVM.containsKey("enabled"));
 	    		
 	    		if(null != queue) {
-	    			metadata.put("blocked", queue.getStatus().getProcessingSince() <= 0);
+	    			metadata.put("blocked", queue.isBlocked());
 	    			
 		    		JSONArray queueArr = new JSONArray();
 		    		for(Entry entry : queue.entries()) {
