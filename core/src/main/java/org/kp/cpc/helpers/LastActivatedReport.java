@@ -50,7 +50,7 @@ public class LastActivatedReport {
 		params.put("daterange.property", JcrConstants.JCR_CONTENT + "/@cq:lastReplicated");
 		params.put("property", "jcr:content/@cq:lastReplicationAction");
 		params.put("property.value", "Activate");
-		params.put("p.limit", "500");
+		params.put("p.limit", "-1");
 		
 		// This is an example of a query for last replicated where the replication action was Activate
 		//	    			path=/content

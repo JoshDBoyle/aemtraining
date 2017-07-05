@@ -148,9 +148,11 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 						
 						// Transport URIs will be in the form:  [protocol]://[server]:[port]/bin/receive?sling:authRequestLogin=1 so let's
 						// parse out the publish instance's URL from it
-						if(publishUrl.equals("standby")) {
+						if(publishUrl != null && publishUrl.equals("standby")) {
 							publishUrl = agent.getConfiguration().getProperties().get("standby", String.class);
-							publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
+							if (publishUrl != null) {
+							   publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
+							}
 						} else {
 							publishUrl = publishUrl.substring(0, publishUrl.indexOf("/bin/receive"));
 						}

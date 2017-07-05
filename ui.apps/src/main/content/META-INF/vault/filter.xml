@@ -5,7 +5,5 @@
         <exclude pattern="/apps/content-publication/install.publish" />
     </filter>
     <filter root="/apps/cq" mode="update"/>
-    <filter root="/oak:index/cqLastModified" mode="update"/>
-    <filter root="/oak:index/cqLastReplicated" mode="update"/>
-    <filter root="/oak:index/cqLastReplicatedBy" mode="update"/>
+    <filter root="/oak:index/cpcReportMetadata" mode="update"/>
 </workspaceFilter>

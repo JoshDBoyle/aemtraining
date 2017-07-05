@@ -66,17 +66,19 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     	 */
     	if(null != agentRes) {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
+    		boolean isInStandby = mvm.containsKey("standby");
     		
-    		if(type.equals("standby")) {
+    		if(type.equals("standby") && !isInStandby) {
 	    		// IF we want to put this Agent in standby
 	    		// THEN copy the Agent's real transportURI to a property named "standby"
 	    		// ELSE set the Agent's transportURI back to it's proper value and remove the standby property
 	    		if(value.equals("true")) {
-	    			mvm.put("standby", config.getTransportURI());        
+	    			String transportUri = config.getTransportURI();
+	    			mvm.put("standby", transportUri);
 	    			mvm.put("transportUri", "standby");
 	    		} else {
-	    			mvm.put("transportUri", mvm.get("standby"));
-	    			mvm.remove("standby");
+    				mvm.put("transportUri", mvm.get("standby"));
+    				mvm.remove("standby");
 	    		}
     		} else if(type.equals("enabled")) {
     			/**
@@ -92,7 +94,7 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     		}
 
     		try {
-    			session.save();
+    			session.save(); 
     			jsonResponse.put("agentId", agentId);
     			response.setContentType("application/json");
     	        response.getWriter().write(jsonResponse.toString(2)); 
