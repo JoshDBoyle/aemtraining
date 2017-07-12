@@ -86,7 +86,7 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     			 * To disable, you can either remove that property or set it to a non-true value.  OOTB, AEM
     			 * removes the property so we'll do the same for consistency.
     			 */
-	    		if(value.equals("true") && !isInStandby) {
+	    		if(value.equals("true")) {
 	    			mvm.put("enabled", "true");
 	    		} else {
 	    			mvm.remove("enabled");
