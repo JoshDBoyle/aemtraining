@@ -68,11 +68,11 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     		ModifiableValueMap mvm = agentRes.adaptTo(ModifiableValueMap.class);
     		boolean isInStandby = mvm.containsKey("standby");
     		
-    		if(type.equals("standby") && !isInStandby) {
+    		if(type.equals("standby")) {
 	    		// IF we want to put this Agent in standby
 	    		// THEN copy the Agent's real transportURI to a property named "standby"
 	    		// ELSE set the Agent's transportURI back to it's proper value and remove the standby property
-	    		if(value.equals("true")) {
+	    		if(value.equals("true") && !isInStandby) {
 	    			String transportUri = config.getTransportURI();
 	    			mvm.put("standby", transportUri);
 	    			mvm.put("transportUri", "standby");
@@ -86,7 +86,7 @@ public class AgentUpdateServlet extends SlingAllMethodsServlet {
     			 * To disable, you can either remove that property or set it to a non-true value.  OOTB, AEM
     			 * removes the property so we'll do the same for consistency.
     			 */
-	    		if(value.equals("true")) {
+	    		if(value.equals("true") && !isInStandby) {
 	    			mvm.put("enabled", "true");
 	    		} else {
 	    			mvm.remove("enabled");
