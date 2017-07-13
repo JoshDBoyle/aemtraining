@@ -42,7 +42,7 @@ public class LockedReport {
     	params.put("path", SharedConstants.ROOT_PATH);
 		params.put("property", "jcr:content/@jcr:lockOwner");
 		params.put("property.operation", "exists");
-		params.put("p.limit", "500");
+		params.put("p.limit", "-1");
 		
 		// This is an example of a query for locked paths
 		//	    			path=/content

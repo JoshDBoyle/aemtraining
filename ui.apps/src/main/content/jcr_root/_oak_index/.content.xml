@@ -12,25 +12,40 @@
 	xmlns:rep="internal"
     jcr:mixinTypes="[rep:AccessControllable]"
     jcr:primaryType="nt:unstructured">
-	<cqLastModified
-	        jcr:primaryType="oak:QueryIndexDefinition"
-	        declaringNodeTypes="{Name}[cq:PageContent,nt:unstructured]"
-	        propertyNames="{Name}[cq:lastModified]"
-	        reindex="{Boolean}false"
-	        reindexCount="{Long}1"
-	        type="property"/>
-	<cqLastReplicated
-	        jcr:primaryType="oak:QueryIndexDefinition"
-	        declaringNodeTypes="{Name}[cq:PageContent,nt:unstructured]"
-	        propertyNames="{Name}[cq:lastReplicated]"
-	        reindex="{Boolean}false"
-	        reindexCount="{Long}1"
-	        type="property"/>
-	<cqLastReplicatedBy
-	        jcr:primaryType="oak:QueryIndexDefinition"
-	        declaringNodeTypes="{Name}[cq:PageContent,nt:unstructured]"
-	        propertyNames="{Name}[cq:lastReplicatedBy]"
-	        reindex="{Boolean}false"
-	        reindexCount="{Long}1"
-	        type="property"/>
+	<cpcReportMetadata
+        jcr:primaryType="oak:QueryIndexDefinition"
+        async="async"
+        compatVersion="{Long}2"
+        evaluatePathRestrictions="{Boolean}true"
+        excludedPaths="[/jcr:system,/libs,/apps,/etc,/content/projects,/content/usergenerated,/content/campaigns,/content/launches,/content/publications,/content/forms,/content/screens,/content/communities,/content/sites,/content/catalogs,/var]"
+        reindex="{Boolean}false"
+        reindexCount="{Long}1"
+        type="lucene">
+        <indexRules jcr:primaryType="nt:unstructured">
+            <nt:unstructured jcr:primaryType="nt:unstructured">
+                <properties jcr:primaryType="nt:unstructured">
+                    <jcrLockOwner
+                        jcr:primaryType="nt:unstructured"
+                        analyzed="{Boolean}true"
+                        name="cq:lastModified"
+                        nodeScopeIndex="{Boolean}true"/>
+                    <cqLastReplicated
+                        jcr:primaryType="nt:unstructured"
+                        analyzed="{Boolean}true"
+                        name="cq:lastModified"
+                        nodeScopeIndex="{Boolean}true"/>
+                    <cqLastReplicationAction
+                        jcr:primaryType="nt:unstructured"
+                        analyzed="{Boolean}true"
+                        name="cq:lastModified"
+                        nodeScopeIndex="{Boolean}true"/>
+                    <cqLastModified
+                        jcr:primaryType="nt:unstructured"
+                        analyzed="{Boolean}true"
+                        name="cq:lastModified"
+                        nodeScopeIndex="{Boolean}true"/>
+                </properties>
+            </nt:unstructured>
+        </indexRules>
+    </cpcReportMetadata>
 </jcr:root>

@@ -25,12 +25,12 @@ coral-dialog {
 }
 
 .coral-Table-cell {
-	height: 1.75rem;
+	height: 1rem; /*1.75rem*/
 }
 
 .report-params {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 4px;/*10px*/
+	margin-bottom: 4px;/*10px*/
 }
 
 .report-params coral-actionbar-item {
