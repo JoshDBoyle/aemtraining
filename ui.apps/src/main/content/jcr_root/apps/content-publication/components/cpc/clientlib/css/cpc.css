@@ -10,7 +10,8 @@ coral-panelstack {
 	margin: 15px 0;
 }
 
-coral-actionbar-container {
+.coral-ActionBar-primary,
+.coral-ActionBar-secondary {
 	top: 50%;
   	transform: translateY(-50%);
 }
@@ -78,8 +79,8 @@ coral-dialog {
 	margin-left: 15px;
 }
 
-.coral-ActionBar-container > .coral-ActionBar-item.cache-deletion-failure, 
-.coral-ActionBar-container > .coral-ActionBar-item.cache-deletion-success {
+.coral-ActionBar .coral-ActionBar-item.cache-deletion-failure, 
+.coral-ActionBar .coral-ActionBar-item.cache-deletion-success {
 	display: none;
 }
 

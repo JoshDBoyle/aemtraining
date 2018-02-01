@@ -1,4 +1,3 @@
-var lastAction = '';
 /**
  * Clears the cache for a single dispatcher
  */
@@ -112,44 +111,6 @@ $(document).ready(function() {
 	  var checked = type == 'standby' ? toggle.checked : !toggle.checked;
 	  var $agent = $(toggle).closest('.agent');
 	  
-	  //Switch standby
-	if (event.currentTarget.tagName == 'CORAL-SWITCH'
-			&& (type == 'standby')
-			&& checked) {
-		$.cookie("lastAction", null, {path : '/'});
-		$("#pause-group-btn").prop("disabled", true);
-		$("#pause-group-btn").prop("style", "display: inline-block");
-		$("#unpause-group-btn").prop("disabled", false);
-		$("#unpause-group-btn").prop("style", "display: inline-block");
-	}
-	if (event.currentTarget.tagName == 'CORAL-SWITCH'
-			&& type == 'standby'
-			&& !checked) {
-		$.cookie("lastAction", null, {path : '/'});
-		$("#pause-group-btn").prop("disabled", false);
-		$("#pause-group-btn").prop("style", "display: inline-block");
-		$("#unpause-group-btn").prop("disabled", true);
-		$("#unpause-group-btn").prop("style", "display: inline-block");
-	}
-	// Switch enabled-disabled
-	if (event.currentTarget.tagName == 'CORAL-SWITCH'
-			&& type == 'enabled'
-			&& !checked) {
-		$.cookie("lastAction", null, {path : '/'});
-		$("#pause-group-btn").prop("disabled", true);
-		$("#pause-group-btn").prop("style", "display: inline-block");
-		$("#unpause-group-btn").prop("disabled", true);
-		$("#unpause-group-btn").prop("style", "display: inline-block");
-	}
-	if (event.currentTarget.tagName == 'CORAL-SWITCH'
-			&& type == 'enabled' && checked) {
-		$.cookie("lastAction", null, {path : '/'});
-		$("#pause-group-btn").prop("disabled", false);
-		$("#pause-group-btn").prop("style", "display: inline-block");
-		$("#unpause-group-btn").prop("disabled", false);
-		$("#unpause-group-btn").prop("style", "display: inline-block");
-	}		
-	  
 	  $.post("/bin/cpc/updateagent", { 'id': id, 'type': type, 'value': checked }, function(data) {
 		  refreshQueue($agent);
 	  });
@@ -159,23 +120,11 @@ $(document).ready(function() {
    * STANDBY AND ENABLED TOGGLING BY AGENT GROUP
    */
   $('#pause-group-btn, #unpause-group-btn, #enable-group-btn, #disable-group-btn').on('click', function(event) {
-	  
-	  lastAction = $.cookie("lastAction");
-	  if(lastAction == event.currentTarget.id){
-			event.stopPropagation();
-			alert("Too many clicks are not allowed.");
-			$.cookie("lastAction", null, { path: '/' });
-			return false;
-	  }
-	  if (event.currentTarget.id == 'pause-group-btn' || event.currentTarget.id == 'unpause-group-btn') {
-		  $(this).prop("disabled", true);
-		  $(this).prop("style", "display: inline-block");		  
-	  }
 	  var groupToggle = event.currentTarget;
 	  var type = groupToggle.id == 'pause-group-btn' || groupToggle.id == 'unpause-group-btn' ? 'standby' : 'enabled';
 	  var individualToggles = $(groupToggle).closest('coral-panel-content')[0].querySelectorAll('.agent-toggle-' + type);
 	  var value = (groupToggle.id == 'pause-group-btn' || groupToggle.id == 'enable-group-btn') ? true : false;
-	  
+
 	  for(var i = 0; i < individualToggles.length; i++) {
 		  var toggle = individualToggles[i];
 		  var $agent = $(individualToggles[i]).closest('.agent');
@@ -189,15 +138,7 @@ $(document).ready(function() {
 				  }, 200);
 			  }
 		  });
-		}
-		$.cookie("lastAction", event.target.id);
-		if (event.currentTarget.id == "unpause-group-btn") {
-			$("#pause-group-btn").prop("disabled", false);
-		}	  
-		if (event.currentTarget.id == "pause-group-btn") {
-			$("#unpause-group-btn").prop("disabled", false);
-		} 		
-		return true;  
+	  }
   });
   
   /**
@@ -470,4 +411,4 @@ $(document).ready(function() {
   });
 
   refreshQueues();
-})
+});
