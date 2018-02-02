@@ -78,11 +78,6 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	
 	@Reference
 	private AgentManager agentMgr;
-	
-	@Reference
-	private ResourceResolverFactory factory;
-	
-	private ResourceResolver resolver;
 
 	private Map<String, Agent> agents;
 	private List<AgentConfig> allAgentConfigs;
@@ -95,13 +90,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 * @param properties	Properties as configured in the Felix console	
 	 */
 	@Activate
-	protected void activate(Map<String, Object> properties) {
-		try {
-			resolver = factory.getAdministrativeResourceResolver(null);
-		} catch (LoginException e) {
-			e.printStackTrace();
-		}
-		
+	protected void activate(Map<String, Object> properties) {		
 		agents = agentMgr.getAgents();
 		agentGroupTitles = PropertiesUtil.toStringArray(properties.get("agent.groups"));
 		agentLists = PropertiesUtil.toStringArray(properties.get("agent.lists"));
@@ -119,7 +108,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 	 * @return      		a List<AgentGroup> that contains all configured AgentGroups
 	 * @see					AgentGroup
 	 */
-	public List<AgentGroup> getAgentGroups() {
+	public List<AgentGroup> getAgentGroups(ResourceResolver resolver) {
 		agentGroups = new ArrayList<AgentGroup>();
 
 		if(null != agentLists) {

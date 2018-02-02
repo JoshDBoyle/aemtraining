@@ -47,6 +47,10 @@ coral-dialog {
 	overflow-y: scroll;
 }
 
+#results table {
+	width: 100%;
+}
+
 #wait-overlay {
 	width: 100%;
 	height: 100%;

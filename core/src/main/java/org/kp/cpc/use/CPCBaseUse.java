@@ -53,7 +53,7 @@ public class CPCBaseUse extends WCMUsePojo {
 
     	AgentGroupServiceImpl ags = getSlingScriptHelper().getService(AgentGroupServiceImpl.class);
     	if(null != ags) {
-    		agentGroups = ags.getAgentGroups();
+    		agentGroups = ags.getAgentGroups(getResourceResolver());
     		allAgentConfigs = ags.getAllAgentConfigs();
     	}
     	
