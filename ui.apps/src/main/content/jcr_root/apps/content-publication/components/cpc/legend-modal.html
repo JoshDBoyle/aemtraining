@@ -1,61 +1,70 @@
 <!-- Modal definition for the Legend modal accessible via the command bar -->
-<coral-dialog variant="default" data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="legend-modal" fullscreen closable="on">
-  <coral-dialog-header>Queue Status Legend</coral-dialog-header>
+<coral-dialog variant="default" data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="legend-modal" fullscreen closable="on"> 
 
-  <coral-dialog-content>
-    <coral-table>
-      <table is="coral-table-inner">
-        <thead is="coral-thead" sticky>
-          <tr is="coral-tr">
-            <th is="coral-th">Color</th>
-            <th is="coral-th">Meaning</th>
-          </tr>
-        </thead>
-        <tbody is="coral-tbody">
-          <tr is="coral-tr">
-            <td is="coral-td">
-              <div class="led-box">
-                <div class="led-green"></div>
-              </div>
-            </td>
-            <td is="coral-td">Agent is enabled, active (not in standby), and has no queue</td>
-          </tr>
-          <tr is="coral-tr">
-            <td is="coral-td">
-              <div class="led-box">
-                <div class="led-blue"></div>
-              </div>
-            </td>
-            <td is="coral-td">Agent is enabled, active, and the queue is unblocked and actively replicating content</td>
-          </tr>
-          <tr is="coral-tr">
-            <td is="coral-td">
-              <div class="led-box">
-                <div class="led-red"></div>
-              </div>
-            </td>
-            <td is="coral-td">Agent is enabled, active, and actively replicating content but its queue is blocked</td>
-          </tr>
-          <tr is="coral-tr">
-            <td is="coral-td">
-              <div class="led-box">
-                <div class="led-yellow"></div>
-              </div>
-            </td>
-            <td is="coral-td">Agent is in standby mode.  Replication requests will continue to queue up as normal but nothing will be replicated until the agent is no longer in standby and the remaining duration of its retry period has elapsed</td>
-          </tr>
-          <tr is="coral-tr">
-            <td is="coral-td">
-              <div class="led-box">
-                <div class="led-grey"></div>
-              </div>
-            </td>
-            <td is="coral-td">Agent is disabled.  Replication requests will be ignored altogether by this Agent.</td>
-          </tr>
-        </tbody>
-      </table>
-  </coral-dialog-content>
-  <coral-dialog-footer>
-    <button is="coral-button" variant="minimal" coral-close></button>
-  </coral-dialog-footer>
-</div>
+	<coral-dialog-header>Queue Status Legend</coral-dialog-header> 
+
+	<coral-dialog-content>
+		<table class="coral-Table">
+			<thead class="coral-Table-head">
+				<tr class="coral-Table-row">
+					<th class="coral-Table-headerCell">Color</th>
+					<th class="coral-Table-headerCell">Meaning</th>
+				</tr>
+			</thead>
+			<tbody class="coral-Table-body">
+				<tr class="coral-Table-row">
+					<td class="coral-Table-cell">
+						<div class="led-box">
+							<div class="led-green"></div>
+						</div>
+					</td>
+					<td class="coral-Table-cell">Agent is enabled, active (not in
+						standby), and has no queue</td>
+				</tr>
+				<tr class="coral-Table-row">
+					<td class="coral-Table-cell">
+						<div class="led-box">
+							<div class="led-blue"></div>
+						</div>
+					</td>
+					<td class="coral-Table-cell">Agent is enabled, active, and the
+						queue is unblocked and actively replicating content</td>
+				</tr>
+				<tr class="coral-Table-row">
+					<td class="coral-Table-cell">
+						<div class="led-box">
+							<div class="led-red"></div>
+						</div>
+					</td>
+					<td class="coral-Table-cell">Agent is enabled, active, and
+						actively replicating content but its queue is blocked</td>
+				</tr>
+				<tr class="coral-Table-row">
+					<td class="coral-Table-cell">
+						<div class="led-box">
+							<div class="led-yellow"></div>
+						</div>
+					</td>
+					<td class="coral-Table-cell">Agent is in standby mode.
+						Replication requests will continue to queue up as normal but nothing
+						will be replicated until the agent is no longer in standby and the
+						remaining duration of its retry period has elapsed</td>
+				</tr>
+				<tr class="coral-Table-row">
+					<td class="coral-Table-cell">
+						<div class="led-box">
+							<div class="led-grey"></div>
+						</div>
+					</td>
+					<td class="coral-Table-cell">Agent is disabled. Replication
+						requests will be ignored altogether by this Agent.</td>
+				</tr>
+			</tbody>
+		</table>
+	</coral-dialog-content>
+	
+	<coral-dialog-footer>
+		<button is="coral-button" variant="minimal" coral-close></button>
+	</coral-dialog-footer>
+
+</coral-dialog>

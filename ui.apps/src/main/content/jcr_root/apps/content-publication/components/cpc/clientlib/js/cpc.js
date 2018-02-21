@@ -213,38 +213,37 @@ $(document).ready(function() {
 			  a.click();
 			  $(a).remove();
 		  } else {
-			  var table = 	"<coral-table>" +
-			  				"	<table is='coral-table-inner'>" +
-			  				"		<thead is='coral-thead'>" +
-			  				"			<tr is='coral-tr'>" +
-						  	"				<th is='coral-th'><coral-checkbox id='select-all'/></th>";
+			  var table = 	"	<table class='coral-Table'>" +
+			  				"		<thead class='coral-Table-head'>" +
+			  				"			<tr class='coral-Table-row'>" +
+						  	"				<th class='coral-Table-headerCell'><coral-checkbox id='select-all'/></th>";
 
 			  for(var i = 0; i < data.headers.length; i++) {
-				  table += "<th is='coral-th'>" + data.headers[i] + "</th>";
+				  table += "<th class='coral-Table-headerCell'>" + data.headers[i] + "</th>";
 			  }
 
-			  table += "<th is='coral-th'>Debug</th>"
-			  table += "</tr></thead><tbody is='coral-tbody'>";
+			  table += "<th class='coral-Table-headerCell'>Debug</th>"
+			  table += "</tr></thead><tbody class='coral-Table-body'>";
 
 			  for(var i = 0; i < data.results.length; i++) {
-				  table +=	"<tr is='coral-tr'>" +
-				  			"	<td is='coral-td'>" +
+				  table +=	"<tr is='coral-Table-row'>" +
+				  			"	<td class='coral-Table-cell'>" +
 				  			"		<coral-checkbox class='select-one'/>" + 
 				  			"   </td>" +
-		  					"	<td is='coral-td'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
-		  					"	<td is='coral-td'>" + data.results[i].columnb + "</td>";
+		  					"	<td class='coral-Table-cell'><a href='" + data.results[i].path + ".html'>" + data.results[i].path + "</a></td>" +
+		  					"	<td class='coral-Table-cell'>" + data.results[i].columnb + "</td>";
 				  
 				  if(data.headers.length > 2) {
-					  table += "<td is='coral-td'>" + data.results[i].columnc + "</td>";
+					  table += "<td class='coral-Table-cell'>" + data.results[i].columnc + "</td>";
 				  }
 		  					
-				  table += 	"	<td is='coral-td'>" +
+				  table += 	"	<td class='coral-Table-cell'>" +
 		  					" 		<button class='debug-content' is='coral-button' variant='minimal' icon='globe' iconsize='S'/>" + 
 		  					"	</td>" +
 		  					"</tr>";
 			  }
 
-			  table += '</tbody></table></coral-table>';
+			  table += '</tbody></table>';
 			  results.append(table);
 		  }
 		  

@@ -1,29 +1,27 @@
 <!-- Modal definition for the Agent List modal accessible via the command bar -->
 <coral-dialog variant=default data-sly-use.modalsuse="org.kp.cpc.use.ModalsUse" id="agent-list-modal" fullscreen closable="on">
-  <coral-dialog-header>Agent Listing</coral-dialog-header>
-  <coral-dialog-content>
-    <coral-table>
-      <table is="coral-table-inner">
-        <colgroup>
-          <col is="coral-col" sortable sortabledirection="ascending">
-          <col is="coral-col" sortable sortabledirection="ascending">
-        </colgroup>
-        <thead is="coral-thead" sticky>
-          <tr is="coral-tr">
-            <th is="coral-th">Title</th>
-            <th is="coral-th">ID</th>
-          </tr>
-        </coral-thead>
-        <tbody is="coral-tbody" data-sly-list.agent="${modalsuse.allAgentConfigs}">
-          <tr is="coral-tr">
-            <td is="coral-td">${agent.getName}</td>
-            <td is="coral-td">${agent.getAgentId}</td>
-          </tr>
-        </tbody>
-      </table>
-    </coral-table>
-  </coral-dialog-content>
-  <coral-dialog-footer>
-    <button is="coral-button" variant="minimal" coral-close></button>
-  </coral-dialog-footer>
+
+  	<coral-dialog-header>Agent Listing</coral-dialog-header>
+ 
+  	<coral-dialog-content>
+		<table class="coral-Table">
+	  		<thead class="coral-Table-head">
+	    		<tr class="coral-Table-row">
+	      			<th class="coral-Table-headerCell">Title</th>
+	      			<th class="coral-Table-headerCell">ID</th>
+	    		</tr>
+	  		</thead>
+	  		<tbody class="coral-Table-body" data-sly-list.agent="${modalsuse.allAgentConfigs}">
+	  			<tr class="coral-Table-row">
+	    			<td class="coral-Table-cell">${agent.getName}</td>
+	    			<td class="coral-Table-cell">${agent.getAgentId}</td>
+	  			</tr>
+			</tbody>
+		</table>
+  	</coral-dialog-content>
+
+  	<coral-dialog-footer>
+    	<button is="coral-button" variant="minimal" coral-close></button>
+  	</coral-dialog-footer>
+ 
 </coral-dialog>
